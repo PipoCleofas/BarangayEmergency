@@ -12,14 +12,33 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "entryPoint": "Welcome.tsx",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show it on the map",
+        "NSLocationAlwaysUsageDescription": "We need your location to show it on the map",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to show it on the map",
+        "UIBackgroundModes": [
+          "location"
+        ],
+        "NSCameraUsageDescription": "We need your permission to use the camera to capture photos.",
+        "NSPhotoLibraryUsageDescription": "We need your permission to access your photo library to select photos."
+      }
     },
     "android": {
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "Rescue.Link"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +46,15 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow RescueLink to access your camera",
+          "microphonePermission": "Allow RescueLink to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
