@@ -4,15 +4,13 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import useHandleClicks from '@/hooks/useHandleClicks';
 import Barangay from '@/components/Barangay';
-import useDataInput from '@/hooks/useDataInputs';
 import Sitio from '@/components/Sitio';
-import useCheckPassword from '@/hooks/useCheckPassword';
+import useDataInput from '@/hooks/useDataInput';
 
 export default function CitizenSignup() {
   const { handleBackButtonPress, handleLoginButtonInSignupAsCitizenPress } = useHandleClicks();
-  const { birthday, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, signupError } = useDataInput();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, passwordError } = useCheckPassword();
+  const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, passwordError, birthday, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, signupError } = useDataInput();
 
   return (
     <View style={styles.container}>
@@ -84,7 +82,7 @@ export default function CitizenSignup() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>BARANGAY:</Text>
-        <Barangay />
+        <Barangay/>
       </View>
 
       {signupError && <Text style={styles.errorText}>{signupError}</Text>}

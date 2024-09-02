@@ -1,7 +1,7 @@
-import useCheckBarangay from "@/hooks/useCheckBarangay";
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
+import useDataInput from '@/hooks/useDataInput';
 
 const barangaysInTarlacCity = [
   { label: 'Aguso', value: 'Aguso' },
@@ -62,13 +62,15 @@ const barangaysInTarlacCity = [
 ];
 
 const Barangay = () => {
-  const {handleBarangayChange} = useCheckBarangay();
-
+  const {barangay,setBarangay} = useDataInput();
 
   return (
     <View style={styles.container}>
       <RNPickerSelect
-        onValueChange={(value) => handleBarangayChange(value)}
+        onValueChange={(value) => {
+          console.log(value)
+          setBarangay(value)
+        }}
         items={barangaysInTarlacCity}
         placeholder={{
           label: 'Select Barangay...',

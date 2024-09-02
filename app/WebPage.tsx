@@ -1,24 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
+import Constants from 'expo-constants';
+import { StyleSheet } from 'react-native';
 
-export default function HomePage() {
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome to the Web Page!</Text>
-      {/* ON PROGRESSSS */}
-    </View>
+    <WebView
+      style={styles.container}
+      originWhitelist={['*']}
+      source={{ html: '<h1><center>Hello world</center></h1>' }}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFDD0',
-  },
-  text: {
-    fontSize: 24,
-    color: '#333',
+    marginTop: Constants.statusBarHeight,
   },
 });

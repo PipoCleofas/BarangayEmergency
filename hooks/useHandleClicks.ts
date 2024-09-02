@@ -1,8 +1,6 @@
 import { useNavigation } from "expo-router";
-import useDataInput from "./useDataInputs";
 
 const useHandleClicks = () => {
-    const { fname, lname, mname, sitio, barangay, birthday, handleSignupErrorChange, signupError } = useDataInput();
     const navigation = useNavigation();
 
     const handleCitizenLoginPress = () => {
