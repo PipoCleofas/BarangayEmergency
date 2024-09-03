@@ -219,7 +219,7 @@ const useCheckPassword = () => {
 
 
 
-    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday && !validateErrorBarangaySitio) {
+    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday ) {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
