@@ -16,5 +16,5 @@
     npx expo start
    ```
 
-3. Scan QR code with Expo Go on Android
+3. Scan QR code in terminal with Expo Go on Android
 

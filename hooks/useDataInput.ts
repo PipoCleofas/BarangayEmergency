@@ -14,10 +14,21 @@ const useCheckPassword = () => {
   const[birthdayError, setBirthdayError] = useState<any>(null);
   const[sitio, setSitio] = useState<string | null>(null);
   const[barangaySitioError, setbarangaySitioError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<number | null>(1);
   const[barangay,setBarangay] = useState<string | null>(null);
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
+
+
+  // for userID
+  
+  function generateRandomNumber(): string {
+    const randomNumbers = [];
+    for (let i = 0; i < 5; i++) {
+      randomNumbers.push(Math.floor(Math.random() * 10));
+    }
+    return randomNumbers.join('');
+  }
 
   //  name
 
