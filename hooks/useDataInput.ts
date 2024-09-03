@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const useCheckPassword = () => {
-  const [password, setPassword] = useState<string>('');
+  const [password, setPassword] = useState<string | null>('');
   const [reEnteredPassword, setReEnteredPassword] = useState<string | undefined | null>();
   const [passwordError, setPasswordError] = useState<string | null | undefined>();
   const[fname, setFname] = useState<string | null>(null)
@@ -197,7 +198,7 @@ const useCheckPassword = () => {
     return null; // No error
   };
 
-  const handleNextPress = () => {
+  const handleNextPress = async () => {
     //console.log("Current Barangay and Sitio:", barangay, sitio);
 
     const validationErrorPassword = validatePassword(password, reEnteredPassword);
@@ -220,6 +221,39 @@ const useCheckPassword = () => {
 
     if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday && !validateErrorBarangaySitio) {
       navigation.navigate('CitizenPhoto' as never);
+
+      try {
+        const response = await axios.post('http://192.168.100.28:3000/submit', {
+          lname,
+          fname,
+          mname,
+          password,
+          birthday
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log('Success:', response.data);
+        setLname(null);
+        setFname(null);
+        setMname(null);
+        setPassword(null);
+        setBirthday(null);
+        navigation.navigate('CitizenPhoto' as never);
+      } catch (error: any) {
+        if (error.response) {
+          console.error('Response error:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+        } else if (error.request) {
+          console.error('Request error:', error.request);
+        } else {
+          console.error('General error:', error.message);
+        }
+        console.error('Error config:', error.config);
+      }
+
     } else {
       console.log('Validation errors present, not navigating.');
     }
