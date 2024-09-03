@@ -14,7 +14,7 @@ const useCheckPassword = () => {
   const[birthdayError, setBirthdayError] = useState<any>(null);
   const[sitio, setSitio] = useState<string | null>(null);
   const[barangaySitioError, setbarangaySitioError] = useState<string | null>(null);
-
+  const [userId, setUserId] = useState<number | null>(null);
   const[barangay,setBarangay] = useState<string | null>(null);
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
