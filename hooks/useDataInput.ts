@@ -11,9 +11,12 @@ const useCheckPassword = () => {
   const[lname, setLname] = useState<string | null>(null)
   const[mname, setMname] = useState<string | null>(null)
   const[birthday, setBirthday] = useState<any>(null);
+  const[birthdayError, setBirthdayError] = useState<any>(null);
   const[sitio, setSitio] = useState<string | null>(null);
+  const[barangaySitioError, setbarangaySitioError] = useState<string | null>(null);
+
   const[barangay,setBarangay] = useState<string | null>(null);
-  const[signupError,setSignupError] = useState<string | null>(null);
+  const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
 
   //  name
@@ -23,7 +26,7 @@ const useCheckPassword = () => {
     setFname(text)
     console.log(fname)
 
-}
+  }
 
   const handleLnameChange = (text: string) => {
       setLname(text)
@@ -41,7 +44,7 @@ const useCheckPassword = () => {
 
   const validateName = (fname: string | null, mname: string | null, lname: string | null) => {
     if (!fname || ! mname || !lname) {
-      return "Username cannot be empty.";
+      return "Names cannot be empty.";
     }
 
     return null; // No error
@@ -120,11 +123,21 @@ const useCheckPassword = () => {
   }
 
   const validateBarangayAndSitio = (barangay: string | null, sitio: string | null) => {
-    if (!barangay || !sitio) {
+    if (!sitio && !barangay) {
       return "Barangay and Sitio must not be empty.";
     }
+    
+    if (!sitio) {
+      return "Sitio must not be empty.";
+    }
 
-    return null;
+    if (!barangay) {
+      return "Barangay must not be empty.";
+    }
+
+    
+      return null;
+    
   };
 
   // password
@@ -162,35 +175,39 @@ const useCheckPassword = () => {
       return "Password must contain at least one number.";
     }
 
-    if (reEnteredPassword == null && password !== reEnteredPassword) {
+    if (reEnteredPassword !== null && password !== reEnteredPassword) {
       return "Passwords do not match.";
+    }
+
+    if(reEnteredPassword == null){
+      return "Reenter your password"
     }
 
     return null; // No error
   };
 
   const handleNextPress = () => {
-    //console.log("Current Barangay State:", barangay);
+    //console.log("Current Barangay and Sitio:", barangay, sitio);
 
     const validationErrorPassword = validatePassword(password, reEnteredPassword);
     const validateErrorName = validateName(fname,mname,lname)
     const validateErrorBirthday = validateBirthday(birthday)
-    //const validateErrorBarangaySitio = validateBarangayAndSitio(barangay,sitio)
+    const validateErrorBarangaySitio = validateBarangayAndSitio(barangay,sitio)
 
     
-    setSignupError(validateErrorBirthday)
+    setBirthdayError(validateErrorBirthday)
     setPasswordError(validationErrorPassword);
-    setSignupError(validateErrorName)
-    //setSignupError(validateErrorBarangaySitio)
+    setNameError(validateErrorName)
+    setbarangaySitioError(validateErrorBarangaySitio)
 
     console.log('Password Error:', validationErrorPassword);
     console.log("Username error: ", validateErrorName)
     console.log("Birthday error: ", validateErrorBirthday)    
-    //console.log("Barangay error: ", validateErrorBarangaySitio)
+    console.log("Barangay error: ", validateErrorBarangaySitio)
 
 
 
-    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday  ) {
+    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday && !validateErrorBarangaySitio) {
       navigation.navigate('CitizenPhoto' as never);
     } else {
       console.log('Validation errors present, not navigating.');
@@ -206,7 +223,18 @@ const useCheckPassword = () => {
     handleNextPress,
     sitio,
     barangay,
-    birthday, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, signupError, setBarangay, setSitio
+    birthday, 
+    birthdayError,
+    handleMnameChange, 
+    handleLnameChange, 
+    handleFnameChange, 
+    handleBirthdayChange, 
+    handleBarangayChange, 
+    handleSitioChange, 
+    nameError, 
+    setBarangay, 
+    setSitio,
+    barangaySitioError
   };
 };
 

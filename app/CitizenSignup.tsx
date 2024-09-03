@@ -10,7 +10,7 @@ import useDataInput from '@/hooks/useDataInput';
 export default function CitizenSignup() {
   const { handleBackButtonPress, handleLoginButtonInSignupAsCitizenPress } = useHandleClicks();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, passwordError, birthday, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, signupError } = useDataInput();
+  const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
 
   return (
     <View style={styles.container}>
@@ -31,6 +31,8 @@ export default function CitizenSignup() {
         <Text style={styles.labelInput}>MIDDLE NAME:</Text>
         <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleMnameChange(text)} />
       </View>
+
+      {nameError && <Text style={styles.errorText}>{nameError}</Text>}
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>PASSWORD:</Text>
@@ -62,6 +64,9 @@ export default function CitizenSignup() {
         </View>
       </View>
 
+      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+
+
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>BIRTHDAY:</Text>
         <TextInput
@@ -75,6 +80,9 @@ export default function CitizenSignup() {
         />
       </View>
 
+      {birthdayError && <Text style={styles.errorText}>{birthdayError}</Text>}
+
+
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>SITIO:</Text>
         <Sitio />
@@ -85,8 +93,9 @@ export default function CitizenSignup() {
         <Barangay/>
       </View>
 
-      {signupError && <Text style={styles.errorText}>{signupError}</Text>}
-      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+      {barangaySitioError && <Text style={styles.errorText}>{barangaySitioError}</Text>}
+
+
 
       <View style={styles.columnButtons}>
         <TouchableOpacity style={styles.button1} onPress={handleBackButtonPress}>
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -158,14 +167,14 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontSize: 14,
-    marginBottom: 10,
+    marginBottom: 6,
     textAlign: 'center',
   },
   columnButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 15,
   },
   button1: {
     backgroundColor: '#FFFDD0',

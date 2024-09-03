@@ -48,10 +48,40 @@ const useSMS = () => {
     }
   };
 
+  const handleSendSMS2 = async () => {
+    if (!isAvailable) {
+      console.log("SMS is not available on this device.");
+      return;
+    }
+
+    try {
+      const { result } = await SMS.sendSMSAsync(
+        // add number here
+        ['09937839142', ],
+
+        // message
+        'Route Assistance',
+        {
+          attachments: {
+            uri: 'path/myfile.png',
+            mimeType: 'image/png',
+            filename: 'myfile.png',
+          },
+        }
+      );
+
+      setResult(result); 
+      console.log("SMS sent result:", result);
+    } catch (error) {
+      console.error("Error sending SMS:", error);
+    }
+  };
+
   return {
     isAvailable,
     result,
     handleSendSMS,
+    handleSendSMS2,
   };
 };
 

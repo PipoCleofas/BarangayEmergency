@@ -11,7 +11,7 @@ export default function CitizenPhoto() {
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
 
-  const { handleLoginButtonPress } = useHandleClicks();
+  const { handleLoginButtonPress,handleBackButtonInCitizenPhotoPress } = useHandleClicks();
   const { photoUri1, photoUri2, photoUri3, handleSelectPhoto1 , handleSelectPhoto2, handleSelectPhoto3,handleTakePhoto1, handleTakePhoto2,handleTakePhoto3 } = usePhoto();
   const { facing,permission,requestPermission,handleToggleCamera} = useCamera();
 
@@ -160,7 +160,7 @@ export default function CitizenPhoto() {
 
       <View style={styles.columnButtons}>
         <TouchableOpacity style={styles.button1}>
-          <SimpleLineIcons name="arrow-left" size={16} color="black" style={styles.icon} />
+          <SimpleLineIcons name="arrow-left" size={16} color="black" style={styles.icon} onPress={handleBackButtonInCitizenPhotoPress} />
           <Text style={styles.buttonText1}>BACK</Text>
         </TouchableOpacity>
 

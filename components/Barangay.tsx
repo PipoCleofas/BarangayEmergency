@@ -62,14 +62,14 @@ const barangaysInTarlacCity = [
 ];
 
 const Barangay = () => {
-  const {barangay,setBarangay} = useDataInput();
+  const {barangay,handleBarangayChange} = useDataInput();
 
   return (
     <View style={styles.container}>
       <RNPickerSelect
         onValueChange={(value) => {
           console.log(value)
-          setBarangay(value)
+          handleBarangayChange(value)
         }}
         items={barangaysInTarlacCity}
         placeholder={{
@@ -79,6 +79,7 @@ const Barangay = () => {
         style={pickerSelectStyles}
         useNativeAndroidPickerStyle={false}
         Icon={() => null}
+        value={barangay}
       />
     </View>
   );

@@ -10,7 +10,7 @@ import useLocation from '@/hooks/useLocation';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {handleSendSMS} = useSMS();
+  const {handleSendSMS, handleSendSMS2} = useSMS();
 
   const navigation = useNavigation();
 
@@ -31,16 +31,18 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconContainer}>
-              <View style={styles.iconsRow}>
+              <View style={styles.iconsRow}>        
+
+
                 <MaterialCommunityIcons name={focused ? 'head' : 'head-outline'} color={color} size={32} style={styles.icon} onPress={() => navigation.navigate('Welcome' as never)} />
-                <FontAwesome6 name={'people-group'} color={color} size={32} style={[styles.icon, { marginLeft: 16 }]} />
+                <FontAwesome6 name={'people-group'} color={color} size={32} style={[styles.icon, { marginLeft: 16 }] } />
               </View>
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity style={styles.button} onPress={handleSendSMS}>
                   <Text style={styles.buttonText}>Emergency Assistance</Text>  
                   <Text style={styles.buttonText}>Request</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={handleSendSMS}>
+                <TouchableOpacity style={styles.button} onPress={handleSendSMS2}>
                   <Text style={styles.buttonText}>Route Assistance</Text>
                 </TouchableOpacity>
               </View>

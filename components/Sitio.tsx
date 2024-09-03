@@ -5,12 +5,14 @@ import useDataInput from '@/hooks/useDataInput';
 
 const sitios: any = [
   { label: 'Aguso', value: 'Aguso' },
+  { label: 'Asturias', value: 'Asturias' },
+  { label: 'Atioc', value: 'Atioc' },
 ];
 
 
-const Barangay = () => {
+const Sitio = () => {
 
-  const {sitio,setSitio} = useDataInput();
+  const {sitio,handleSitioChange} = useDataInput();
 
 
   return (
@@ -18,9 +20,10 @@ const Barangay = () => {
       <RNPickerSelect
         onValueChange={(value) => {
           console.log(sitio)
-          setSitio(value)
+          handleSitioChange(value)
         }}
         items={sitios}
+        
         placeholder={{
           label: 'Select Sitio...',
           value: null,
@@ -29,6 +32,7 @@ const Barangay = () => {
         useNativeAndroidPickerStyle={false}
         Icon={() => null}
         value={sitio}
+        
       />
     </View>
   );
@@ -62,4 +66,4 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-export default Barangay;
+export default Sitio;
