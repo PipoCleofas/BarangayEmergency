@@ -12,9 +12,9 @@ app.use(cors());
 // MySQL connection setup
 const connection = mysql.createConnection({
   host: 'localhost',
-  port: '3306',
+  port: '3308',
   user: 'root',
-  password: 'Jacob17_jacob',
+  password: 'admin',
   database: 'rescuelink'
 });
 
