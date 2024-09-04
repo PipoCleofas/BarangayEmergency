@@ -31,8 +31,12 @@ const { router: userRouter, setConnection } = require('./types/user');
 
 
 setConnection(connection);
-
 app.use('/user', userRouter);
+
+const { router: markerRouter, setConnectionMarker } = require('./types/marker');
+
+setConnectionMarker(connection);
+app.use('/marker', markerRouter);
 
 // for testing purposes
 app.get('/test', (req, res) => {
