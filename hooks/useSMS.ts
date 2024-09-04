@@ -92,6 +92,7 @@ const useSMS = () => {
   return {
     isAvailable,
     result,
+    setResult,
     handleSendSMS,
     handleSendSMS2,
   };

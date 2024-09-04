@@ -7,11 +7,12 @@ import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import useSMS from '@/hooks/useSMS';
 import useLocation from '@/hooks/useLocation';
+import useHandleClicks from '@/hooks/useHandleClicks';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const {handleSendSMS, handleSendSMS2} = useSMS();
-
+  const {EmergencyAssistanceRequest} = useHandleClicks();
   const navigation = useNavigation();
 
 
@@ -38,7 +39,7 @@ export default function TabLayout() {
                 <FontAwesome6 name={'people-group'} color={color} size={32} style={[styles.icon, { marginLeft: 16 }] } />
               </View>
               <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleSendSMS}>
+                <TouchableOpacity style={styles.button} onPress={EmergencyAssistanceRequest}>
                   <Text style={styles.buttonText}>Emergency Assistance</Text>  
                   <Text style={styles.buttonText}>Request</Text>
                 </TouchableOpacity>
