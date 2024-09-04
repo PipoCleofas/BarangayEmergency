@@ -36,25 +36,27 @@ const useCheckPassword = () => {
   const handleFnameChange = (text: string) => {
        
     setFname(text)
-    console.log(fname)
-
+    const validationError = validateName(text)
+    setNameError(validationError)
   }
 
   const handleLnameChange = (text: string) => {
       setLname(text)
-      console.log(lname)
+      const validationError = validateName(text)
+      setNameError(validationError)
 
   }
 
   const handleMnameChange = (text: string) => {
       setMname(text)
-      console.log(mname)
+      const validationError = validateName(text)
+       setNameError(validationError)
 
 
 
   }
 
-  const validateName = (fname: string | null, mname: string | null, lname: string | null) => {
+  const validateName = (fname: string | null = null, mname: string | null = null, lname: string | null = null) => {
     if (!fname || ! mname || !lname) {
       return "Names cannot be empty.";
     }
@@ -126,7 +128,9 @@ const useCheckPassword = () => {
 
   const handleSitioChange = (text: any) => {
     setSitio(text)
-    console.log(sitio)
+    const validationError = validateBarangayAndSitio(text)
+    setbarangaySitioError(validationError)
+    console.log("Hi" + sitio)
   }
 
   const handleBarangayChange = (text: any) => {
@@ -134,7 +138,7 @@ const useCheckPassword = () => {
     console.log(barangay)
   }
 
-  const validateBarangayAndSitio = (barangay: string | null, sitio: string | null) => {
+  const validateBarangayAndSitio = (barangay: string | null, sitio: string | null = null) => {
     if (!sitio && !barangay) {
       return "Barangay and Sitio must not be empty.";
     }
@@ -223,7 +227,7 @@ const useCheckPassword = () => {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
-        const response = await axios.post('http://192.168.100.28:3000/submit', {
+        const response = await axios.post('http://192.168.100.127:3000/user/submit', {
           lname,
           fname,
           mname,

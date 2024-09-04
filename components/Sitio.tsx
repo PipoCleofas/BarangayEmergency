@@ -1,29 +1,27 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, StyleSheet } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import useDataInput from '@/hooks/useDataInput';
+import { Dropdown } from 'react-native-element-dropdown';
 
-const sitios: any = [
+const sitios = [
   { label: 'Aguso', value: 'Aguso' },
   { label: 'Asturias', value: 'Asturias' },
   { label: 'Atioc', value: 'Atioc' },
 ];
 
-
 const Sitio = () => {
-
-  const {sitio,handleSitioChange} = useDataInput();
-
+  const { sitio, handleSitioChange } = useDataInput();
 
   return (
     <View style={styles.container}>
       <RNPickerSelect
         onValueChange={(value) => {
-          console.log(sitio)
-          handleSitioChange(value)
+          handleSitioChange(value);
+          console.log("Selected Value:", value);
+          console.log("Current Sitio State:", sitio);
         }}
         items={sitios}
-        
         placeholder={{
           label: 'Select Sitio...',
           value: null,
@@ -31,8 +29,7 @@ const Sitio = () => {
         style={pickerSelectStyles}
         useNativeAndroidPickerStyle={false}
         Icon={() => null}
-        value={sitio}
-        
+        value={sitio} 
       />
     </View>
   );
