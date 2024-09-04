@@ -1,3 +1,7 @@
+// port, password, useDataInput, useHandleClick
+
+
+
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
@@ -12,9 +16,9 @@ app.use(cors());
 // MySQL connection setup
 const connection = mysql.createConnection({
   host: 'localhost',
-  port: '3308',
+  port: '3306',
   user: 'root',
-  password: 'admin',
+  password: 'Jacob17_jacob',
   database: 'rescuelink'
 });
 

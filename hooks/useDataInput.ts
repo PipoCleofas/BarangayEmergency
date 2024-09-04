@@ -227,7 +227,7 @@ const useCheckPassword = () => {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
-        const response = await axios.post('http://192.168.100.28:3000/user/submit', {
+        const response = await axios.post('http://192.168.100.127:3000/user/submit', {
           lname,
           fname,
           mname,

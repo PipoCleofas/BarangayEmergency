@@ -75,7 +75,7 @@ const useHandleClicks = () => {
           }
 
         try {
-            const response = await axios.post('http://192.168.100.28:3000/marker/submit', {
+            const response = await axios.post('http://192.168.100.127:3000/marker/submit', {
               latitude,
               longitude,
               title,
