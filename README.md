@@ -1,13 +1,27 @@
 ## Prerequisites
    - Install Node.js
    - Expo Go on Android
+   - MySQL
 
 ## Get started
 
 1. Install dependencies
 
+   ### For app
    ```bash
+   cd BarangayEmergency
    npm install expo
+   ```
+
+   ### For database
+   ```bash
+   cd BarangayEmergency/db
+   node index.js
+   ```
+   ### For website
+   ```bash
+   cd BarangayEmergency/website/web-app
+   npm run dev
    ```
 
 2. Start the app

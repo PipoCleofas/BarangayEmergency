@@ -5,14 +5,11 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import useSMS from '@/hooks/useSMS';
-import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {handleSendSMS, handleSendSMS2} = useSMS();
-  const {EmergencyAssistanceRequest} = useHandleClicks();
+  const {EmergencyAssistanceRequest, RouteAssistance} = useHandleClicks();
   const navigation = useNavigation();
 
 
@@ -43,7 +40,7 @@ export default function TabLayout() {
                   <Text style={styles.buttonText}>Emergency Assistance</Text>  
                   <Text style={styles.buttonText}>Request</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={handleSendSMS2}>
+                <TouchableOpacity style={styles.button} onPress={RouteAssistance}>
                   <Text style={styles.buttonText}>Route Assistance</Text>
                 </TouchableOpacity>
               </View>
