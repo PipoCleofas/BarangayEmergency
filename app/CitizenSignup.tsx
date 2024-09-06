@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TextInput, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, StyleSheet, Pressable, Modal } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import useHandleClicks from '@/hooks/useHandleClicks';
@@ -8,12 +8,16 @@ import Sitio from '@/components/Sitio';
 import useDataInput from '@/hooks/useDataInput';
 
 export default function CitizenSignup() {
-  const { handleBackButtonPress, handleLoginButtonInSignupAsCitizenPress } = useHandleClicks();
+  const { handleBackButtonPress, handleLoginButtonInSignupAsCitizenPress, handleEmergencyAssistanceRequestPress, handleRouteAssistanceRequestPress } = useHandleClicks();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
 
+
   return (
     <View style={styles.container}>
+
+      
+
       <Text style={styles.title}>CITIZEN</Text>
       <Text style={styles.subtitle}>ACCOUNT</Text>
 
@@ -220,4 +224,6 @@ const styles = StyleSheet.create({
   icon: {
     marginHorizontal: 5,
   },
+  
+  
 });

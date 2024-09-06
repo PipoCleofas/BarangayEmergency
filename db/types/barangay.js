@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 
 let connection;
 
-function setConnection(conn) {
+function setConnectionBarangay(conn) {
   connection = conn;
 }
 
@@ -39,4 +39,4 @@ router.post('/submit', validateUserData, (req, res) => {
   });
 });
 
-module.exports = { router, setConnection };
+module.exports = { router, setConnectionBarangay };

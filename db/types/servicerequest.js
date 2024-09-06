@@ -5,17 +5,17 @@ const mysql = require('mysql2');
 
 let connection;
 
-function setConnection(conn) {
+function setConnectionServiceRequest(conn) {
   connection = conn;
 }
 
 
 
 function validateUserData(req, res, next) {
-  const { userid, providerid, requesttype, requeststatus} = req.body;
+  const { requesttype, requeststatus} = req.body;
 
-  if (!userid || !providerid || !requesttype || !requeststatus) {
-    return res.status(400).send('UserID, ProviderID, RequestType, and RequestStatus are required');
+  if (!requesttype || !requeststatus) {
+    return res.status(400).send('RequestType, and RequestStatus are required');
   }
 
   next(); 
@@ -25,12 +25,16 @@ function validateUserData(req, res, next) {
 
 
 
-router.post('/submit', validateUserData, (req, res) => {
-  const { userid, providerid, requesttype, requeststatus} = req.body;
+router.post('/submit', (req, res) => {
+  const { requesttype, requeststatus} = req.body;
 
-  const query = 'INSERT INTO servicerequest (UserID, ProviderID, RequestType, RequestStatus) VALUES (?, ?, ?, ?)';
+  if (!requesttype || !requeststatus) {
+    return res.status(400).send('RequestType, and RequestStatus are required');
+  }
 
-  connection.query(query, [userid, providerid, requesttype, requeststatus], (error, results) => {
+  const query = 'INSERT INTO servicerequestt (RequestType, RequestStatus) VALUES (?, ?)';
+
+  connection.query(query, [requesttype, requeststatus], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
@@ -39,4 +43,4 @@ router.post('/submit', validateUserData, (req, res) => {
   });
 });
 
-module.exports = { router, setConnection };
+module.exports = { router, setConnectionServiceRequest };

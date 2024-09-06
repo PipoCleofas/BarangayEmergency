@@ -37,44 +37,44 @@ function logRequest(req, res, next) {
 
 app.use(logRequest);
 
-// for user table
+
 const { router: userRouter, setConnection } = require('./types/user');
 
 setConnection(connection);
 app.use('/user', userRouter);
 
-// for marker table
+
 const { router: markerRouter, setConnectionMarker } = require('./types/marker');
 
 setConnectionMarker(connection);
 app.use('/marker', markerRouter);
 
-// for serviceprovider table
-const { router: serviceproviderRouter, setConnectionMarker } = require('./types/serviceprovider');
+
+const { router: serviceproviderRouter, setConnectionServiceProvider } = require('./types/serviceprovider');
 
 setConnectionMarker(connection);
-app.use('/serviceprovider', serviceproviderRouter);
+app.use('/serviceprovider', setConnectionServiceProvider);
 
-// for servicerequest table
-const { router: servicerequestRouter, setConnectionMarker } = require('./types/servicerequest');
+
+const { router: servicerequestRouter, setConnectionServiceRequest } = require('./types/servicerequest');
 
 setConnectionMarker(connection);
 app.use('/servicerequest', servicerequestRouter);
 
-// for admin table
-const { router: adminRouter, setConnectionMarker } = require('./types/admin');
+
+const { router: adminRouter, setConnectionAdmin } = require('./types/admin');
 
 setConnectionMarker(connection);
 app.use('/admin', adminRouter);
 
-// for assistancereport table
-const { router: assistancereportRouter, setConnectionMarker } = require('./types/assistancereport');
+
+const { router: assistancereportRouter, setConnectionAssistanceReport } = require('./types/assistancereport');
 
 setConnectionMarker(connection);
-app.use('/assistancereport', assistancereportRouter);
+app.use('/assistancereport', setConnectionAssistanceReport);
 
-// for barangay table
-const { router: barangayRouter, setConnectionMarker } = require('./types/barangay');
+
+const { router: barangayRouter, setConnectionBarangay } = require('./types/barangay');
 
 setConnectionMarker(connection);
 app.use('/barangay', barangayRouter);

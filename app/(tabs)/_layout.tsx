@@ -12,15 +12,18 @@ export default function TabLayout() {
   const {EmergencyAssistanceRequest, RouteAssistance} = useHandleClicks();
   const navigation = useNavigation();
 
+  const { handleEmergencyAssistanceRequestPress, handleRouteAssistanceRequestPress, routeAssistanceModalVisible, emergencyAssistanceModalVisible, setemergencyAssistanceModalVisible, setrouteAssistanceModalVisible, handleEmergencyAssistanceRequestPress2 } = useHandleClicks();
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        
         tabBarStyle: {
           paddingBottom: 20,
           height: 170,
+          display: 'none'
         },
       }}>
       <Tabs.Screen
@@ -29,25 +32,16 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconContainer}>
-              <View style={styles.iconsRow}>        
-
-
-                <MaterialCommunityIcons name={focused ? 'head' : 'head-outline'} color={color} size={32} style={styles.icon} onPress={() => navigation.navigate('Welcome' as never)} />
-                <FontAwesome6 name={'people-group'} color={color} size={32} style={[styles.icon, { marginLeft: 16 }] } />
-              </View>
-              <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.button} onPress={EmergencyAssistanceRequest}>
-                  <Text style={styles.buttonText}>Emergency Assistance</Text>  
-                  <Text style={styles.buttonText}>Request</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={RouteAssistance}>
-                  <Text style={styles.buttonText}>Route Assistance</Text>
-                </TouchableOpacity>
-              </View>
+            
             </View>
           ),
         }}
       />
+
+
+
+
+      
     </Tabs>
   );
 }

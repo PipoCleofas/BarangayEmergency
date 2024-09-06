@@ -3,11 +3,19 @@ import { useNavigation } from "expo-router";
 import useLocation from "./useLocation";
 import useSMS from "./useSMS";
 import * as SMS from 'expo-sms';
+import { useState } from "react";
 
+// request status = 'pending' | 'approved' | 'rejected'
+  
 const useHandleClicks = () => {
     const {latitude,longitude,title,description,setTitle,setDescription, fetchLocation} = useLocation();
-
     const {isAvailable,setResult} = useSMS();
+
+    // for service request
+    const [requestType, setRequestType] = useState<string | undefined>();
+    const [requestStatus, setRequestStatus] = useState<string | undefined>();
+
+ 
 
     const navigation = useNavigation();
 
@@ -44,121 +52,137 @@ const useHandleClicks = () => {
         navigation.navigate('CitizenLogin' as never);
     };
     
-    const EmergencyAssistanceRequest = async () => {
+    const handleEmergencyAssistanceRequestPress = async () => {
+        
       setTitle("Emergency Assistance Request");
       setDescription("Emergency Assistance Request");
-  
-      // Fetch the updated location before making the request
-      await fetchLocation();
-
-      try {
-          const response = await axios.post('http://192.168.100.127:3000/marker/submit', {
-              latitude,       
-              longitude,     
-              title,          
-              description,    
-          }, {
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          });
-          console.log('Success:', response.data);
-      } catch (error: any) {
-          if (error.response) {
-              console.error('Response error:', error.response.data);
-              console.error('Response status:', error.response.status);
-              console.error('Response headers:', error.response.headers);
-          } else if (error.request) {
-              console.error('Request error:', error.request);
-          } else {
-              console.error('General error:', error.message);
-          }
-          console.error('Error config:', error.config);
-      }
-
-      if (!isAvailable) {
-        console.log("SMS is not available on this device.");
-        return;
+      
+      setRequestType("Emergency Assistance Request")
+      setRequestStatus("pending")
+      console.log("Request type and request status: " + requestType,requestStatus);
     }
 
-    try {
-        const { result } = await SMS.sendSMSAsync(
-            ['09937839142'],
-            'Emergency Assistance Request',
-            {
-                attachments: {
-                    uri: 'path/myfile.png',
-                    mimeType: 'image/png',
-                    filename: 'myfile.png',
-                },
-            }
-        );
-        setResult(result);
-        console.log("SMS sent result:", result);
-    } catch (error) {
-        console.error("Error sending SMS:", error);
-    }
-  };
-  
-  const RouteAssistance = async () => {
-      setTitle("Route Assistance");
-      setDescription("Route Assistance Request");
-  
     
-      await fetchLocation();
 
-      setTitle("Route Assistance");
-      setDescription("Route Assistance Request");
-  
-      try {
-          const response = await axios.post('http://192.168.100.127:3000/marker/submit', {
-              latitude,      
-              longitude,     
-              title,          
-              description,    
-          }, {
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          });
-          console.log('Success:', response.data);
-      } catch (error: any) {
-          if (error.response) {
-              console.error('Response error:', error.response.data);
-              console.error('Response status:', error.response.status);
-              console.error('Response headers:', error.response.headers);
-          } else if (error.request) {
-              console.error('Request error:', error.request);
-          } else {
-              console.error('General error:', error.message);
-          }
-          console.error('Error config:', error.config);
+    const handleRouteAssistanceRequestPress = async () => {
+        setTitle("Route Assistance");
+        setDescription("Route Assistance Request");
+        
+        const requestType = "Emergency Assistance Request";
+        const requestStatus = "pending"; 
+       
+        console.log("Request type and request status: " + requestType,requestStatus);
       }
 
-      if (!isAvailable) {
-        console.log("SMS is not available on this device.");
-        return;
-    }
-
-    try {
-        const { result } = await SMS.sendSMSAsync(
-            ['09937839142'],
-            'Route Assistance',
-            {
-                attachments: {
-                    uri: 'path/myfile.png',
-                    mimeType: 'image/png',
-                    filename: 'myfile.png',
-                },
-            }
-        );
-        setResult(result);
-        console.log("SMS sent result:", result);
-    } catch (error) {
-        console.error("Error sending SMS:", error);
-    }
-  };
   
+
+
+      const EmergencyAssistanceRequest = async () => {
+        // Fetch the location
+        await fetchLocation();
+      
+        try {
+          // Submit marker data
+          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+            latitude,
+            longitude,
+            title: "Emergency Assistance Request",
+            description: "Emergency Assistance Request",
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Marker submission success:', markerResponse.data);
+      
+          // Submit service request data
+          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+            requesttype: "Emergency Assistance Request",  // Pass the values directly
+            requeststatus: "pending",                     // Set status directly
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Service request success:', serviceRequestResponse.data);
+        } catch (error: any) {
+          handleAxiosError(error);
+        }
+      
+        // Send SMS notification
+        sendSMS("Emergency Assistance Request");
+      };
+      
+  
+    const RouteAssistance = async () => {
+        const requestType = "Route Assistance";
+        const requestStatus = "pending"; 
+      
+
+      
+        await fetchLocation();
+      
+        try {
+          // First axios request
+          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+            latitude,
+            longitude,
+            title: "Route Assistance", 
+            description: "Route Assistance Request",
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Marker submission success:', markerResponse.data);
+
+          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+            requestType,
+            requestStatus, 
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Service request success:', serviceRequestResponse.data);
+        } catch (error: any) {
+          handleAxiosError(error);
+        }
+      
+        sendSMS("Route Assistance Request");
+      };
+  
+
+        const sendSMS = async (message: string) => {
+            if (!isAvailable) {
+            console.log("SMS is not available on this device.");
+            return;
+            }
+  
+            try {
+            const { result } = await SMS.sendSMSAsync(
+                ['09937839142'],
+                message
+            );
+            setResult(result);
+            console.log("SMS sent result:", result);
+            } catch (error) {
+            console.error("Error sending SMS:", error);
+            }
+        };
+
+        const handleAxiosError = (error: any) => {
+            if (error.response) {
+            console.error('Response error:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+            } else if (error.request) {
+            console.error('Request error:', error.request);
+            } else {
+            console.error('General error:', error.message);
+            }
+            console.error('Error config:', error.config);
+        };
 
     return {
         handleCitizenLoginPress,
@@ -170,8 +194,14 @@ const useHandleClicks = () => {
         handleBackButtonInCitizenPhotoPress,
         handleLoginButtonInSignupAsCitizenPress,
         EmergencyAssistanceRequest,
-        RouteAssistance
+        RouteAssistance,
+        handleRouteAssistanceRequestPress,
+        handleEmergencyAssistanceRequestPress,
+   
+        
     }
+
+
 }
 
 export default useHandleClicks;
