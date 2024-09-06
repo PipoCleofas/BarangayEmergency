@@ -37,16 +37,49 @@ function logRequest(req, res, next) {
 
 app.use(logRequest);
 
+// for user table
 const { router: userRouter, setConnection } = require('./types/user');
-
 
 setConnection(connection);
 app.use('/user', userRouter);
 
+// for marker table
 const { router: markerRouter, setConnectionMarker } = require('./types/marker');
 
 setConnectionMarker(connection);
 app.use('/marker', markerRouter);
+
+// for serviceprovider table
+const { router: serviceproviderRouter, setConnectionMarker } = require('./types/serviceprovider');
+
+setConnectionMarker(connection);
+app.use('/serviceprovider', serviceproviderRouter);
+
+// for servicerequest table
+const { router: servicerequestRouter, setConnectionMarker } = require('./types/servicerequest');
+
+setConnectionMarker(connection);
+app.use('/servicerequest', servicerequestRouter);
+
+// for admin table
+const { router: adminRouter, setConnectionMarker } = require('./types/admin');
+
+setConnectionMarker(connection);
+app.use('/admin', adminRouter);
+
+// for assistancereport table
+const { router: assistancereportRouter, setConnectionMarker } = require('./types/assistancereport');
+
+setConnectionMarker(connection);
+app.use('/assistancereport', assistancereportRouter);
+
+// for barangay table
+const { router: barangayRouter, setConnectionMarker } = require('./types/barangay');
+
+setConnectionMarker(connection);
+app.use('/barangay', barangayRouter);
+
+
 
 // for testing purposes
 app.get('/test', (req, res) => {
