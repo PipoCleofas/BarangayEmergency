@@ -14,7 +14,7 @@ const useHandleClicks = () => {
     const handleCitizenLoginPress = () => {
         navigation.navigate('CitizenLogin' as never);
     }
-
+    
     const handleCitizenSignUpPress = () => {
         navigation.navigate('CitizenSignup' as never);
     }

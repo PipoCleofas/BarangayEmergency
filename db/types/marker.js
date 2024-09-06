@@ -8,12 +8,19 @@ function setConnectionMarker(conn) {
   connection = conn;
 }
 
-router.post('/submit', (req, res) => {
+function validateMarker(req, res, next) {
   const { latitude, longitude, title, description } = req.body;
 
   if (!latitude || !longitude || !title || !description) {
     return res.status(400).send('latitude, longitude, title, and description are required');
   }
+
+  next();
+}
+
+
+router.post('/submit', validateMarker ,(req, res) => {
+  const { latitude, longitude, title, description } = req.body;
 
   const query = 'INSERT INTO markerrr (latitude, longitude, title, description) VALUES (?, ?, ?, ?)';
 

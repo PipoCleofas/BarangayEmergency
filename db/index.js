@@ -30,6 +30,12 @@ connection.connect((err) => {
   console.log('Connected to the database');
 });
 
+function logRequest(req, res, next) {
+  console.log(`Received ${req.method} request for ${req.url}`);
+  next();
+}
+
+app.use(logRequest);
 
 const { router: userRouter, setConnection } = require('./types/user');
 

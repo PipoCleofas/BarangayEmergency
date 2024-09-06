@@ -1,4 +1,3 @@
-// created by RCThree
 
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -20,7 +19,7 @@ const useCheckPassword = () => {
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
 
-
+  
   // for userID
   
   function generateRandomNumber(): string {
@@ -50,7 +49,7 @@ const useCheckPassword = () => {
   const handleMnameChange = (text: string) => {
       setMname(text)
       const validationError = validateName(text)
-       setNameError(validationError)
+      setNameError(validationError)
 
 
 
@@ -130,7 +129,7 @@ const useCheckPassword = () => {
     setSitio(text)
     const validationError = validateBarangayAndSitio(text)
     setbarangaySitioError(validationError)
-    console.log("Hi" + sitio)
+    console.log("Chosen sitio: " + sitio)
   }
 
   const handleBarangayChange = (text: any) => {
@@ -216,9 +215,7 @@ const useCheckPassword = () => {
     setNameError(validateErrorName)
     setbarangaySitioError(validateErrorBarangaySitio)
 
-    console.log('Password Error:', validationErrorPassword);
-    console.log("Username error: ", validateErrorName)
-    console.log("Birthday error: ", validateErrorBirthday)    
+   
     console.log("Barangay error: ", validateErrorBarangaySitio)
 
 
@@ -239,11 +236,6 @@ const useCheckPassword = () => {
           }
         });
         console.log('Success:', response.data);
-        setLname(null);
-        setFname(null);
-        setMname(null);
-        setPassword(null);
-        setBirthday(null);
         navigation.navigate('CitizenPhoto' as never);
       } catch (error: any) {
         if (error.response) {
