@@ -1,7 +1,3 @@
-// port, password, useDataInput, useHandleClick
-
-
-
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
@@ -13,7 +9,7 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// MySQL connection setup
+
 const connection = mysql.createConnection({
   host: 'localhost',
   port: '3306',
@@ -30,6 +26,7 @@ connection.connect((err) => {
   console.log('Connected to the database');
 });
 
+
 function logRequest(req, res, next) {
   console.log(`Received ${req.method} request for ${req.url}`);
   next();
@@ -37,55 +34,46 @@ function logRequest(req, res, next) {
 
 app.use(logRequest);
 
+app.use(cors({
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-const { router: userRouter, setConnection } = require('./types/user');
 
-setConnection(connection);
+const { router: userRouter, setConnection: setConnectionUser } = require('./types/user');
+setConnectionUser(connection);
 app.use('/user', userRouter);
 
-
 const { router: markerRouter, setConnectionMarker } = require('./types/marker');
-
 setConnectionMarker(connection);
 app.use('/marker', markerRouter);
 
-
 const { router: serviceproviderRouter, setConnectionServiceProvider } = require('./types/serviceprovider');
-
-setConnectionMarker(connection);
-app.use('/serviceprovider', setConnectionServiceProvider);
-
+setConnectionServiceProvider(connection); 
+app.use('/serviceprovider', serviceproviderRouter);
 
 const { router: servicerequestRouter, setConnectionServiceRequest } = require('./types/servicerequest');
-
-setConnectionMarker(connection);
+setConnectionServiceRequest(connection); 
 app.use('/servicerequest', servicerequestRouter);
 
 
 const { router: adminRouter, setConnectionAdmin } = require('./types/admin');
-
-setConnectionMarker(connection);
+setConnectionAdmin(connection);
 app.use('/admin', adminRouter);
 
-
 const { router: assistancereportRouter, setConnectionAssistanceReport } = require('./types/assistancereport');
-
-setConnectionMarker(connection);
-app.use('/assistancereport', setConnectionAssistanceReport);
-
+setConnectionAssistanceReport(connection);
+app.use('/assistancereport', assistancereportRouter);
 
 const { router: barangayRouter, setConnectionBarangay } = require('./types/barangay');
-
-setConnectionMarker(connection);
+setConnectionBarangay(connection);
 app.use('/barangay', barangayRouter);
 
 
-
-// for testing purposes
 app.get('/test', (req, res) => {
   res.send('Server is working');
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

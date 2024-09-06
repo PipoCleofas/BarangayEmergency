@@ -77,7 +77,7 @@ const useHandleClicks = () => {
   
 
 
-      const EmergencyAssistanceRequest = async () => {
+    const EmergencyAssistanceRequest = async () => {
         // Fetch the location
         await fetchLocation();
       
@@ -115,42 +115,41 @@ const useHandleClicks = () => {
       
   
     const RouteAssistance = async () => {
-        const requestType = "Route Assistance";
-        const requestStatus = "pending"; 
-      
-
-      
+        // Fetch the location
         await fetchLocation();
-      
+    
         try {
-          // First axios request
-          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+        // Submit marker data
+        const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
             latitude,
             longitude,
-            title: "Route Assistance", 
-            description: "Route Assistance Request",
-          }, {
+            title: "Emergency Assistance Request",
+            description: "Emergency Assistance Request",
+        }, {
             headers: {
-              'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             },
-          });
-          console.log('Marker submission success:', markerResponse.data);
-
-          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            requestType,
-            requestStatus, 
-          }, {
+        });
+        console.log('Marker submission success:', markerResponse.data);
+    
+        // Submit service request data
+        const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+            requesttype: "Route Assistance Request",  // Pass the values directly
+            requeststatus: "pending",                     // Set status directly
+        }, {
             headers: {
-              'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             },
-          });
-          console.log('Service request success:', serviceRequestResponse.data);
+        });
+        console.log('Service request success:', serviceRequestResponse.data);
         } catch (error: any) {
-          handleAxiosError(error);
+        handleAxiosError(error);
         }
-      
+    
+        // Send SMS notification
         sendSMS("Route Assistance Request");
-      };
+    };
+      
   
 
         const sendSMS = async (message: string) => {
