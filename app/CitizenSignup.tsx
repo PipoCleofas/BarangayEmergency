@@ -8,7 +8,7 @@ import Sitio from '@/components/Sitio';
 import useDataInput from '@/hooks/useDataInput';
 
 export default function CitizenSignup() {
-  const { handleBackButtonPress, handleLoginButtonInSignupAsCitizenPress, handleEmergencyAssistanceRequestPress, handleRouteAssistanceRequestPress } = useHandleClicks();
+  const { handleBackButtonPress,} = useHandleClicks();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
 

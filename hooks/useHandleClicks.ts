@@ -8,7 +8,7 @@ import { useState } from "react";
 // request status = 'pending' | 'approved' | 'rejected'
   
 const useHandleClicks = () => {
-    const {latitude,longitude,title,description,setTitle,setDescription, fetchLocation} = useLocation();
+    const {latitude,longitude,setTitle,setDescription, fetchLocation} = useLocation();
     const {isAvailable,setResult} = useSMS();
 
     // for service request

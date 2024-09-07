@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E90FF',
   },
   textStyle: {
-    color: 'black',
+    color: 'white',
     textAlign: 'center',
   },
   modalText: {

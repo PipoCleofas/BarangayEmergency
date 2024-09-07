@@ -5,7 +5,7 @@ import {Stack } from 'expo-router';
 import useHandleClicks from '@/hooks/useHandleClicks';
 export default function Signup() {
  
-  const {handleCitizenLoginPress,handleCitizenSignUpPress, handleProviderLoginPress, handleProviderSignUpPress} = useHandleClicks();
+  const {handleCitizenLoginPress,handleCitizenSignUpPress, handleProviderLoginPress} = useHandleClicks();
  
   return (
     <View style={styles.container}>

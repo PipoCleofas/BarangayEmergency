@@ -4,7 +4,6 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Modal, Aler
 import { SimpleLineIcons } from "@expo/vector-icons";
 import useHandleClicks from "@/hooks/useHandleClicks";
 import usePhoto from '@/hooks/usePhoto';
-import useCamera from "@/hooks/useCamera";
 
 export default function CitizenPhoto() {
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -13,7 +12,6 @@ export default function CitizenPhoto() {
 
   const { handleLoginButtonPress,handleBackButtonInCitizenPhotoPress } = useHandleClicks();
   const { photoUri1, photoUri2, photoUri3, handleSelectPhoto1 , handleSelectPhoto2, handleSelectPhoto3,handleTakePhoto1, handleTakePhoto2,handleTakePhoto3 } = usePhoto();
-  const { facing,permission,requestPermission,handleToggleCamera} = useCamera();
 
   return (
 

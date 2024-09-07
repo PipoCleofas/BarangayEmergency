@@ -3,16 +3,12 @@ import React from 'react';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import useHandleClicks from '@/hooks/useHandleClicks';
+import { View, StyleSheet } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {EmergencyAssistanceRequest, RouteAssistance} = useHandleClicks();
-  const navigation = useNavigation();
 
-  const { handleEmergencyAssistanceRequestPress, handleRouteAssistanceRequestPress, routeAssistanceModalVisible, emergencyAssistanceModalVisible, setemergencyAssistanceModalVisible, setrouteAssistanceModalVisible, handleEmergencyAssistanceRequestPress2 } = useHandleClicks();
+
 
   return (
     <Tabs
