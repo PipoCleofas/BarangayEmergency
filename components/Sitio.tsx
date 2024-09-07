@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import useDataInput from '@/hooks/useDataInput';
-import { Dropdown } from 'react-native-element-dropdown';
 
 const sitios = [
   { label: 'Aguso', value: 'Aguso' },
@@ -16,10 +15,8 @@ const Sitio = () => {
   return (
     <View style={styles.container}>
       <RNPickerSelect
-        onValueChange={(value) => {
-          handleSitioChange(value);
-          console.log("Selected Value:", value);
-          console.log("Current Sitio State:", sitio);
+        onValueChange={(sitio) => {
+          handleSitioChange(sitio);
         }}
         items={sitios}
         placeholder={{

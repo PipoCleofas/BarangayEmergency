@@ -11,6 +11,7 @@
    ```bash
    cd BarangayEmergency
    npm install expo
+   npx expo start
    ```
 
    ### For database

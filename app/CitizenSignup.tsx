@@ -89,7 +89,7 @@ export default function CitizenSignup() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>SITIO:</Text>
-        <Sitio />
+        <Sitio/>
       </View>
 
       <View style={styles.inputContainer}>

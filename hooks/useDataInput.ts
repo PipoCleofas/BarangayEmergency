@@ -19,17 +19,6 @@ const useCheckPassword = () => {
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
 
-  
-  // for userID
-  
-  function generateRandomNumber(): string {
-    const randomNumbers = [];
-    for (let i = 0; i < 5; i++) {
-      randomNumbers.push(Math.floor(Math.random() * 10));
-    }
-    return randomNumbers.join('');
-  }
-
   //  name
 
   const handleFnameChange = (text: string) => {
@@ -123,38 +112,6 @@ const useCheckPassword = () => {
     return null; // No error
   }
 
-  // barangay and sitio
-
-  const handleSitioChange = (text: any) => {
-    setSitio(text)
-    const validationError = validateBarangayAndSitio(text)
-    setbarangaySitioError(validationError)
-    console.log("Chosen sitio: " + sitio)
-  }
-
-  const handleBarangayChange = (text: any) => {
-    setBarangay(text)
-    console.log(barangay)
-  }
-
-  const validateBarangayAndSitio = (barangay: string | null, sitio: string | null = null) => {
-    if (!sitio && !barangay) {
-      return "Barangay and Sitio must not be empty.";
-    }
-    
-    if (!sitio) {
-      return "Sitio must not be empty.";
-    }
-
-    if (!barangay) {
-      return "Barangay must not be empty.";
-    }
-
-    
-      return null;
-    
-  };
-
   // password
 
   const handlePasswordChange = (text: string) => {
@@ -201,6 +158,34 @@ const useCheckPassword = () => {
     return null; // No error
   };
 
+   // barangay and sitio
+
+   const handleSitioChange = (text: any) => {
+    setSitio(text)
+    const validationError = validateBarangayAndSitio(barangay,text)
+    setbarangaySitioError(validationError)
+    console.log("Chosen sitio: " + sitio)
+  }
+
+  const handleBarangayChange = (text: any) => {
+    setBarangay(text)
+    const validationError = validateBarangayAndSitio(text, sitio)
+    setbarangaySitioError(validationError)
+    console.log("Chosen barangay: " + barangay)
+  }
+
+  const validateBarangayAndSitio = (barangay: string | null, sitio: string | null = null) => {
+    if (!barangay) {
+      return "Barangay must not be empty.";
+    }
+  
+    if (!sitio) {
+      return "Sitio must not be empty."; 
+    }
+  
+    return null; 
+  };
+
   const handleNextPress = async () => {
     //console.log("Current Barangay and Sitio:", barangay, sitio);
 
@@ -220,7 +205,7 @@ const useCheckPassword = () => {
 
 
 
-    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday ) {
+    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday && !validateErrorBarangaySitio) {
       navigation.navigate('CitizenPhoto' as never);
 
       try {

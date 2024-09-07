@@ -4,7 +4,6 @@ let connection;
 
 function setConnectionServiceRequest(conn) {
   connection = conn;
-  console.log(connection);
 }
 
 function validateUserData(req, res, next) {
