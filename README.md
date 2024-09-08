@@ -1,5 +1,7 @@
 ## Prerequisites
-   - Install Node.js
+   - Node.js
+   - Git Bash
+   - XAMPP
    - Expo Go on Android
    - MySQL
 
