@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import useDataInput from '@/hooks/useDataInput';
-import ComboBox from "./ComboBox";
+import ComboBox from "./combobox-holder/ComboBox";
 
 const barangaysInTarlacCity = [
   { label: 'Aguso', value: 'Aguso' },
