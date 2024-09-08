@@ -10,7 +10,7 @@ import useDataInput from '@/hooks/useDataInput';
 export default function CitizenSignup() {
   const { handleBackButtonPress,} = useHandleClicks();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
+  const { barangay, sitio, handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
 
 
   return (
@@ -89,12 +89,12 @@ export default function CitizenSignup() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>SITIO:</Text>
-        <Sitio/>
+        <Sitio value={sitio} onValueChange={handleSitioChange} />
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>BARANGAY:</Text>
-        <Barangay/>
+        <Barangay value={barangay} onValueChange={handleBarangayChange} />
       </View>
 
       {barangaySitioError && <Text style={styles.errorText}>{barangaySitioError}</Text>}

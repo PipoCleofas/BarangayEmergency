@@ -62,12 +62,18 @@ const barangaysInTarlacCity = [
   { label: 'Villa Sol', value: 'Villa Sol' }
 ];
 
-const Barangay = () => {
-  const {barangay,handleBarangayChange} = useDataInput();
+interface BarangayProps {
+  value: string | null;
+  onValueChange: (value: string) => void;
+  
+}
+
+const Barangay: React.FC<BarangayProps>  = ({value, onValueChange}) => {
+  
 
   return (
     <View style={styles.container}>
-      <ComboBox data={barangaysInTarlacCity} onValueChange={handleBarangayChange}  value={barangay}/>
+      <ComboBox data={barangaysInTarlacCity} onValueChange={onValueChange}  value={value}/>
     </View>
   );
 };

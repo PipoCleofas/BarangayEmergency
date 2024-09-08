@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import useDataInput from '@/hooks/useDataInput';
+import ComboBox from './combobox-holder/ComboBox';
 
 const sitios = [
   { label: 'Aguso', value: 'Aguso' },
@@ -9,25 +10,18 @@ const sitios = [
   { label: 'Atioc', value: 'Atioc' },
 ];
 
-const Sitio = () => {
-  const { sitio, handleSitioChange } = useDataInput();
+interface BarangayProps {
+  value: string | null;
+  onValueChange: (value: string) => void;
+  
+}
+
+const Sitio: React.FC<BarangayProps>  = ({ value, onValueChange }) => {
+  
 
   return (
     <View style={styles.container}>
-      <RNPickerSelect
-        onValueChange={(sitio) => {
-          handleSitioChange(sitio);
-        }}
-        items={sitios}
-        placeholder={{
-          label: 'Select Sitio...',
-          value: null,
-        }}
-        style={pickerSelectStyles}
-        useNativeAndroidPickerStyle={false}
-        Icon={() => null}
-        value={sitio} 
-      />
+      <ComboBox data={sitios} value={value} onValueChange={onValueChange} />
     </View>
   );
 };

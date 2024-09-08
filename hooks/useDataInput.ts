@@ -48,7 +48,7 @@ const useCheckPassword = () => {
     if (!fname || ! mname || !lname) {
       return "Names cannot be empty.";
     }
-
+    
     return null; // No error
 
   }
@@ -220,7 +220,8 @@ const useCheckPassword = () => {
             'Content-Type': 'application/json'
           }
         });
-        console.log('Success:', response.data);
+        
+        
         navigation.navigate('CitizenPhoto' as never);
       } catch (error: any) {
         if (error.response) {
