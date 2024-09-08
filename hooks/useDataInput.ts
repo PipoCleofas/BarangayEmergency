@@ -209,7 +209,7 @@ const useCheckPassword = () => {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
-        const response = await axios.post('http://192.168.100.127:3000/user/submit', {
+        const userResponse = await axios.post('http://192.168.100.127:3000/user/submit', {
           lname,
           fname,
           mname,
@@ -220,6 +220,24 @@ const useCheckPassword = () => {
             'Content-Type': 'application/json'
           }
         });
+        
+        console.log('User data saved:', userResponse.data);
+
+       
+        const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
+          barangayname: barangay,
+          sitio
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        console.log('Barangay data saved:', barangayResponse.data);
+
+        // Navigate to the next screen after both requests are successful
+        navigation.navigate('CitizenPhoto' as never);
+
         
         
         navigation.navigate('CitizenPhoto' as never);
