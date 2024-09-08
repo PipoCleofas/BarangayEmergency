@@ -12,13 +12,13 @@ function setConnectionBarangay(conn) {
 
 
 function validateUserData(req, res, next) {
-  const { barangayname, streetaddress, city, postalcode } = req.body;
+  const { barangayname, sitio } = req.body;
 
-  if (!barangayname || !streetaddress || !city || !postalcode) {
-    return res.status(400).send('BarangayName, StreetAddress, City, and PostalCode are required');
+  if (!barangayname || !sitio) {
+    return res.status(400).send('BarangayName and Sitio are required');
   }
 
-  next(); 
+  next();
 }
 
 
@@ -26,11 +26,11 @@ function validateUserData(req, res, next) {
 
 
 router.post('/submit', validateUserData, (req, res) => {
-  const { barangayname, streetaddress, city, postalcode } = req.body;
+  const { barangayname, sitio } = req.body;
 
-  const query = 'INSERT INTO barangay (BarangayName, StreetAddress, City, PostalCode) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO barangay (BarangayName, Sitio) VALUES (?, ?)';
 
-  connection.query(query, [barangayname, streetaddress, city, postalcode], (error, results) => {
+  connection.query(query, [barangayname, sitio], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
