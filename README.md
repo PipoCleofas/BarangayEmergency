@@ -15,6 +15,7 @@
    npm install expo
    npx expo start
    ```
+   Scan QR code in terminal with Expo Go on Android
 
    ### For database
    ```bash
@@ -27,11 +28,6 @@
    npm run dev
    ```
 
-2. Start the app
 
-   ```bash
-    npx expo start
-   ```
 
-3. Scan QR code in terminal with Expo Go on Android
 

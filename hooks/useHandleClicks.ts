@@ -207,19 +207,18 @@ const useHandleClicks = () => {
       try {
         const formData = new FormData();
     
-        // Convert URI to Blob
+       
         const blob = await uriToBlob(fileUri);
     
-        // Append the Blob to FormData with the expected field name on the server (e.g., 'image')
+        
         formData.append('image', blob, `${photoKey}.jpg`);
     
-        // Log the FormData to ensure it's being built correctly (for debugging purposes)
         console.log('Uploading file:', photoKey);
     
         // Send the form data using Axios (no need to set 'Content-Type')
         const response = await axios.post('http://192.168.100.127:3000/photo/upload', formData, {
           headers: {
-            'Accept': 'application/json', // Accept JSON response from the server
+            'Accept': 'application/json', 
           },
         });
     

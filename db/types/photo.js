@@ -5,15 +5,13 @@ const fs = require('fs');
 
 let connection;
 
-// Function to set the MySQL connection object
 function setConnectionPhoto(conn) {
   connection = conn;
 }
 
-// store files temporarily
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '../uploads'); // Ensure the uploads folder exists and has write permissions
+    cb(null, '../uploads'); 
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname); // Unique filename
@@ -22,12 +20,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// POST route to handle image uploads
 router.post('/upload', upload.single('image'), (req, res) => {
-  // Log the file details to ensure it was received
+ 
   console.log('File received:', req.file);
 
-  // Check if no file was uploaded
+
   if (!req.file) {
     return res.status(400).send('No file uploaded');
   }
@@ -40,7 +37,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
     data: Buffer.from(encode_img, 'base64'),
   };
 
-  // Insert image data into the database
+
   const query = 'INSERT INTO images (image, contentType) VALUES (?, ?)';
   
   connection.query(query, [final_img.data, final_img.contentType], (error, results) => {
@@ -57,5 +54,4 @@ router.post('/upload', upload.single('image'), (req, res) => {
 });
 
 
-// Export the router and connection setter function
 module.exports = { router, setConnectionPhoto };
