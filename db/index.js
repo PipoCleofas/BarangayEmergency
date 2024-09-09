@@ -70,6 +70,11 @@ const { router: barangayRouter, setConnectionBarangay } = require('./types/baran
 setConnectionBarangay(connection);
 app.use('/barangay', barangayRouter);
 
+const { router: photoRouter, setConnectionPhoto } = require('./types/photo');
+setConnectionPhoto(connection);
+app.use('/photo', photoRouter);
+
+
 
 app.get('/test', (req, res) => {
   res.send('Server is working');

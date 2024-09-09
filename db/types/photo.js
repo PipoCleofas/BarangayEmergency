@@ -1,54 +1,61 @@
 const express = require('express');
-const mysql = require('mysql');
+const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 
-const app = express();
+let connection;
 
-// Configure MySQL connection
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'image_db'
-});
+// Function to set the MySQL connection object
+function setConnectionPhoto(conn) {
+  connection = conn;
+}
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('Connected to MySQL');
-});
-
-// Multer storage configuration for storing files temporarily
+// store files temporarily
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads'); // Temporary folder to save images
+    cb(null, '../uploads'); // Ensure the uploads folder exists and has write permissions
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Unique name for each file
+    cb(null, Date.now() + '-' + file.originalname); // Unique filename
   }
 });
 
 const upload = multer({ storage: storage });
 
-// Route to upload an image
-app.post('/upload', upload.single('image'), (req, res) => {
-  const img = fs.readFileSync(req.file.path); // Read image from filesystem
-  const encode_img = img.toString('base64'); // Convert to base64
+// POST route to handle image uploads
+router.post('/upload', upload.single('image'), (req, res) => {
+  // Log the file details to ensure it was received
+  console.log('File received:', req.file);
+
+  // Check if no file was uploaded
+  if (!req.file) {
+    return res.status(400).send('No file uploaded');
+  }
+
+  // Read and process the uploaded file
+  const img = fs.readFileSync(req.file.path);
+  const encode_img = img.toString('base64');
   const final_img = {
     contentType: req.file.mimetype,
-    data: Buffer.from(encode_img, 'base64')
+    data: Buffer.from(encode_img, 'base64'),
   };
 
-  // Insert into MySQL
-  const sql = 'INSERT INTO images (image, contentType) VALUES (?, ?)';
-  db.query(sql, [final_img.data, final_img.contentType], (err, result) => {
-    if (err) throw err;
-    console.log('Image inserted into MySQL');
-    res.send('Image uploaded successfully');
+  // Insert image data into the database
+  const query = 'INSERT INTO images (image, contentType) VALUES (?, ?)';
+  
+  connection.query(query, [final_img.data, final_img.contentType], (error, results) => {
+    if (error) {
+      console.error('Database error:', error.message);
+      return res.status(500).send('Database error');
+    }
+
+    // Delete the file from the server after saving to the database
+    fs.unlinkSync(req.file.path);
+
+    res.status(201).send('Image uploaded and saved successfully');
   });
 });
 
-// Start the server
-app.listen(3001, () => {
-  console.log('Server started on port 3001');
-});
+
+// Export the router and connection setter function
+module.exports = { router, setConnectionPhoto };

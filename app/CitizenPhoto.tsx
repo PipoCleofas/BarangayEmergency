@@ -11,7 +11,7 @@ export default function CitizenPhoto() {
   const [modal3Visible, setModal3Visible] = useState(false);
 
   const { handleLoginButtonPress,handleBackButtonInCitizenPhotoPress } = useHandleClicks();
-  const { photoUri1, photoUri2, photoUri3, handleSelectPhoto1 , handleSelectPhoto2, handleSelectPhoto3,handleTakePhoto1, handleTakePhoto2,handleTakePhoto3 } = usePhoto();
+  const { handleUploadPhotos, photoUri1, photoUri2, photoUri3, handleSelectPhoto1 , handleSelectPhoto2, handleSelectPhoto3,handleTakePhoto1, handleTakePhoto2,handleTakePhoto3 } = usePhoto();
 
   return (
 
@@ -29,6 +29,7 @@ export default function CitizenPhoto() {
         Alert.alert('Modal has been closed.');
         setModal1Visible(!modal1Visible);
       }}>
+
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableOpacity onPress={handleSelectPhoto1} style={styles.modalButtons}>
@@ -162,7 +163,7 @@ export default function CitizenPhoto() {
           <Text style={styles.buttonText1}>BACK</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button2} onPress={handleLoginButtonPress}>
+        <TouchableOpacity style={styles.button2} onPress={handleUploadPhotos}>
           <Text style={styles.buttonText2}>NEXT</Text>
           <SimpleLineIcons name="arrow-right" size={16} color="#FFFFFF" style={styles.icon} />
         </TouchableOpacity>

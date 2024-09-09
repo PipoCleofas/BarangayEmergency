@@ -15,7 +15,13 @@ const useHandleClicks = () => {
     const [requestType, setRequestType] = useState<string | undefined>();
     const [requestStatus, setRequestStatus] = useState<string | undefined>();
 
- 
+    const [selectedPhotos, setSelectedPhotos] = useState({
+      photo1: null,
+      photo2: null,
+      photo3: null
+    });
+
+
 
     const navigation = useNavigation();
 
@@ -152,36 +158,80 @@ const useHandleClicks = () => {
       
   
 
-        const sendSMS = async (message: string) => {
-            if (!isAvailable) {
-            console.log("SMS is not available on this device.");
-            return;
-            }
-  
-            try {
-            const { result } = await SMS.sendSMSAsync(
-                ['09937839142'],
-                message
-            );
-            setResult(result);
-            console.log("SMS sent result:", result);
-            } catch (error) {
-            console.error("Error sending SMS:", error);
-            }
-        };
+    const sendSMS = async (message: string) => {
+        if (!isAvailable) {
+        console.log("SMS is not available on this device.");
+        return;
+        }
 
-        const handleAxiosError = (error: any) => {
-            if (error.response) {
-            console.error('Response error:', error.response.data);
-            console.error('Response status:', error.response.status);
-            console.error('Response headers:', error.response.headers);
-            } else if (error.request) {
-            console.error('Request error:', error.request);
-            } else {
-            console.error('General error:', error.message);
-            }
-            console.error('Error config:', error.config);
-        };
+        try {
+        const { result } = await SMS.sendSMSAsync(
+            ['09937839142'],
+            message
+        );
+        setResult(result);
+        console.log("SMS sent result:", result);
+        } catch (error) {
+        console.error("Error sending SMS:", error);
+        }
+    };
+
+    const handleAxiosError = (error: any) => {
+        if (error.response) {
+        console.error('Response error:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+        } else if (error.request) {
+        console.error('Request error:', error.request);
+        } else {
+        console.error('General error:', error.message);
+        }
+        console.error('Error config:', error.config);
+    };
+
+    const onFileChange = (event: any, photoKey: any) => {
+      setSelectedPhotos({
+        ...selectedPhotos,  // Keep other files unchanged
+        [photoKey]: event.target.files[0]  // Update only the selected file
+      });
+    };
+
+   
+    const uriToBlob = async (uri: string): Promise<Blob> => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      return blob;
+    };
+    
+    const onFileUpload = async (fileUri: string, photoKey: string) => {
+      try {
+        const formData = new FormData();
+    
+        // Convert URI to Blob
+        const blob = await uriToBlob(fileUri);
+    
+        // Append the Blob to FormData with the expected field name on the server (e.g., 'image')
+        formData.append('image', blob, `${photoKey}.jpg`);
+    
+        // Log the FormData to ensure it's being built correctly (for debugging purposes)
+        console.log('Uploading file:', photoKey);
+    
+        // Send the form data using Axios (no need to set 'Content-Type')
+        const response = await axios.post('http://192.168.100.127:3000/photo/upload', formData, {
+          headers: {
+            'Accept': 'application/json', // Accept JSON response from the server
+          },
+        });
+    
+        console.log('File uploaded successfully:', response.data);
+      } catch (error) {
+        handleAxiosError(error);
+      }
+    };
+    
+    
+    
+    
 
     return {
         handleCitizenLoginPress,
@@ -196,6 +246,9 @@ const useHandleClicks = () => {
         RouteAssistance,
         handleRouteAssistanceRequestPress,
         handleEmergencyAssistanceRequestPress,
+
+        onFileChange,
+        onFileUpload
    
         
     }
