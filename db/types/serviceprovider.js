@@ -24,18 +24,16 @@ function validateUserData(req, res, next) {
 
 
 
+router.get('/getServiceProvider', (req, res) => {
+  const { username, password } = req.body;
 
-router.post('/submit', validateUserData, (req, res) => {
-  const { providertype, uname, password, email, phonenum, address } = req.body;
+  const verify = `SELECT * FROM serviceprovider WHERE username = ${username} AND password = ${password}`
 
-  const query = 'INSERT INTO serviceprovider (ProviderType, Username, Password, Email, PhoneNumber, Address) VALUES (?, ?, ?, ?, ?, ?)';
-
-  connection.query(query, [providertype, uname, password, email, phonenum, address], (error, results) => {
-    if (error) {
-      console.error('Database error:', error.message);
-      return res.status(500).send('Database error');
+  connection.query(verify, [username, password], (error, results) => {
+    if (verify) {
+      return res.status(201).send('Login successful');
     }
-    res.status(201).send('Data saved successfully');
+    res.status(500).send('Username or password is incorrect.');
   });
 });
 

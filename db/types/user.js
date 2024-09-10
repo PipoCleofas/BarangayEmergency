@@ -24,18 +24,30 @@ function validateUserData(req, res, next) {
 
 
 
-
 router.post('/submit', validateUserData, (req, res) => {
-  const { lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
+  const { username, lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
 
-  const query = 'INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO user (Username, LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  connection.query(query, [lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
+  connection.query(query, [username, lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
     }
     res.status(201).send('Data saved successfully');
+  });
+});
+
+router.get('/getUser', (req, res) => {
+  const { username, password } = req.body;
+
+  const verify = `SELECT * FROM user WHERE username = ${username} AND password = ${password}`
+
+  connection.query(verify, [username, password], (error, results) => {
+    if (verify) {
+      return res.status(201).send('Login successful');
+    }
+    res.status(500).send('Username or password is incorrect.');
   });
 });
 
