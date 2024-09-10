@@ -204,7 +204,7 @@ const useHandleClicks = () => {
     };
     
     const onFileUpload = async (fileUri: string, photoKey: string) => {
-      try {
+      
         const formData = new FormData();
     
        
@@ -215,17 +215,7 @@ const useHandleClicks = () => {
     
         console.log('Uploading file:', photoKey);
     
-        // Send the form data using Axios (no need to set 'Content-Type')
-        const response = await axios.post('http://192.168.100.127:3000/photo/upload', formData, {
-          headers: {
-            'Accept': 'application/json', 
-          },
-        });
-    
-        console.log('File uploaded successfully:', response.data);
-      } catch (error) {
-        handleAxiosError(error);
-      }
+        
     };
     
     
