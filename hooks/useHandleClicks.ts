@@ -56,6 +56,10 @@ const useHandleClicks = () => {
       
 
     };
+
+    const handleConfirmUsernamePhoto = () => {
+      navigation.navigate('index' as never);
+    }
     
     const handleBackButtonInCitizenPhotoPress = () => {
         navigation.navigate("CitizenSignup" as never)
