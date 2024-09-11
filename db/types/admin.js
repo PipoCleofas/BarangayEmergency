@@ -23,19 +23,16 @@ function validateUserData(req, res, next) {
 
 
 
+router.get('/getAdmin', (req, res) => {
+  const { username, password } = req.body;
 
+  const verify = `SELECT * FROM admin WHERE username = ${username} AND password = ${password}`
 
-router.post('/submit', validateUserData, (req, res) => {
-  const { uname, password, email } = req.body;
-
-  const query = 'INSERT INTO admin (Username, Password, Email) VALUES (?, ?, ?)';
-
-  connection.query(query, [uname, password, email], (error, results) => {
-    if (error) {
-      console.error('Database error:', error.message);
-      return res.status(500).send('Database error');
+  connection.query(verify, [username, password], (error, results) => {
+    if (verify) {
+      return res.status(201).send('Login successful');
     }
-    res.status(201).send('Data saved successfully');
+    res.status(500).send('Username or password is incorrect.');
   });
 });
 

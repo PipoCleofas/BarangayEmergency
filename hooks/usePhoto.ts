@@ -56,7 +56,7 @@ const usePhotoPicker = () => {
           },
         };
 
-        // Call onFileChange with the photoKey and the file data
+        
         onFileChange(fileEvent, photoKey);
       }
     } catch (error) {

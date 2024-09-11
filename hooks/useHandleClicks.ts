@@ -83,7 +83,7 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async () => {
+    const EmergencyAssistanceRequest = async (requestType: string) => {
         // Fetch the location
         await fetchLocation();
       
@@ -103,20 +103,21 @@ const useHandleClicks = () => {
       
           // Submit service request data
           const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            requesttype: "Emergency Assistance Request",  // Pass the values directly
-            requeststatus: "pending",                     // Set status directly
+            requesttype: requestType,  
+            requeststatus: "pending",                    
           }, {
             headers: {
               'Content-Type': 'application/json',
             },
           });
           console.log('Service request success:', serviceRequestResponse.data);
+          console.log('Request type set to: ' + requestType);
         } catch (error: any) {
           handleAxiosError(error);
         }
       
         // Send SMS notification
-        sendSMS("Emergency Assistance Request");
+        // sendSMS("Emergency Assistance Request");
       };
       
   
@@ -153,7 +154,7 @@ const useHandleClicks = () => {
         }
     
         // Send SMS notification
-        sendSMS("Route Assistance Request");
+        //sendSMS("Route Assistance Request");
     };
       
   
@@ -204,7 +205,7 @@ const useHandleClicks = () => {
     };
     
     const onFileUpload = async (fileUri: string, photoKey: string) => {
-      try {
+      
         const formData = new FormData();
     
        
@@ -215,17 +216,7 @@ const useHandleClicks = () => {
     
         console.log('Uploading file:', photoKey);
     
-        // Send the form data using Axios (no need to set 'Content-Type')
-        const response = await axios.post('http://192.168.100.127:3000/photo/upload', formData, {
-          headers: {
-            'Accept': 'application/json', 
-          },
-        });
-    
-        console.log('File uploaded successfully:', response.data);
-      } catch (error) {
-        handleAxiosError(error);
-      }
+        
     };
     
     

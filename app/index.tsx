@@ -5,6 +5,7 @@ import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
 import { useNavigation } from 'expo-router';
+import ComboBox from '@/components/combobox-holder/ComboBox';
 
 
 
@@ -25,9 +26,12 @@ export default function Index() {
   const [emergencyAssistanceModalVisible, setemergencyAssistanceModalVisible] = useState(false);
   const [routeAssistanceModalVisible, setrouteAssistanceModalVisible] = useState(false);
 
+
   function EAR (){
     handleEmergencyAssistanceRequestPress()
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+
+    
   }
 
   function RA (){
@@ -57,19 +61,46 @@ export default function Index() {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={{marginBottom: 10}}> Are you sure? </Text>
+            <Text style={{marginBottom: 10}}> Choose Service </Text>
 
             <View style={styles.buttonModal}>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={EmergencyAssistanceRequest}>
-                <Text style={styles.textStyle}>Yes</Text>
-              </Pressable>
+
+              <View style={styles.servicesContainerStyle}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => EmergencyAssistanceRequest('BFP')}>
+                  <Text style={styles.textStyle}>BFP</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => EmergencyAssistanceRequest('PNP')}>
+                  <Text style={styles.textStyle}>BFP</Text>
+                </Pressable>
+
+              </View>
+             
+              <View style={styles.servicesContainerStyle}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => EmergencyAssistanceRequest('Medical')}>
+                  <Text style={styles.textStyle}>Medical</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => EmergencyAssistanceRequest('Random')}>
+                  <Text style={styles.textStyle}>Random</Text>
+                </Pressable>
+
+              </View>
+             
+
 
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
-                <Text style={styles.textStyle}>No</Text>
+                <Text style={styles.textStyle}>Close</Text>
               </Pressable>
 
 
@@ -126,12 +157,13 @@ export default function Index() {
           }}
         >
           <Marker
+          
             coordinate={{
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            title="You are here"
-            description="Your current location"
+            title=""
+            description=""
           />
         </MapView>
       )}
@@ -139,19 +171,7 @@ export default function Index() {
      
       <View style={styles.tabBarContainer}>
         <View style={styles.iconContainer}>
-          <View style={styles.iconsRow}>
-            <MaterialCommunityIcons 
-              name="head" 
-              size={32} 
-              style={styles.icon} 
-              onPress={() => navigation.navigate('Welcome' as never)} 
-            />
-            <FontAwesome6 
-              name="people-group" 
-              size={32} 
-              style={[styles.icon, { marginLeft: 16 }]} 
-            />
-          </View>
+          
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.button} onPress={EAR}>
               <Text style={styles.buttonText}>Emergency Assistance</Text>
@@ -279,6 +299,11 @@ const styles = StyleSheet.create({
   },
   buttonModal: {
     flexDirection: 'row',
+  },
+  servicesContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
   
 });

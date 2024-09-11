@@ -29,7 +29,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
     return res.status(400).send('No file uploaded');
   }
 
-  // Read and process the uploaded file
+  
   const img = fs.readFileSync(req.file.path);
   const encode_img = img.toString('base64');
   const final_img = {
