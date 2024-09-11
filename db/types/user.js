@@ -25,11 +25,11 @@ function validateUserData(req, res, next) {
 
 
 router.post('/submit', validateUserData, (req, res) => {
-  const { username, lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
+  const {  lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
 
-  const query = 'INSERT INTO user (Username, LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  connection.query(query, [username, lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
+  connection.query(query, [ lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
@@ -38,6 +38,7 @@ router.post('/submit', validateUserData, (req, res) => {
   });
 });
 
+/*
 router.get('/getUser', (req, res) => {
   const { username, password } = req.body;
 
@@ -49,6 +50,6 @@ router.get('/getUser', (req, res) => {
     }
     res.status(500).send('Username or password is incorrect.');
   });
-});
+});*/
 
 module.exports = { router, setConnection };

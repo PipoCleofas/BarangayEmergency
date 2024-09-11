@@ -31,6 +31,8 @@ export default function RootLayout() {
         <Stack.Screen name="Signup" options={{headerShown: false}} />
         <Stack.Screen name="CitizenLogin" options={{headerShown: false}} />
         <Stack.Screen name="CitizenPhoto" options={{headerShown: false}} />
+        <Stack.Screen name="UsernamePhoto" options={{headerShown: false}} />
+
         <Stack.Screen name="CitizenSignup" options={{headerShown: false}} />
         <Stack.Screen name="ProviderLogin" options={{headerShown: false}} />
         <Stack.Screen name="index" options={{headerShown: false}} />

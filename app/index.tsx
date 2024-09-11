@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity } from 'react-native';
 import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -27,7 +27,7 @@ export default function Index() {
   const [routeAssistanceModalVisible, setrouteAssistanceModalVisible] = useState(false);
 
 
-  function EAR (){
+  function serviceVisible (){
     handleEmergencyAssistanceRequestPress()
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
 
@@ -39,6 +39,11 @@ export default function Index() {
     setrouteAssistanceModalVisible(!routeAssistanceModalVisible)
   }
 
+  function emerAssReq(service: string) {
+    EmergencyAssistanceRequest(service)
+    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+  }
+
   const defaultRegion = {
     latitude: 15.4817, // Tarlac City latitude
     longitude: 120.5979, // Tarlac City longitude
@@ -46,69 +51,76 @@ export default function Index() {
     longitudeDelta: 0.05,
   };
 
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Welcome' as never); 
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
 
   return (
     <View style={styles.container}>
       
        {/* MODAL 1*/}
-       <Modal
-        animationType="fade"
-        transparent={true}
-        visible={emergencyAssistanceModalVisible}
-        onRequestClose={() => {
-          setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={{marginBottom: 10}}> Choose Service </Text>
+       {/* MODAL 1 */}
+<Modal
+  animationType="fade"
+  transparent={true}
+  visible={emergencyAssistanceModalVisible}
+  onRequestClose={() => {
+    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
+  }}>
+  <View style={modalStyles.centeredView}>
+    <View style={modalStyles.modalView}>
+      <Text style={{ marginBottom: 10 }}>Choose Service</Text>
 
-            <View style={styles.buttonModal}>
+      <View style={modalStyles.buttonModal}>
 
-              <View style={styles.servicesContainerStyle}>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => EmergencyAssistanceRequest('BFP')}>
-                  <Text style={styles.textStyle}>BFP</Text>
-                </Pressable>
+        <View style={modalStyles.servicesContainerStyle}>
+          <Pressable
+            style={[modalStyles.serviceButton]}
+            onPress={() => emerAssReq('BFP')}>
+            <Text style={modalStyles.textStyle}>BFP</Text>
+          </Pressable>
 
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => EmergencyAssistanceRequest('PNP')}>
-                  <Text style={styles.textStyle}>BFP</Text>
-                </Pressable>
-
-              </View>
-             
-              <View style={styles.servicesContainerStyle}>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => EmergencyAssistanceRequest('Medical')}>
-                  <Text style={styles.textStyle}>Medical</Text>
-                </Pressable>
-
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => EmergencyAssistanceRequest('Random')}>
-                  <Text style={styles.textStyle}>Random</Text>
-                </Pressable>
-
-              </View>
-             
-
-
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
-                <Text style={styles.textStyle}>Close</Text>
-              </Pressable>
-
-
-            </View>
-           
-          </View>
+          <Pressable
+            style={[modalStyles.serviceButton]}
+            onPress={() => emerAssReq('PNP')}>
+            <Text style={modalStyles.textStyle}>PNP</Text>
+          </Pressable>
         </View>
-        </Modal>
+
+        <View style={modalStyles.servicesContainerStyle}>
+          <Pressable
+            style={[modalStyles.serviceButton]}
+            onPress={() => emerAssReq('Medical')}>
+            <Text style={modalStyles.textStyle}>Medical</Text>
+          </Pressable>
+
+          <Pressable
+            style={[modalStyles.serviceButton]}
+            onPress={() => emerAssReq('NDRRMC')}>
+            <Text style={modalStyles.textStyle}>NDRRMC</Text>
+          </Pressable>
+        </View>
+
+        {/* Close Button */}
+        <Pressable
+          style={[modalStyles.closeButton]}
+          onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
+          <Text style={modalStyles.textStyle}>Close</Text>
+        </Pressable>
+
+      </View>
+    </View>
+  </View>
+</Modal>
+
 
       {/* MODAL 2*/}
 
@@ -173,7 +185,7 @@ export default function Index() {
         <View style={styles.iconContainer}>
           
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.button} onPress={EAR}>
+            <TouchableOpacity style={styles.button} onPress={serviceVisible}>
               <Text style={styles.buttonText}>Emergency Assistance</Text>
               <Text style={styles.buttonText}>Request</Text>
             </TouchableOpacity>
@@ -298,7 +310,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonModal: {
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   servicesContainerStyle: {
     flexDirection: 'row',
@@ -306,4 +318,57 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }
   
+});
+
+const modalStyles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonModal: {
+    flexDirection: 'column',
+  },
+  servicesContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  serviceButton: {
+    width: 120,
+    height: 60,
+    backgroundColor: '#AD5765',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 8,
+    borderRadius: 10,
+    padding: 10,
+  },
+  closeButton: {
+    backgroundColor: 'red',
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    padding: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });

@@ -4,7 +4,7 @@ import useHandleClicks from "@/hooks/useHandleClicks";
 
 export default function CitizenLogin() {
 
-    const { handleBackButtonPress, handleLoginButtonPress } = useHandleClicks();
+    const { handleBackButtonPress, handleLoginButtonPress, } = useHandleClicks();
 
     return (
         <View style={styles.container}>

@@ -18,7 +18,7 @@ const useCheckPassword = () => {
   const[barangay,setBarangay] = useState<string | null>(null);
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
-
+  const [username,setUsername] = useState<string | null>('');
   //  name
 
   const handleFnameChange = (text: string) => {
@@ -187,7 +187,7 @@ const useCheckPassword = () => {
   };
 
   const handleNextPress = async () => {
-    //console.log("Current Barangay and Sitio:", barangay, sitio);
+   
 
     const validationErrorPassword = validatePassword(password, reEnteredPassword);
     const validateErrorName = validateName(fname,mname,lname)
@@ -235,9 +235,7 @@ const useCheckPassword = () => {
 
         console.log('Barangay data saved:', barangayResponse.data);
 
-        // Navigate to the next screen after both requests are successful
-        navigation.navigate('CitizenPhoto' as never);
-
+      
         
         
         navigation.navigate('CitizenPhoto' as never);
@@ -260,6 +258,8 @@ const useCheckPassword = () => {
   };
 
   return {
+    username,
+    setUsername,
     password,
     reEnteredPassword,
     passwordError,

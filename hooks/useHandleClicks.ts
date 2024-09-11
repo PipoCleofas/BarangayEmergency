@@ -49,6 +49,14 @@ const useHandleClicks = () => {
         navigation.navigate('(tabs)' as never);
     }
 
+    const handleLoginButtonCitizenPress = async () => {
+
+      const response = await axios.get('http://192.168.100.127:3000/user/getUser')
+        
+      
+
+    };
+    
     const handleBackButtonInCitizenPhotoPress = () => {
         navigation.navigate("CitizenSignup" as never)
     }
@@ -126,29 +134,18 @@ const useHandleClicks = () => {
         await fetchLocation();
     
         try {
-        // Submit marker data
-        const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
-            latitude,
-            longitude,
-            title: "Emergency Assistance Request",
-            description: "Emergency Assistance Request",
-        }, {
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        });
-        console.log('Marker submission success:', markerResponse.data);
-    
-        // Submit service request data
-        const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            requesttype: "Route Assistance Request",  // Pass the values directly
-            requeststatus: "pending",                     // Set status directly
-        }, {
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        });
-        console.log('Service request success:', serviceRequestResponse.data);
+      
+          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+              latitude,
+              longitude,
+              title: "Emergency Assistance Request",
+              description: "Emergency Assistance Request",
+          }, {
+              headers: {
+              'Content-Type': 'application/json',
+              },
+          });
+          console.log('Marker submission success:', markerResponse.data);
         } catch (error: any) {
         handleAxiosError(error);
         }
