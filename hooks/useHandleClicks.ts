@@ -83,7 +83,7 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async () => {
+    const EmergencyAssistanceRequest = async (requestType: string) => {
         // Fetch the location
         await fetchLocation();
       
@@ -103,8 +103,8 @@ const useHandleClicks = () => {
       
           // Submit service request data
           const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            requesttype: "Emergency Assistance Request",  // Pass the values directly
-            requeststatus: "pending",                     // Set status directly
+            requesttype: requestType,  
+            requeststatus: "pending",                    
           }, {
             headers: {
               'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const useHandleClicks = () => {
         }
       
         // Send SMS notification
-        sendSMS("Emergency Assistance Request");
+        // sendSMS("Emergency Assistance Request");
       };
       
   
