@@ -162,8 +162,8 @@ export default function Index() {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            title="You are here"
-            description="Your current location"
+            title=""
+            description=""
           />
         </MapView>
       )}
@@ -171,19 +171,7 @@ export default function Index() {
      
       <View style={styles.tabBarContainer}>
         <View style={styles.iconContainer}>
-          <View style={styles.iconsRow}>
-            <MaterialCommunityIcons 
-              name="head" 
-              size={32} 
-              style={styles.icon} 
-              onPress={() => navigation.navigate('Welcome' as never)} 
-            />
-            <FontAwesome6 
-              name="people-group" 
-              size={32} 
-              style={[styles.icon, { marginLeft: 16 }]} 
-            />
-          </View>
+          
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.button} onPress={EAR}>
               <Text style={styles.buttonText}>Emergency Assistance</Text>

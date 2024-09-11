@@ -111,6 +111,7 @@ const useHandleClicks = () => {
             },
           });
           console.log('Service request success:', serviceRequestResponse.data);
+          console.log('Request type set to: ' + requestType);
         } catch (error: any) {
           handleAxiosError(error);
         }
@@ -153,7 +154,7 @@ const useHandleClicks = () => {
         }
     
         // Send SMS notification
-        sendSMS("Route Assistance Request");
+        //sendSMS("Route Assistance Request");
     };
       
   
