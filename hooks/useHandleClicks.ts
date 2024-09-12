@@ -11,6 +11,7 @@ const useHandleClicks = () => {
     const {latitude,longitude,setTitle,setDescription, fetchLocation} = useLocation();
     const {isAvailable,setResult} = useSMS();
 
+
     // for service request
     const [requestType, setRequestType] = useState<string | undefined>();
     const [requestStatus, setRequestStatus] = useState<string | undefined>();
@@ -57,9 +58,7 @@ const useHandleClicks = () => {
 
     };
 
-    const handleConfirmUsernamePhoto = () => {
-      navigation.navigate('index' as never);
-    }
+    
     
     const handleBackButtonInCitizenPhotoPress = () => {
         navigation.navigate("CitizenSignup" as never)
@@ -239,8 +238,7 @@ const useHandleClicks = () => {
         handleEmergencyAssistanceRequestPress,
 
         onFileChange,
-        onFileUpload
-   
+        onFileUpload,
         
     }
 

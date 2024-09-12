@@ -52,4 +52,45 @@ router.get('/getUser', (req, res) => {
   });
 });*/
 
+router.put('/updateUser/:username', (req, res) => {
+  const username = req.params.username;
+  const { lname, fname, mname } = req.body;
+
+  if (!lname && !fname && !mname) {
+    return res.status(400).send('At least one field must be provided to update');
+  }
+
+  const fields = [];
+  const values = [];
+
+  if (lname) {
+    fields.push('LastName = ?');
+    values.push(lname);
+  }
+  if (fname) {
+    fields.push('FirstName = ?');
+    values.push(fname);
+  }
+  if (mname) {
+    fields.push('MiddleName = ?');
+    values.push(mname);
+  }
+
+  const query = `UPDATE user SET ${fields.join(', ')} WHERE username = ?`;
+  values.push(username);
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Database error:', error.message);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    res.status(200).send('User updated successfully');
+  });
+});
+
 module.exports = { router, setConnection };

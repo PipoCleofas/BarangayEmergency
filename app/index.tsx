@@ -57,7 +57,7 @@ export default function Index() {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Welcome' as never); 
-    }, 1500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [navigation]);

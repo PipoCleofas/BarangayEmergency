@@ -2,8 +2,14 @@
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
+import useHandleClicks from './useHandleClicks';
+
 
 const useCheckPassword = () => {
+
+  const {onFileChange, onFileUpload} = useHandleClicks();
+
   const [password, setPassword] = useState<string | null>('');
   const [reEnteredPassword, setReEnteredPassword] = useState<string | undefined | null>();
   const [passwordError, setPasswordError] = useState<string | null | undefined>();
@@ -19,6 +25,21 @@ const useCheckPassword = () => {
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
   const [username,setUsername] = useState<string | null>('');
+
+   // State to store image URIs and base64 data for each photo
+   const [photoUri1, setPhotoUri1] = useState<string | null>(null);
+   const [photoBase641, setPhotoBase641] = useState<string | null>(null);
+ 
+   const [photoUri2, setPhotoUri2] = useState<string | null>(null);
+   const [photoBase642, setPhotoBase642] = useState<string | null>(null);
+ 
+   const [photoUri3, setPhotoUri3] = useState<string | null>(null);
+   const [photoBase643, setPhotoBase643] = useState<string | null>(null);
+
+   const [photoUri4, setPhotoUri4] = useState<string | null>(null);
+   const [photoBase644, setPhotoBase644] = useState<string | null>(null);
+
+  const [usernamePhotoError,setUsernamePhotoError] = useState<string | null>(null);
   //  name
 
   const handleFnameChange = (text: string) => {
@@ -53,7 +74,7 @@ const useCheckPassword = () => {
 
   }
 
-
+ 
   // birthday
 
   const handleBirthdayChange = (text: string) => {
@@ -205,7 +226,7 @@ const useCheckPassword = () => {
 
 
 
-    if (!validationErrorPassword && !validateErrorName && !validateErrorBirthday && !validateErrorBarangaySitio) {
+    if (!validateErrorBarangaySitio) {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
@@ -257,6 +278,137 @@ const useCheckPassword = () => {
     }
   };
 
+  // username and photo
+    
+  const validateUsernamePhoto = (username: string | null, photo: any) => {
+    if (!username || username.trim() === "") {
+      return "Username cannot be empty.";
+    }
+  
+    if (!photo || photo === "" || typeof photo !== 'string') {
+      return "Photo cannot be empty or invalid.";
+    }
+  
+    return null; // No error
+  };
+  
+
+  const handleConfirmUsernamePhoto = () => {
+    console.log("Username: ", username);
+    console.log("Photo URI: ", photoUri3);
+  
+    const error = validateUsernamePhoto(username, photoUri3);
+  
+    if (error) {
+      console.log("Error username photo: ", error);
+      setUsernamePhotoError(error);
+      return;
+    }
+  
+    //navigation.navigate('index' as never);
+  };
+  
+
+  // for photo
+
+  const handlePhotoSelection = async (
+    setUri: React.Dispatch<React.SetStateAction<string | null>>, 
+    setBase64: React.Dispatch<React.SetStateAction<string | null>>, 
+    source: 'camera' | 'library', 
+    photoKey: string
+  ) => {
+    try {
+      if (source === 'camera') {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (permission.status !== 'granted') {
+          alert('Camera access is required to take photos.');
+          return;
+        }
+      }
+
+      let result = source === 'camera'
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+          });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const selectedImage = result.assets[0];
+        setUri(selectedImage.uri || null);
+        setBase64(selectedImage.base64 || null);
+
+        // Simulate an event object to pass to onFileChange
+        const fileEvent = {
+          target: {
+            files: [{ uri: selectedImage.uri, base64: selectedImage.base64 }],
+          },
+        };
+
+        
+        onFileChange(fileEvent, photoKey);
+      }
+    } catch (error) {
+      console.error('Error handling photo:', error);
+    }
+  };
+
+  // Functions for specific photo inputs
+  const handleTakePhoto1 = () => handlePhotoSelection(setPhotoUri1, setPhotoBase641, 'camera', 'photo1');
+  const handleSelectPhoto1 = () => handlePhotoSelection(setPhotoUri1, setPhotoBase641, 'library', 'photo1');
+
+  const handleTakePhoto2 = () => handlePhotoSelection(setPhotoUri2, setPhotoBase642, 'camera', 'photo2');
+  const handleSelectPhoto2 = () => handlePhotoSelection(setPhotoUri2, setPhotoBase642, 'library', 'photo2');
+
+  const handleTakePhoto3 = () => handlePhotoSelection(setPhotoUri3, setPhotoBase643, 'camera', 'photo3');
+  const handleSelectPhoto3 = () => handlePhotoSelection(setPhotoUri3, setPhotoBase643, 'library', 'photo3');
+
+  const handleSelectPhoto4 = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        base64: true,
+      });
+  
+      console.log("ImagePicker Result: ", result);
+  
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const selectedImage = result.assets[0];
+        console.log("Selected Image: ", selectedImage);
+        setPhotoUri4(selectedImage.uri || null);
+        setPhotoBase644(selectedImage.base64 || null);
+      } else {
+        console.log("No image selected or operation was canceled.");
+      }
+    } catch (error) {
+      console.error('Error selecting photo:', error);
+    }
+  };
+  
+  // Function to handle file uploads
+  const handleUploadPhotos = () => {
+    const photos = [
+      { uri: photoUri1, base64: photoBase641, key: 'photo1' },
+      { uri: photoUri2, base64: photoBase642, key: 'photo2' },
+      { uri: photoUri3, base64: photoBase643, key: 'photo3' },
+    ];
+
+    // Trigger onFileUpload for each photo if available
+    photos.forEach(photo => {
+      if (photo.uri && photo.base64) {
+        onFileUpload(photo.uri, photo.key);  // Pass the photo URI and key (e.g., 'photo1')
+      }
+    });
+
+    navigation.navigate('UsernamePhoto' as never);
+  };
+
   return {
     username,
     setUsername,
@@ -279,7 +431,23 @@ const useCheckPassword = () => {
     nameError, 
     setBarangay, 
     setSitio,
-    barangaySitioError
+    barangaySitioError,
+
+    handleTakePhoto1,
+    handleTakePhoto2,
+    handleTakePhoto3,
+    handleSelectPhoto1,
+    handleSelectPhoto2,
+    handleSelectPhoto3,
+    handleUploadPhotos,
+    
+    photoUri4,
+    setPhotoUri4,
+    setPhotoBase644,
+    handleSelectPhoto4,
+    usernamePhotoError,
+    handleConfirmUsernamePhoto,
+  
   };
 };
 

@@ -3,38 +3,39 @@ import { Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable, Image }
 import { useState } from "react";
 import usePhoto from "@/hooks/usePhoto";
 import useDataInput from "@/hooks/useDataInput";
+import useHandleClicks from "@/hooks/useHandleClicks";
 
 const UsernamePhoto = () => {
-  const { handleSelectPhoto3, photoUri3, setPhotoUri3, setPhotoBase643 } = usePhoto();
-  const {username, setUsername} = useDataInput();
+  const {username, setUsername, handleConfirmUsernamePhoto, usernamePhotoError, handleSelectPhoto4, photoUri4, setPhotoBase644, setPhotoUri4} = useDataInput();
 
 
   function deletePhotoAndUsername() {
-    setPhotoUri3(null);
-    setPhotoBase643(null);
+    setPhotoUri4(null);
+    setPhotoBase644(null);
     setUsername(""); // Clear the username input value
   }
 
   function usernameInputValueChange(text: string) {
-    setUsername(text); // Update the input value
+    setUsername(text); 
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Profile</Text>
-      <Pressable onPress={handleSelectPhoto3}>
+      <Pressable onPress={handleSelectPhoto4}>
         <MaterialIcons name="image-search" size={50} color="#4A4A4A" style={styles.icon} />
       </Pressable>
 
-      {photoUri3 && (
+      {photoUri4 && (
         <View style={styles.previewContainer}>
-          <Image source={{ uri: photoUri3 }} style={styles.previewImage} />
+          <Image source={{ uri: photoUri4 }} style={styles.previewImage} />
         </View>
       )}
 
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
+          
           maxLength={15}
           placeholder="Enter username"
           placeholderTextColor="#aaa"
@@ -43,8 +44,11 @@ const UsernamePhoto = () => {
         />
       </View>
 
+      {usernamePhotoError && <Text style={styles.errorText}>{usernamePhotoError}</Text>}
+
+
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonConfirm}>
+        <TouchableOpacity style={styles.buttonConfirm} onPress={handleConfirmUsernamePhoto}>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonDelete} onPress={deletePhotoAndUsername}>
@@ -145,6 +149,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: "#ccc",
     borderWidth: 2,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 6,
+    textAlign: 'center',
   },
 });
 
