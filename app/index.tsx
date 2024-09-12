@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
@@ -16,7 +16,10 @@ export default function Index() {
     handleEmergencyAssistanceRequestPress, 
     handleRouteAssistanceRequestPress, 
     EmergencyAssistanceRequest,
-    RouteAssistance
+    RouteAssistance,
+    markerEmoji,
+    markerImageSize
+
   } = useHandleClicks();
 
   
@@ -39,8 +42,13 @@ export default function Index() {
     setrouteAssistanceModalVisible(!routeAssistanceModalVisible)
   }
 
-  function emerAssReq(service: string) {
-    EmergencyAssistanceRequest(service)
+  function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
+    EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight);
+    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+  }
+
+  function cancelService(){
+    EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height);
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
 
@@ -54,20 +62,19 @@ export default function Index() {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Welcome' as never); 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation]);*/
 
 
   return (
     <View style={styles.container}>
       
        {/* MODAL 1*/}
-       {/* MODAL 1 */}
 <Modal
   animationType="fade"
   transparent={true}
@@ -84,13 +91,13 @@ export default function Index() {
         <View style={modalStyles.servicesContainerStyle}>
           <Pressable
             style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('BFP')}>
+            onPress={() => emerAssReq('BFP',require('./pictures/fire.png'))}>
             <Text style={modalStyles.textStyle}>BFP</Text>
           </Pressable>
 
           <Pressable
             style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('PNP')}>
+            onPress={() => emerAssReq('PNP',require('./pictures/police.webp'))}>
             <Text style={modalStyles.textStyle}>PNP</Text>
           </Pressable>
         </View>
@@ -98,18 +105,25 @@ export default function Index() {
         <View style={modalStyles.servicesContainerStyle}>
           <Pressable
             style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('Medical')}>
+            onPress={() => emerAssReq('Medical', require('./pictures/medic.png'))}>
             <Text style={modalStyles.textStyle}>Medical</Text>
           </Pressable>
 
           <Pressable
             style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('NDRRMC')}>
+            onPress={() => emerAssReq('NDRRMC', require('./pictures/ndrrmc.png'))}>
             <Text style={modalStyles.textStyle}>NDRRMC</Text>
           </Pressable>
         </View>
 
         {/* Close Button */}
+
+        <Pressable
+          style={[modalStyles.closeButton]}
+          onPress={() => cancelService()}>
+          <Text style={modalStyles.textStyle}>Cancel Service</Text>
+        </Pressable>
+
         <Pressable
           style={[modalStyles.closeButton]}
           onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
@@ -169,14 +183,20 @@ export default function Index() {
           }}
         >
           <Marker
-          
             coordinate={{
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
             title=""
             description=""
+          >
+            {/* Custom image with adjustable size */}
+          <Image
+            source={markerEmoji}
+            style={{ width: markerImageSize.width, height: markerImageSize.height }} // Dynamic size
           />
+
+          </Marker>
         </MapView>
       )}
 

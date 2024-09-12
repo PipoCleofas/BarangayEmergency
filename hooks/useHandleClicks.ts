@@ -16,6 +16,9 @@ const useHandleClicks = () => {
     const [requestType, setRequestType] = useState<string | undefined>();
     const [requestStatus, setRequestStatus] = useState<string | undefined>();
 
+    const [markerEmoji, setMarkerEmoji] = useState<any>();
+    const [markerImageSize, setMarkerImageSize] =useState<{width: any, height: any}> ({ width: 65, height: 70 });
+
     const [selectedPhotos, setSelectedPhotos] = useState({
       photo1: null,
       photo2: null,
@@ -94,7 +97,10 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async (requestType: string) => {
+    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70) => {
+
+        setMarkerEmoji(markeremoji);
+        setMarkerImageSize({ width: imageWidth, height: imageHeight });
         // Fetch the location
         await fetchLocation();
       
@@ -239,6 +245,9 @@ const useHandleClicks = () => {
 
         onFileChange,
         onFileUpload,
+
+        markerEmoji,
+        markerImageSize
         
     }
 

@@ -35,7 +35,6 @@ const UsernamePhoto = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          
           maxLength={15}
           placeholder="Enter username"
           placeholderTextColor="#aaa"
