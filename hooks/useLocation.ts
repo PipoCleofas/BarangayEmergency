@@ -41,6 +41,10 @@ const useLocation = () => {
     fetchLocation();
   }, []); 
 
+  // directions
+
+  
+
   return { 
     location, 
     errorMsg, 

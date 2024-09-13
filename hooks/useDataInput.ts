@@ -293,19 +293,35 @@ const useCheckPassword = () => {
   };
   
 
-  const handleConfirmUsernamePhoto = () => {
+  const handleConfirmUsernamePhoto = async () => {
     console.log("Username: ", username);
     console.log("Photo URI: ", photoUri3);
   
     const error = validateUsernamePhoto(username, photoUri3);
-  
+    
+    /*
     if (error) {
       console.log("Error username photo: ", error);
       setUsernamePhotoError(error);
       return;
     }
+    */
+
+    try {
+      const response = await axios.put(`http://your-api-url.com/user/updateUser/${username}`, {
+        lname,
+        fname,
+        mname
+      });
   
-    //navigation.navigate('index' as never);
+      console.log('User updated successfully');
+
+      //navigation.navigate('index' as never);
+    } catch (error) {
+      handleAxiosError(error);
+    }
+  
+    
   };
   
 
@@ -408,6 +424,19 @@ const useCheckPassword = () => {
 
     navigation.navigate('UsernamePhoto' as never);
   };
+
+  const handleAxiosError = (error: any) => {
+    if (error.response) {
+    console.error('Response error:', error.response.data);
+    console.error('Response status:', error.response.status);
+    console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+    console.error('Request error:', error.request);
+    } else {
+    console.error('General error:', error.message);
+    }
+    console.error('Error config:', error.config);
+};
 
   return {
     username,

@@ -27,7 +27,7 @@ function validateUserData(req, res, next) {
 router.post('/submit', validateUserData, (req, res) => {
   const {  lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
 
-  const query = 'INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO userr (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   connection.query(query, [ lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
     if (error) {
@@ -52,32 +52,16 @@ router.get('/getUser', (req, res) => {
   });
 });*/
 
-router.put('/updateUser/:username', (req, res) => {
-  const username = req.params.username;
-  const { lname, fname, mname } = req.body;
+router.put('/updateUser/:newUsername', (req, res) => {
+  const newUsername = req.params.newUsername; 
+  const { lname, fname, mname } = req.body;    
 
-  if (!lname && !fname && !mname) {
-    return res.status(400).send('At least one field must be provided to update');
+  if (!lname || !fname || !mname) {
+    return res.status(400).send('First name, last name, and middle name are required to identify the user');
   }
 
-  const fields = [];
-  const values = [];
-
-  if (lname) {
-    fields.push('LastName = ?');
-    values.push(lname);
-  }
-  if (fname) {
-    fields.push('FirstName = ?');
-    values.push(fname);
-  }
-  if (mname) {
-    fields.push('MiddleName = ?');
-    values.push(mname);
-  }
-
-  const query = `UPDATE user SET ${fields.join(', ')} WHERE username = ?`;
-  values.push(username);
+  const query = `UPDATE userr SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
+  const values = [newUsername, fname, lname, mname]; 
 
   connection.query(query, values, (error, results) => {
     if (error) {
@@ -89,8 +73,9 @@ router.put('/updateUser/:username', (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    res.status(200).send('User updated successfully');
+    res.status(200).send('Username updated successfully');
   });
 });
+
 
 module.exports = { router, setConnection };

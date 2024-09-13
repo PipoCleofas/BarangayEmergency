@@ -62,13 +62,13 @@ export default function Index() {
 
   const navigation = useNavigation();
 
-  /*useEffect(() => {
+    useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Welcome' as never); 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [navigation]);*/
+  }, [navigation]);
 
 
   return (
