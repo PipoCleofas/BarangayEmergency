@@ -233,7 +233,7 @@ const useCheckPassword = () => {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
-        const userResponse = await axios.post('http://192.168.100.127:3000/user/submit', {
+        const userResponse = await axios.post('http://192.168.100.28:3000/user/submit', {
           lname,
           fname,
           mname,
@@ -258,7 +258,7 @@ const useCheckPassword = () => {
         console.log('User data saved:', userResponse.data);
 
        
-        const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
+        const barangayResponse = await axios.post('http://192.168.100.28:3000/barangay/submit', {
           barangayname: barangay,
           sitio
         }, {
@@ -327,7 +327,7 @@ const useCheckPassword = () => {
     */
 
     try {
-      const response = await axios.put(`http://192.168.100.127:3000/user/updateUser/${username}`, {
+      const response = await axios.put(`http://192.168.100.28:3000/user/updateUser/${username}`, {
         fname: fn,
         lname: ln,
         mname: mn

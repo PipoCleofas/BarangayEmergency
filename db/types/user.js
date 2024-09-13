@@ -27,7 +27,7 @@ function validateUserData(req, res, next) {
 router.post('/submit', validateUserData, (req, res) => {
   const {  lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
 
-  const query = 'INSERT INTO userr (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   connection.query(query, [ lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
     if (error) {
@@ -62,7 +62,7 @@ router.put('/updateUser/:newUsername', (req, res) => {
     return res.status(400).send('First name, last name, and middle name are required to identify the user');
   }
 
-  const query = `UPDATE userr SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
+  const query = `UPDATE user SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
   const values = [newUsername, fname, lname, mname]; 
 
   connection.query(query, values, (error, results) => {
@@ -79,5 +79,17 @@ router.put('/updateUser/:newUsername', (req, res) => {
   });
 });
 
+router.get('/getUserID', (req, res) => {
+  const { userID, lname, fname, mname } = req.body;
+
+  const verifyUserID = `SELECT UserID FROM user WHERE lname = ${lname} AND fname = ${fname} AND mname = ${mname}`
+
+  connection.query(verifyUserID, [userID, lname, fname, mname], (error, results) => {
+    if (verifyUserID) {
+      return res.status(201).send('User ID contains the exact name details.');
+    }
+    res.status(500).send('Last name, First name, Middle name does not match the UserID');
+  });
+});
 
 module.exports = { router, setConnection };
