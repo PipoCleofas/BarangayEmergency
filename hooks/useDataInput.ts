@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import useHandleClicks from './useHandleClicks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const useCheckPassword = () => {
@@ -25,6 +26,8 @@ const useCheckPassword = () => {
   const[nameError,setNameError] = useState<string | null>(null);
   const navigation = useNavigation();
   const [username,setUsername] = useState<string | null>('');
+
+  
 
    // State to store image URIs and base64 data for each photo
    const [photoUri1, setPhotoUri1] = useState<string | null>(null);
@@ -241,7 +244,17 @@ const useCheckPassword = () => {
             'Content-Type': 'application/json'
           }
         });
-        
+
+        if (fname !== null) {
+          await AsyncStorage.setItem('fname', fname ?? 'Rolando');
+        }
+        if (lname !== null) {
+          await AsyncStorage.setItem('lname', lname ?? 'Cleofas');
+        }
+        if (mname !== null) {
+          await AsyncStorage.setItem('mname', mname ?? 'Jacob');
+        }
+
         console.log('User data saved:', userResponse.data);
 
        
@@ -294,6 +307,12 @@ const useCheckPassword = () => {
   
 
   const handleConfirmUsernamePhoto = async () => {
+
+    const fn = await AsyncStorage.getItem('fname' ?? 'Rolando');
+    const ln = await AsyncStorage.getItem('lname' ?? 'Cleofas');
+    const mn = await AsyncStorage.getItem('mname' ??  'Jacob');;
+
+    console.log(fn,ln,mn)
     console.log("Username: ", username);
     console.log("Photo URI: ", photoUri3);
   
@@ -308,10 +327,14 @@ const useCheckPassword = () => {
     */
 
     try {
-      const response = await axios.put(`http://your-api-url.com/user/updateUser/${username}`, {
-        lname,
-        fname,
-        mname
+      const response = await axios.put(`http://192.168.100.127:3000/user/updateUser/${username}`, {
+        fname: fn,
+        lname: ln,
+        mname: mn
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
   
       console.log('User updated successfully');

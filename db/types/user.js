@@ -56,6 +56,8 @@ router.put('/updateUser/:newUsername', (req, res) => {
   const newUsername = req.params.newUsername; 
   const { lname, fname, mname } = req.body;    
 
+  console.log('Received data:', { newUsername, lname, fname, mname });
+
   if (!lname || !fname || !mname) {
     return res.status(400).send('First name, last name, and middle name are required to identify the user');
   }
@@ -73,7 +75,7 @@ router.put('/updateUser/:newUsername', (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    res.status(200).send('Username updated successfully');
+    res.status(200).send('Username updated successfully backend');
   });
 });
 
