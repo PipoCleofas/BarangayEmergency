@@ -11,9 +11,13 @@ const useHandleClicks = () => {
     const {latitude,longitude,setTitle,setDescription, fetchLocation} = useLocation();
     const {isAvailable,setResult} = useSMS();
 
+
     // for service request
     const [requestType, setRequestType] = useState<string | undefined>();
     const [requestStatus, setRequestStatus] = useState<string | undefined>();
+
+    const [markerEmoji, setMarkerEmoji] = useState<any>();
+    const [markerImageSize, setMarkerImageSize] =useState<{width: any, height: any}> ({ width: 65, height: 70 });
 
     const [selectedPhotos, setSelectedPhotos] = useState({
       photo1: null,
@@ -49,6 +53,16 @@ const useHandleClicks = () => {
         navigation.navigate('(tabs)' as never);
     }
 
+    const handleLoginButtonCitizenPress = async () => {
+
+      const response = await axios.get('http://192.168.100.28:3000/user/getUser')
+        
+      
+
+    };
+
+    
+    
     const handleBackButtonInCitizenPhotoPress = () => {
         navigation.navigate("CitizenSignup" as never)
     }
@@ -83,13 +97,16 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async (requestType: string) => {
+    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70) => {
+
+        setMarkerEmoji(markeremoji);
+        setMarkerImageSize({ width: imageWidth, height: imageHeight });
         // Fetch the location
         await fetchLocation();
       
         try {
           // Submit marker data
-          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+          const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
             latitude,
             longitude,
             title: "Emergency Assistance Request",
@@ -102,7 +119,7 @@ const useHandleClicks = () => {
           console.log('Marker submission success:', markerResponse.data);
       
           // Submit service request data
-          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+          const serviceRequestResponse = await axios.post('http://192.168.100.28:3000/servicerequest/submit', {
             requesttype: requestType,  
             requeststatus: "pending",                    
           }, {
@@ -126,29 +143,18 @@ const useHandleClicks = () => {
         await fetchLocation();
     
         try {
-        // Submit marker data
-        const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
-            latitude,
-            longitude,
-            title: "Emergency Assistance Request",
-            description: "Emergency Assistance Request",
-        }, {
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        });
-        console.log('Marker submission success:', markerResponse.data);
-    
-        // Submit service request data
-        const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            requesttype: "Route Assistance Request",  // Pass the values directly
-            requeststatus: "pending",                     // Set status directly
-        }, {
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        });
-        console.log('Service request success:', serviceRequestResponse.data);
+      
+          const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
+              latitude,
+              longitude,
+              title: "Emergency Assistance Request",
+              description: "Emergency Assistance Request",
+          }, {
+              headers: {
+              'Content-Type': 'application/json',
+              },
+          });
+          console.log('Marker submission success:', markerResponse.data);
         } catch (error: any) {
         handleAxiosError(error);
         }
@@ -238,8 +244,10 @@ const useHandleClicks = () => {
         handleEmergencyAssistanceRequestPress,
 
         onFileChange,
-        onFileUpload
-   
+        onFileUpload,
+
+        markerEmoji,
+        markerImageSize
         
     }
 

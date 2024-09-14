@@ -23,7 +23,7 @@ export default function CitizenSignup() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>LAST NAME:</Text>
-        <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleLnameChange(text)} />
+        <TextInput style={styles.textInput}  maxLength={15} onChangeText={(text) => handleLnameChange(text)} />
       </View>
 
       <View style={styles.inputContainer}>

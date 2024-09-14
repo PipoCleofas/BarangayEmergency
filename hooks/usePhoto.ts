@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import useHandleClicks from './useHandleClicks';
+import { useNavigation } from 'expo-router';
 
 const usePhotoPicker = () => {
 
@@ -15,6 +16,8 @@ const usePhotoPicker = () => {
 
   const [photoUri3, setPhotoUri3] = useState<string | null>(null);
   const [photoBase643, setPhotoBase643] = useState<string | null>(null);
+
+  const navigation = useNavigation()
 
   // Reusable function to select or take a photo and trigger onFileChange
   const handlePhotoSelection = async (
@@ -74,6 +77,7 @@ const usePhotoPicker = () => {
   const handleTakePhoto3 = () => handlePhotoSelection(setPhotoUri3, setPhotoBase643, 'camera', 'photo3');
   const handleSelectPhoto3 = () => handlePhotoSelection(setPhotoUri3, setPhotoBase643, 'library', 'photo3');
 
+
   // Function to handle file uploads
   const handleUploadPhotos = () => {
     const photos = [
@@ -88,9 +92,14 @@ const usePhotoPicker = () => {
         onFileUpload(photo.uri, photo.key);  // Pass the photo URI and key (e.g., 'photo1')
       }
     });
+
+    navigation.navigate('UsernamePhoto' as never);
   };
 
   return {
+    setPhotoUri3,
+    setPhotoBase643,
+
     photoUri1,
     photoBase641,
     handleSelectPhoto1,
