@@ -20,16 +20,19 @@ function validateMarker(req, res, next) {
 
 
 router.post('/submit', validateMarker ,(req, res) => {
-  const { latitude, longitude, title, description } = req.body;
+  const { latitude, longitude, title, description, UserID } = req.body;
 
-  const query = 'INSERT INTO markerrr (latitude, longitude, title, description) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO markerrr (latitude, longitude, title, description, UserID) VALUES (?, ?, ?, ?, ?)';
 
-  connection.query(query, [latitude, longitude, title, description], (error, results) => {
+  connection.query(query, [latitude, longitude, title, description, UserID], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
     }
-    res.status(201).send('Data saved successfully');
+    res.status(200).json({
+       message: 'Data saved successfully',
+       id: results.id 
+    });
   });
 });
 

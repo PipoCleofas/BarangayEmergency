@@ -4,6 +4,7 @@ import useLocation from "./useLocation";
 import useSMS from "./useSMS";
 import * as SMS from 'expo-sms';
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // request status = 'pending' | 'approved' | 'rejected'
   
@@ -97,7 +98,9 @@ const useHandleClicks = () => {
         setMarkerImageSize({ width: imageWidth, height: imageHeight });
         // Fetch the location
         await fetchLocation();
-      
+
+        const USERID = await AsyncStorage.getItem('id');
+
         try {
           // Submit marker data
           const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
@@ -105,6 +108,7 @@ const useHandleClicks = () => {
             longitude,
             title: "Emergency Assistance Request",
             description: "Emergency Assistance Request",
+            UserID: USERID 
           }, {
             headers: {
               'Content-Type': 'application/json',
@@ -123,6 +127,12 @@ const useHandleClicks = () => {
           });
           console.log('Service request success:', serviceRequestResponse.data);
           console.log('Request type set to: ' + requestType);
+
+          const markerID = markerResponse.data.id;
+          
+          
+        
+
         } catch (error: any) {
           handleAxiosError(error);
         }

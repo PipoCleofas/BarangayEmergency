@@ -315,7 +315,6 @@ const useCheckPassword = () => {
     const ln = await AsyncStorage.getItem('lname' ?? 'Cleofas');
     const mn = await AsyncStorage.getItem('mname' ??  'Jacob');;
 
-    console.log(fn,ln,mn)
     console.log("Username: ", username);
     console.log("Photo URI: ", photoUri3);
   
