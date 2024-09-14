@@ -1,10 +1,12 @@
 import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import useHandleClicks from "@/hooks/useHandleClicks";
+import useDataInput from "@/hooks/useDataInput";
 
 export default function CitizenLogin() {
 
     const { handleBackButtonPress, handleLoginButtonPress, } = useHandleClicks();
+    const { handleUsernameLoginChange, handlePassordLoginChange, handleCitizenLogin,loginError } = useDataInput();
 
     return (
         <View style={styles.container}>
@@ -13,15 +15,15 @@ export default function CitizenLogin() {
 
             <View style={styles.inputContainer}>
                 <Text style={styles.labeInput}>USERNAME: </Text>
-                <TextInput style={styles.textInput} maxLength={15} />
+                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleUsernameLoginChange(text)}/>
             </View>
 
             <View style={[styles.inputContainer, { marginBottom: 65 }]}>
                 <Text style={styles.labeInput}>PASSWORD: </Text>
-                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} />
+                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} onChangeText={(text) => handlePassordLoginChange(text)}/>
             </View>
 
-            {/* if account not found, then put label here */}
+            {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
 
             <View style={styles.columnButtons}>
                 <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
@@ -29,7 +31,7 @@ export default function CitizenLogin() {
                     <Text style={styles.buttonText}>BACK</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button2} onPress={() => handleLoginButtonPress()}>
+                <TouchableOpacity style={styles.button2} onPress={handleCitizenLogin}>
                     <Text style={[styles.buttonText, { color: 'white' }]}>LOGIN</Text>
                     <SimpleLineIcons style={{ color: 'white' }} name="arrow-right" />
                 </TouchableOpacity>
@@ -58,6 +60,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 15
     },
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 50,
+        textAlign: 'center',
+      },
     textInput: {
         color: 'white', // Maroon color
         width: 200,

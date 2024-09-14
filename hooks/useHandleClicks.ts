@@ -53,13 +53,7 @@ const useHandleClicks = () => {
         navigation.navigate('(tabs)' as never);
     }
 
-    const handleLoginButtonCitizenPress = async () => {
-
-      const response = await axios.get('http://192.168.100.28:3000/user/getUser')
-        
-      
-
-    };
+  
 
     
     
@@ -106,7 +100,7 @@ const useHandleClicks = () => {
       
         try {
           // Submit marker data
-          const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
+          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
             latitude,
             longitude,
             title: "Emergency Assistance Request",
@@ -119,7 +113,7 @@ const useHandleClicks = () => {
           console.log('Marker submission success:', markerResponse.data);
       
           // Submit service request data
-          const serviceRequestResponse = await axios.post('http://192.168.100.28:3000/servicerequest/submit', {
+          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
             requesttype: requestType,  
             requeststatus: "pending",                    
           }, {
