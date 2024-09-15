@@ -18,7 +18,7 @@ export default function CitizenLogin() {
                 <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleUsernameLoginChange(text)}/>
             </View>
 
-            <View style={[styles.inputContainer, { marginBottom: 65 }]}>
+            <View style={[styles.inputContainer, { marginBottom: 35 }]}>
                 <Text style={styles.labeInput}>PASSWORD: </Text>
                 <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} onChangeText={(text) => handlePassordLoginChange(text)}/>
             </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     errorText: {
         color: 'red',
         fontSize: 14,
-        marginBottom: 50,
+        marginBottom: 30,
         textAlign: 'center',
       },
     textInput: {

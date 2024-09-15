@@ -45,12 +45,12 @@ export default function Index() {
   }
 
   function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
-    EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight);
+    EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight, 'pending');
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
 
   function cancelService(){
-    EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height);
+    EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height, 'rejected');
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
 

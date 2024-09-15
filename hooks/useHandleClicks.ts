@@ -92,13 +92,14 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70) => {
+    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70, requestStatus: string | null) => {
 
         setMarkerEmoji(markeremoji);
         setMarkerImageSize({ width: imageWidth, height: imageHeight });
         // Fetch the location
         await fetchLocation();
 
+        // gets the id
         const USERID = await AsyncStorage.getItem('id');
 
         try {
@@ -106,7 +107,7 @@ const useHandleClicks = () => {
           const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
             latitude,
             longitude,
-            title: "Emergency Assistance Request",
+            title: requestType,
             description: "Emergency Assistance Request",
             UserID: USERID 
           }, {
@@ -118,8 +119,9 @@ const useHandleClicks = () => {
       
           // Submit service request data
           const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+            UserID: USERID,
             requesttype: requestType,  
-            requeststatus: "pending",                    
+            requeststatus: requestStatus,                    
           }, {
             headers: {
               'Content-Type': 'application/json',

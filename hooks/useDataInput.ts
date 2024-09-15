@@ -395,7 +395,7 @@ const useCheckPassword = () => {
   
       if (id) {
         await AsyncStorage.setItem('id', id.toString());
-        navigation.navigate('CitizenLogin' as never);
+        navigation.navigate('index' as never);
       } else {
         console.error('ID not found in response data');
       }
