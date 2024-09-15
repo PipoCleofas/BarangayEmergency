@@ -36,4 +36,31 @@ router.post('/submit', validateMarker ,(req, res) => {
   });
 });
 
+router.get('/getMarker', (req, res) => {
+  const { id, latitude, longitude, title, description, UserID } = req.query;
+
+  const verify = `SELECT * FROM markerrr WHERE id = ? AND UserID = ?`;
+
+  connection.query(verify, [id, UserID], (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.length > 0) {
+      const markerrr = results[0];
+      return res.status(200).json({
+        id: markerrr.id,
+        latitude: markerrr.latitude,
+        longitude: markerrr.longitude,
+        title: markerrr.title,
+        description: markerrr.description,
+        UserID: markerrr.UserID,
+      });
+    } else {
+      return res.status(401).json({ message: 'Markers details are incorrect.' });
+    }
+  });
+});
+
 module.exports = { router, setConnectionMarker };
