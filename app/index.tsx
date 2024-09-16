@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
 import { useNavigation } from 'expo-router';
-import ComboBox from '@/components/combobox-holder/ComboBox';
 
 
 

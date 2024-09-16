@@ -27,7 +27,7 @@ function validateUserData(req, res, next) {
 router.post('/submit', validateUserData, (req, res) => {
   const {  lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
 
-  const query = 'INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO userr (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   connection.query(query, [ lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
     if (error) {
@@ -42,7 +42,7 @@ router.post('/submit', validateUserData, (req, res) => {
 router.get('/getUser', (req, res) => {
   const { username, password } = req.query;
 
-  const verify = `SELECT * FROM user WHERE Username = ? AND Password = ?`;
+  const verify = `SELECT * FROM userr WHERE Username = ? AND Password = ?`;
 
   connection.query(verify, [username, password], (error, results) => {
     if (error) {
@@ -77,7 +77,7 @@ router.put('/updateUser/:newUsername', (req, res) => {
     return res.status(400).send('First name, last name, and middle name are required to identify the user');
   }
 
-  const query = `UPDATE user SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
+  const query = `UPDATE userr SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
   const values = [newUsername, fname, lname, mname]; 
 
   connection.query(query, values, (error, results) => {

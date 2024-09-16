@@ -56,11 +56,11 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     textInput: {
-        color: 'white', // Maroon color
+        color: 'white', 
         width: 200,
         backgroundColor: '#944547',
         height: 25,
-        fontSize: 18, // Increase font size for better visibility
+        fontSize: 18, 
         borderColor: '#D3D3D3',
         borderWidth: 1,
         borderRadius: 5,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     },
     columnButtons: {
         flexDirection: 'row',
-        justifyContent: 'center', // Center the buttons horizontally
+        justifyContent: 'center', 
         alignItems: 'center',
         marginBottom: 60,
     },
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         borderColor: '#D3D3D3',
         borderRadius: 20,
         justifyContent: 'center',
-        alignItems: 'center', // Center the content inside the button
+        alignItems: 'center', 
         flexDirection: 'row',
         padding: 8,
 
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 3.84,
         elevation: 5,
-        marginHorizontal: 10, // Add margin between buttons
+        marginHorizontal: 10, 
     },
     button2: {
         backgroundColor: '#714423',
         width: 100,
         height: 35,
         justifyContent: 'center',
-        alignItems: 'center', // Center the content inside the button
+        alignItems: 'center', 
         flexDirection: 'row',
         padding: 8,
 
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 3.84,
         elevation: 5,
-        marginHorizontal: 10, // Add margin between buttons
+        marginHorizontal: 10,
     },
     buttonText: {
-        marginHorizontal: 5, // Add some space between icon and text
+        marginHorizontal: 5, 
     },
 });
     
