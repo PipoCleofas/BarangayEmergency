@@ -4,6 +4,7 @@ import useLocation from "./useLocation";
 import useSMS from "./useSMS";
 import * as SMS from 'expo-sms';
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // request status = 'pending' | 'approved' | 'rejected'
   
@@ -53,13 +54,7 @@ const useHandleClicks = () => {
         navigation.navigate('(tabs)' as never);
     }
 
-    const handleLoginButtonCitizenPress = async () => {
-
-      const response = await axios.get('http://192.168.100.28:3000/user/getUser')
-        
-      
-
-    };
+  
 
     
     
@@ -97,20 +92,24 @@ const useHandleClicks = () => {
   
 
 
-    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70) => {
+    const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70, requestStatus: string | null) => {
 
         setMarkerEmoji(markeremoji);
         setMarkerImageSize({ width: imageWidth, height: imageHeight });
         // Fetch the location
         await fetchLocation();
-      
+
+        // gets the id
+        const USERID = await AsyncStorage.getItem('id');
+
         try {
           // Submit marker data
-          const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
+          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
             latitude,
             longitude,
-            title: "Emergency Assistance Request",
+            title: requestType,
             description: "Emergency Assistance Request",
+            UserID: USERID 
           }, {
             headers: {
               'Content-Type': 'application/json',
@@ -119,9 +118,10 @@ const useHandleClicks = () => {
           console.log('Marker submission success:', markerResponse.data);
       
           // Submit service request data
-          const serviceRequestResponse = await axios.post('http://192.168.100.28:3000/servicerequest/submit', {
+          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+            UserID: USERID,
             requesttype: requestType,  
-            requeststatus: "pending",                    
+            requeststatus: requestStatus,                    
           }, {
             headers: {
               'Content-Type': 'application/json',
@@ -129,6 +129,12 @@ const useHandleClicks = () => {
           });
           console.log('Service request success:', serviceRequestResponse.data);
           console.log('Request type set to: ' + requestType);
+
+          const markerID = markerResponse.data.id;
+          
+          
+        
+
         } catch (error: any) {
           handleAxiosError(error);
         }

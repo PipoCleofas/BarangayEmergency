@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity, Image } from 'react-native';
-import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
 import { useNavigation } from 'expo-router';
-import ComboBox from '@/components/combobox-holder/ComboBox';
 
 
 
@@ -22,7 +20,9 @@ export default function Index() {
 
   } = useHandleClicks();
 
-  
+  // for activity indicator
+  const [isLoading, setIsLoading] = useState(true);
+
 
   
   // for modal index.tsx
@@ -43,12 +43,12 @@ export default function Index() {
   }
 
   function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
-    EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight);
+    EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight, 'pending');
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
 
   function cancelService(){
-    EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height);
+    EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height, 'rejected');
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
 
@@ -65,75 +65,90 @@ export default function Index() {
     useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Welcome' as never); 
+
     }, 1000);
 
     return () => clearTimeout(timer);
   }, [navigation]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  
 
   return (
     <View style={styles.container}>
-      
+        {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#AD5765" />
+          <Text>Loading...</Text>
+        </View>
+      ) : (
+        <>
        {/* MODAL 1*/}
-<Modal
-  animationType="fade"
-  transparent={true}
-  visible={emergencyAssistanceModalVisible}
-  onRequestClose={() => {
-    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
-  }}>
-  <View style={modalStyles.centeredView}>
-    <View style={modalStyles.modalView}>
-      <Text style={{ marginBottom: 10 }}>Choose Service</Text>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={emergencyAssistanceModalVisible}
+        onRequestClose={() => {
+          setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
+        }}>
+        <View style={modalStyles.centeredView}>
+          <View style={modalStyles.modalView}>
+            <Text style={{ marginBottom: 10 }}>Choose Service</Text>
 
-      <View style={modalStyles.buttonModal}>
+            <View style={modalStyles.buttonModal}>
 
-        <View style={modalStyles.servicesContainerStyle}>
-          <Pressable
-            style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('BFP',require('./pictures/fire.png'))}>
-            <Text style={modalStyles.textStyle}>BFP</Text>
-          </Pressable>
+              <View style={modalStyles.servicesContainerStyle}>
+                <Pressable
+                  style={[modalStyles.serviceButton]}
+                  onPress={() => emerAssReq('BFP',require('./pictures/fire.png'))}>
+                  <Text style={modalStyles.textStyle}>BFP</Text>
+                </Pressable>
 
-          <Pressable
-            style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('PNP',require('./pictures/police.webp'))}>
-            <Text style={modalStyles.textStyle}>PNP</Text>
-          </Pressable>
+                <Pressable
+                  style={[modalStyles.serviceButton]}
+                  onPress={() => emerAssReq('PNP',require('./pictures/police.webp'))}>
+                  <Text style={modalStyles.textStyle}>PNP</Text>
+                </Pressable>
+              </View>
+
+              <View style={modalStyles.servicesContainerStyle}>
+                <Pressable
+                  style={[modalStyles.serviceButton]}
+                  onPress={() => emerAssReq('Medical', require('./pictures/medic.png'))}>
+                  <Text style={modalStyles.textStyle}>Medical</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[modalStyles.serviceButton]}
+                  onPress={() => emerAssReq('NDRRMC', require('./pictures/ndrrmc.png'))}>
+                  <Text style={modalStyles.textStyle}>NDRRMC</Text>
+                </Pressable>
+              </View>
+
+              {/* Close Button */}
+
+              <Pressable
+                style={[modalStyles.closeButton]}
+                onPress={() => cancelService()}>
+                <Text style={modalStyles.textStyle}>Cancel Service</Text>
+              </Pressable>
+
+              <Pressable
+                style={[modalStyles.closeButton]}
+                onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
+                <Text style={modalStyles.textStyle}>Close</Text>
+              </Pressable>
+
+            </View>
+          </View>
         </View>
-
-        <View style={modalStyles.servicesContainerStyle}>
-          <Pressable
-            style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('Medical', require('./pictures/medic.png'))}>
-            <Text style={modalStyles.textStyle}>Medical</Text>
-          </Pressable>
-
-          <Pressable
-            style={[modalStyles.serviceButton]}
-            onPress={() => emerAssReq('NDRRMC', require('./pictures/ndrrmc.png'))}>
-            <Text style={modalStyles.textStyle}>NDRRMC</Text>
-          </Pressable>
-        </View>
-
-        {/* Close Button */}
-
-        <Pressable
-          style={[modalStyles.closeButton]}
-          onPress={() => cancelService()}>
-          <Text style={modalStyles.textStyle}>Cancel Service</Text>
-        </Pressable>
-
-        <Pressable
-          style={[modalStyles.closeButton]}
-          onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
-          <Text style={modalStyles.textStyle}>Close</Text>
-        </Pressable>
-
-      </View>
-    </View>
-  </View>
-</Modal>
+      </Modal>
 
 
       {/* MODAL 2*/}
@@ -215,6 +230,8 @@ export default function Index() {
           </View>
         </View>
       </View>
+      </>
+      )}
     </View>
   );
 }
@@ -228,6 +245,11 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '80%', // Take up 80% of the screen height for the map
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   tabBarContainer: {
     width: '100%',

@@ -43,6 +43,9 @@ const useCheckPassword = () => {
    const [photoBase644, setPhotoBase644] = useState<string | null>(null);
 
   const [usernamePhotoError,setUsernamePhotoError] = useState<string | null>(null);
+
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   //  name
 
   const handleFnameChange = (text: string) => {
@@ -233,7 +236,7 @@ const useCheckPassword = () => {
       navigation.navigate('CitizenPhoto' as never);
 
       try {
-        const userResponse = await axios.post('http://192.168.100.28:3000/user/submit', {
+        const userResponse = await axios.post('http://192.168.100.127:3000/user/submit', {
           lname,
           fname,
           mname,
@@ -258,7 +261,7 @@ const useCheckPassword = () => {
         console.log('User data saved:', userResponse.data);
 
        
-        const barangayResponse = await axios.post('http://192.168.100.28:3000/barangay/submit', {
+        const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
           barangayname: barangay,
           sitio
         }, {
@@ -274,16 +277,7 @@ const useCheckPassword = () => {
         
         navigation.navigate('CitizenPhoto' as never);
       } catch (error: any) {
-        if (error.response) {
-          console.error('Response error:', error.response.data);
-          console.error('Response status:', error.response.status);
-          console.error('Response headers:', error.response.headers);
-        } else if (error.request) {
-          console.error('Request error:', error.request);
-        } else {
-          console.error('General error:', error.message);
-        }
-        console.error('Error config:', error.config);
+        handleAxiosError(error);
       }
 
     } else {
@@ -312,7 +306,6 @@ const useCheckPassword = () => {
     const ln = await AsyncStorage.getItem('lname' ?? 'Cleofas');
     const mn = await AsyncStorage.getItem('mname' ??  'Jacob');;
 
-    console.log(fn,ln,mn)
     console.log("Username: ", username);
     console.log("Photo URI: ", photoUri3);
   
@@ -327,7 +320,7 @@ const useCheckPassword = () => {
     */
 
     try {
-      const response = await axios.put(`http://192.168.100.28:3000/user/updateUser/${username}`, {
+      const response = await axios.put(`http://192.168.100.127:3000/user/updateUser/${username}`, {
         fname: fn,
         lname: ln,
         mname: mn
@@ -339,7 +332,7 @@ const useCheckPassword = () => {
   
       console.log('User updated successfully');
 
-      //navigation.navigate('index' as never);
+      navigation.navigate('CitizenLogin' as never);
     } catch (error) {
       handleAxiosError(error);
     }
@@ -347,7 +340,68 @@ const useCheckPassword = () => {
     
   };
   
+  // citizen login
 
+  const validateLogin = (username: string | null, password: string | null) => {
+    if (!username || username.trim() === "") {
+      return "Username cannot be empty.";
+    }
+
+    if (!password || password.trim() === "") {
+      return "Password cannot be empty.";
+    }
+
+    return null; // No error
+  };
+
+  const handleUsernameLoginChange = (text: string) => {
+    setUsername(text);
+  };
+
+  const handlePassordLoginChange = (text: string) => {
+    setPassword(text);
+  };
+
+  const handleCitizenLogin = async () => {
+    try {
+      const response = await axios.get('http://192.168.100.28:3000/user/getUser', {
+        params: {
+          username,
+          password
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      const error = validateLogin(username, password);
+  
+      if (error) {
+        console.log("Error during login validation: ", error);
+        setLoginError(error);
+        return;
+      }
+  
+      const id = response.data?.id;
+  
+      if (id) {
+        await AsyncStorage.setItem('id', id.toString());
+        navigation.navigate('index' as never);
+      } else {
+        console.error('ID not found in response data');
+      }
+    } catch (error: any) {
+      // If it's a 401 error, handle it gracefully
+      if (error.response && error.response.status === 401) {
+        setLoginError('Username or password is incorrect');
+      } else {
+        handleAxiosError(error);
+      }
+    }
+  };
+  
+  
+  
   // for photo
 
   const handlePhotoSelection = async (
@@ -499,6 +553,11 @@ const useCheckPassword = () => {
     handleSelectPhoto4,
     usernamePhotoError,
     handleConfirmUsernamePhoto,
+
+    handlePassordLoginChange,
+    handleUsernameLoginChange,
+    handleCitizenLogin,
+    loginError
   
   };
 };
