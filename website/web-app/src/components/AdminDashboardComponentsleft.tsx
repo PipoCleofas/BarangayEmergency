@@ -9,12 +9,7 @@ export default function AdminDashboardComponentLeft() {
           <p>Christian Mallari</p>
         </div>
       </div>
-      <ul className="nav-list">
-        <li className="active">Home</li>
-        <li>View Request</li>
-        <li>Approval</li>
-        <li>Settings</li>
-      </ul>
     </div>
   );
 }
+<h2 style={{ marginTop: '15', marginInlineStart: '75px' }}>LOGIN</h2>
