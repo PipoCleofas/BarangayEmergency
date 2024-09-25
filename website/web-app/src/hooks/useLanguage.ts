@@ -21,5 +21,8 @@ export const useLanguage = () => {
       };
 
       
-      return { language, changeLanguage };
+      return { 
+        language, 
+        changeLanguage 
+      };
 }
