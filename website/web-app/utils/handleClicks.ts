@@ -1,19 +1,29 @@
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
 
 export const handleNavClick = (e: any, target: any) => {
     e.preventDefault();
 
+
     switch(target){
         case 'admindashboard':
-            console.log('go in admin dashboard')
+            navigate('/AdminDashboard');
             break;
-        case 'viewrequests':   
-            console.log('go in view requests')
+        case 'viewrequests':
+            navigate('/ViewRequest')   
             break;
         case 'approval':
-            console.log('go in admin dashboard')
+            navigate('/Approval')   
             break;
         case 'settings':   
-            console.log('go in view requests')
+            navigate('/Settings')   
             break;
     }
+}
+
+export const onLoginClick = (e: Event) => {
+    e.preventDefault();
+
+    
 }
