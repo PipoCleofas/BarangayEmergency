@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { useGetItems } from "../src/hooks/useGetItems";
 
 const navigate = useNavigate();
+
+const {checkAccounts} = useGetItems();
 
 export const handleNavClick = (e: any, target: any) => {
     e.preventDefault();
@@ -25,5 +28,7 @@ export const handleNavClick = (e: any, target: any) => {
 export const onLoginClick = (e: Event) => {
     e.preventDefault();
 
-    
+    checkAccounts('admin');
+    handleNavClick(e, 'admindashboard');
+
 }
