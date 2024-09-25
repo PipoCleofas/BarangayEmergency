@@ -6,18 +6,15 @@ export default function AdminDashboardComponentLeft() {
           <div className="profile-pic"></div>
           <div className="profile-name">
             <h3>Administrator</h3>
-            <p>Christian Mallari</p>
+            <p style={{ marginBottom: '45px' }}>Christian Mallari</p>
           </div>
-          <div>
             <ul className="nav-list">
-              <li>Home</li>
-              <li className="active">View Request</li>
-              <li>Approval</li>
-              <li>Settings</li>
+              <li style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}>Home</li>
+              <li className="active" style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}>View Request</li>
+              <li style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}>Approval</li>
+              <li style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}>Settings</li>
             </ul>
-         </div>
         </div>
       </div>
     );
   }
-  
