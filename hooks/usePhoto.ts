@@ -92,8 +92,6 @@ const usePhotoPicker = () => {
         onFileUpload(photo.uri, photo.key);  // Pass the photo URI and key (e.g., 'photo1')
       }
     });
-
-    navigation.navigate('UsernamePhoto' as never);
   };
 
   return {

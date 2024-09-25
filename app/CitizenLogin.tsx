@@ -5,8 +5,8 @@ import useDataInput from "@/hooks/useDataInput";
 
 export default function CitizenLogin() {
 
-    const { handleBackButtonPress, handleLoginButtonPress, } = useHandleClicks();
-    const { handleUsernameLoginChange, handlePassordLoginChange, handleCitizenLogin,loginError } = useDataInput();
+    const {handleChangeState,handleCitizenLogin,state} = useDataInput();
+    const { handleBackButtonPress } = useHandleClicks();
 
     return (
         <View style={styles.container}>
@@ -15,16 +15,15 @@ export default function CitizenLogin() {
 
             <View style={styles.inputContainer}>
                 <Text style={styles.labeInput}>USERNAME: </Text>
-                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleUsernameLoginChange(text)}/>
+                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleChangeState('username', text)}/>
             </View>
 
             <View style={[styles.inputContainer, { marginBottom: 35 }]}>
                 <Text style={styles.labeInput}>PASSWORD: </Text>
-                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} onChangeText={(text) => handlePassordLoginChange(text)}/>
+                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} onChangeText={(text) => handleChangeState('password', text)}/>
             </View>
 
-            {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
-
+            {state.error && <Text style={styles.errorText}>{state.error}</Text>}
             <View style={styles.columnButtons}>
                 <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
                     <SimpleLineIcons name="arrow-left" />

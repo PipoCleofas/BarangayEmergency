@@ -1,24 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable, Image } from "react-native";
-import { useState } from "react";
-import usePhoto from "@/hooks/usePhoto";
 import useDataInput from "@/hooks/useDataInput";
-import useHandleClicks from "@/hooks/useHandleClicks";
 
 const UsernamePhoto = () => {
-  const {username, setUsername, handleConfirmUsernamePhoto, usernamePhotoError, handleSelectPhoto4, photoUri4, setPhotoBase644, setPhotoUri4} = useDataInput();
+  const {state,handleChangeState, handleConfirmUsernamePhoto, usernamePhotoError, handleSelectPhoto4, photoUri4} = useDataInput();
 
 
-  function deletePhotoAndUsername() {
-    setPhotoUri4(null);
-    setPhotoBase644(null);
-    setUsername(""); // Clear the username input value
-  }
-
-  function usernameInputValueChange(text: string) {
-    setUsername(text); 
-  }
-
+ 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Profile</Text>
@@ -38,19 +26,17 @@ const UsernamePhoto = () => {
           maxLength={15}
           placeholder="Enter username"
           placeholderTextColor="#aaa"
-          value={username || ""} 
-          onChangeText={usernameInputValueChange} 
+          onChangeText={(text) => handleChangeState('username', text)} 
         />
       </View>
 
-      {usernamePhotoError && <Text style={styles.errorText}>{usernamePhotoError}</Text>}
-
+      {state.error && <Text style={styles.errorText}>{state.error}</Text>}
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonConfirm} onPress={handleConfirmUsernamePhoto}>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonDelete} onPress={deletePhotoAndUsername}>
+        <TouchableOpacity style={styles.buttonDelete} >
           <Text style={styles.buttonText}>Delete</Text>
         </TouchableOpacity>
       </View>

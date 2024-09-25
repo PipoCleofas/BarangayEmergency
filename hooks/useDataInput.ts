@@ -1,32 +1,24 @@
 
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import useHandleClicks from './useHandleClicks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {InitialCitizen,reducerCitizen} from '@/app/types/user'
+import {handleBirthdayChange} from '@/app/utils/validateUser'
+import {userSubmit, updateUser, getUser} from '@/app/services/userservice'
+import {BarangayReducer,InitialBarangay} from '@/app/types/barangay'
+import {submitBarangay} from '@/app/services/barangayservice'
+import  {validateLogin,validateName,validateBirthday,validatePassword, validateBarangayAndSitio,validateUsernamePhoto, validatePhotos} from '@/app/utils/validateUser'
 
 const useCheckPassword = () => {
-
+  const navigation = useNavigation();
   const {onFileChange, onFileUpload} = useHandleClicks();
 
-  const [password, setPassword] = useState<string | null>('');
-  const [reEnteredPassword, setReEnteredPassword] = useState<string | undefined | null>();
-  const [passwordError, setPasswordError] = useState<string | null | undefined>();
-  const[fname, setFname] = useState<string | null>(null)
-  const[lname, setLname] = useState<string | null>(null)
-  const[mname, setMname] = useState<string | null>(null)
-  const[birthday, setBirthday] = useState<any>(null);
-  const[birthdayError, setBirthdayError] = useState<any>(null);
-  const[sitio, setSitio] = useState<string | null>(null);
   const[barangaySitioError, setbarangaySitioError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(1);
   const[barangay,setBarangay] = useState<string | null>(null);
-  const[nameError,setNameError] = useState<string | null>(null);
-  const navigation = useNavigation();
-  const [username,setUsername] = useState<string | null>('');
-
+  const [sitio,setSitio] =  useState<string | null>(null);
   
 
    // State to store image URIs and base64 data for each photo
@@ -44,146 +36,21 @@ const useCheckPassword = () => {
 
   const [usernamePhotoError,setUsernamePhotoError] = useState<string | null>(null);
 
-  const [loginError, setLoginError] = useState<string | null>(null);
 
-  //  name
+  // user
+  const [state,dispatch] = useReducer(reducerCitizen, InitialCitizen);
 
-  const handleFnameChange = (text: string) => {
-       
-    setFname(text)
-    const validationError = validateName(text)
-    setNameError(validationError)
-  }
-
-  const handleLnameChange = (text: string) => {
-      setLname(text)
-      const validationError = validateName(text)
-      setNameError(validationError)
-
-  }
-
-  const handleMnameChange = (text: string) => {
-      setMname(text)
-      const validationError = validateName(text)
-      setNameError(validationError)
-
-
-
-  }
-
-  const validateName = (fname: string | null = null, mname: string | null = null, lname: string | null = null) => {
-    if (!fname || ! mname || !lname) {
-      return "Names cannot be empty.";
-    }
-    
-    return null; // No error
-
-  }
+  const handleChangeState = (key: string, value: string | number) => {
+    dispatch({
+      actionType: 'input',
+      data: { [key]: value }, 
+    });
+  };
 
  
-  // birthday
+  
 
-  const handleBirthdayChange = (text: string) => {
-    let formattedText = text.replace(/[^0-9]/g, '');
-
-    const previousBirthday = birthday || ''; 
-
-    if (formattedText.length < previousBirthday.replace(/[^0-9]/g, '').length) {
-        setBirthday(text); 
-        return;
-    }
-
-    if (formattedText.length <= 2) {
-        let month = parseInt(formattedText, 10);
-        if (isNaN(month) || month === 0) {
-            month = 1; 
-        } else if (month > 12) {
-            month = 12; 
-        }
-        formattedText = month.toString().padStart(2, '0');
-    } else if (formattedText.length <= 4) {
-        let month = formattedText.slice(0, 2);
-        let day = parseInt(formattedText.slice(2), 10);
-        if (isNaN(day) || day === 0) {
-            day = 1; 
-        } else if (day > 31) {
-            day = 31; 
-        }
-        formattedText = `${month}/${day.toString().padStart(2, '0')}`;
-    } else if (formattedText.length > 4) {
-        let month = formattedText.slice(0, 2);
-        let day = parseInt(formattedText.slice(2, 4), 10);
-        let year = parseInt(formattedText.slice(4, 8), 10);
-        if (isNaN(day) || day === 0) {
-            day = 1; 
-        } else if (day > 31) {
-            day = 31; 
-        }
-        if (isNaN(year) || year === 0) {
-            year = 1990; 
-        } else if (year > new Date().getFullYear()) {
-            year = new Date().getFullYear(); 
-        }
-        formattedText = `${month}/${day.toString().padStart(2, '0')}/${year}`;
-  }
-
-  setBirthday(formattedText);
-  console.log(formattedText);
-  };
-
-  const validateBirthday = (birthday: string) => {
-    if (!birthday) {
-      return "Birthday cannot be empty.";
-    }
-    
-    return null; // No error
-  }
-
-  // password
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    const validationError = validatePassword(text, reEnteredPassword);
-    setPasswordError(validationError);
-  };
-
-  const handleReEnteredPasswordChange = (text: string) => {
-    setReEnteredPassword(text);
-    const validationError = validatePassword(password, text);
-    setPasswordError(validationError);
-  };
-
-  const validatePassword = (password: string | null, reEnteredPassword: string | null = null) => {
-    if (!password) {
-      return "Password cannot be empty.";
-    }
-
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long.";
-    }
-
-    if (!/[A-Z]/.test(password)) {
-      return "Password must contain at least one uppercase letter.";
-    }
-
-    if (!/[a-z]/.test(password)) {
-      return "Password must contain at least one lowercase letter.";
-    }
-
-    if (!/\d/.test(password)) {
-      return "Password must contain at least one number.";
-    }
-
-    if (reEnteredPassword !== null && password !== reEnteredPassword) {
-      return "Passwords do not match.";
-    }
-
-    if(reEnteredPassword == null){
-      return "Reenter your password"
-    }
-
-    return null; // No error
-  };
+  
 
    // barangay and sitio
 
@@ -201,199 +68,138 @@ const useCheckPassword = () => {
     console.log("Chosen barangay: " + barangay)
   }
 
-  const validateBarangayAndSitio = (barangay: string | null, sitio: string | null = null) => {
-    if (!barangay) {
-      return "Barangay must not be empty.";
-    }
-  
-    if (!sitio) {
-      return "Sitio must not be empty."; 
-    }
-  
-    return null; 
+ 
+
+
+  const onBirthdayChange = (text: string) => {
+    handleBirthdayChange(text, state.birthdate ? state.birthdate.toString() : null, dispatch);
   };
+  
 
   const handleNextPress = async () => {
-   
-
-    const validationErrorPassword = validatePassword(password, reEnteredPassword);
-    const validateErrorName = validateName(fname,mname,lname)
-    const validateErrorBirthday = validateBirthday(birthday)
-    const validateErrorBarangaySitio = validateBarangayAndSitio(barangay,sitio)
-
-    
-    setBirthdayError(validateErrorBirthday)
-    setPasswordError(validationErrorPassword);
-    setNameError(validateErrorName)
-    setbarangaySitioError(validateErrorBarangaySitio)
-
-   
-    console.log("Barangay error: ", validateErrorBarangaySitio)
-
-
-
-    if (!validateErrorBarangaySitio) {
-      navigation.navigate('CitizenPhoto' as never);
-
-      try {
-        const userResponse = await axios.post('http://192.168.100.127:3000/user/submit', {
-          lname,
-          fname,
-          mname,
-          password,
-          birthday
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (fname !== null) {
-          await AsyncStorage.setItem('fname', fname ?? 'Rolando');
-        }
-        if (lname !== null) {
-          await AsyncStorage.setItem('lname', lname ?? 'Cleofas');
-        }
-        if (mname !== null) {
-          await AsyncStorage.setItem('mname', mname ?? 'Jacob');
-        }
-
-        console.log('User data saved:', userResponse.data);
-
-       
-        const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
-          barangayname: barangay,
-          sitio
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        console.log('Barangay data saved:', barangayResponse.data);
-
-      
-        
-        
-        navigation.navigate('CitizenPhoto' as never);
-      } catch (error: any) {
-        handleAxiosError(error);
-      }
-
-    } else {
-      console.log('Validation errors present, not navigating.');
-    }
-  };
-
-  // username and photo
-    
-  const validateUsernamePhoto = (username: string | null, photo: any) => {
-    if (!username || username.trim() === "") {
-      return "Username cannot be empty.";
-    }
-  
-    if (!photo || photo === "" || typeof photo !== 'string') {
-      return "Photo cannot be empty or invalid.";
-    }
-  
-    return null; // No error
-  };
-  
-
-  const handleConfirmUsernamePhoto = async () => {
-
-    const fn = await AsyncStorage.getItem('fname' ?? 'Rolando');
-    const ln = await AsyncStorage.getItem('lname' ?? 'Cleofas');
-    const mn = await AsyncStorage.getItem('mname' ??  'Jacob');;
-
-    console.log("Username: ", username);
-    console.log("Photo URI: ", photoUri3);
-  
-    const error = validateUsernamePhoto(username, photoUri3);
-    
-    /*
-    if (error) {
-      console.log("Error username photo: ", error);
-      setUsernamePhotoError(error);
-      return;
-    }
-    */
-
     try {
-      const response = await axios.put(`http://192.168.100.127:3000/user/updateUser/${username}`, {
-        fname: fn,
-        lname: ln,
-        mname: mn
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      // Validate the user inputs before proceeding
+      const nameError = validateName(state.firstname ?? '', state.middlename ?? '', state.lastname ?? '');
+      const passwordError = validatePassword(state.password, state.repassword);
+      const birthdayError = validateBirthday(state.birthdate ? state.birthdate.toString() : '');
+      const barangaySitioError = validateBarangayAndSitio(barangay, sitio);
+
+      if (nameError || passwordError || birthdayError || barangaySitioError) {
+        // If there's an error, update the state to show the error message
+        dispatch({
+          actionType: 'error',
+          data: {
+            error: nameError || passwordError || birthdayError || barangaySitioError, // Set the first encountered error
+          },
+        });
+        return; // Prevent navigation if there are errors
+      }
+  
+      // Clear the error if validation passes
+      dispatch({
+        actionType: 'input',
+        data: {
+          error: null,
+        },
       });
   
-      console.log('User updated successfully');
-
-      navigation.navigate('CitizenLogin' as never);
-    } catch (error) {
+      // Submit the user data
+      await userSubmit(state, dispatch);
+  
+      // Submit barangay and sitio
+      const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
+        barangayname: barangay,
+        sitio,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log('Barangay data saved:', barangayResponse.data);
+  
+      // Navigate to the next screen only if all validation passes
+      navigation.navigate('CitizenPhoto' as never);
+      
+    } catch (error: any) {
       handleAxiosError(error);
     }
-  
-    
   };
+  
+
+  // username and photo
+
+  const handleConfirmUsernamePhoto = async () => {
+    try {
+      // Validate the username and photo
+      const usernamePhotoError = validateUsernamePhoto(state.username ?? '', photoUri4);
+  
+      if (usernamePhotoError) {
+        // If there's an error, update the state to show the error message
+        dispatch({
+          actionType: 'error',
+          data: {
+            error: usernamePhotoError,
+          },
+        });
+        return; // Prevent navigation if there's an error
+      }
+  
+      // Clear the error if validation passes
+      dispatch({
+        actionType: 'input',
+        data: {
+          error: null,
+        },
+      });
+  
+      // Update the user information
+      await updateUser(state.username ?? 'Lebron James', dispatch);
+  
+      // Navigate to the next screen only if validation passes
+      navigation.navigate('CitizenLogin' as never);
+      
+    } catch (error: any) {
+      handleAxiosError(error);
+    }
+  };
+  
   
   // citizen login
 
-  const validateLogin = (username: string | null, password: string | null) => {
-    if (!username || username.trim() === "") {
-      return "Username cannot be empty.";
-    }
-
-    if (!password || password.trim() === "") {
-      return "Password cannot be empty.";
-    }
-
-    return null; // No error
-  };
-
-  const handleUsernameLoginChange = (text: string) => {
-    setUsername(text);
-  };
-
-  const handlePassordLoginChange = (text: string) => {
-    setPassword(text);
-  };
-
   const handleCitizenLogin = async () => {
     try {
-      const response = await axios.get('http://192.168.100.28:3000/user/getUser', {
-        params: {
-          username,
-          password
-        },
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-  
-      const error = validateLogin(username, password);
+
+      const error = validateLogin(state.username ?? '', state.password ?? '');
   
       if (error) {
-        console.log("Error during login validation: ", error);
-        setLoginError(error);
+        dispatch({
+          actionType: 'error',
+          data: {
+            error: error,
+          },
+        });
         return;
       }
   
-      const id = response.data?.id;
+      dispatch({
+        actionType: 'input',
+        data: {
+          error: null,
+        },
+      });
   
-      if (id) {
-        await AsyncStorage.setItem('id', id.toString());
-        navigation.navigate('index' as never);
-      } else {
-        console.error('ID not found in response data');
-      }
+      await getUser(state.username ?? 'Lebron James', state.password ?? 'Lebron', dispatch);
+      navigation.navigate('index' as never);
+  
     } catch (error: any) {
-      // If it's a 401 error, handle it gracefully
       if (error.response && error.response.status === 401) {
-        setLoginError('Username or password is incorrect');
+        dispatch({
+          actionType: 'error',
+          data: {
+            error: 'Username or Password is incorrect',
+          },
+        });
       } else {
         handleAxiosError(error);
       }
@@ -401,9 +207,10 @@ const useCheckPassword = () => {
   };
   
   
-  
+
   // for photo
 
+  
   const handlePhotoSelection = async (
     setUri: React.Dispatch<React.SetStateAction<string | null>>, 
     setBase64: React.Dispatch<React.SetStateAction<string | null>>, 
@@ -450,6 +257,36 @@ const useCheckPassword = () => {
       console.error('Error handling photo:', error);
     }
   };
+
+  const handleCitizenPhotoNext = () => {
+    const error = validatePhotos(photoUri1, photoUri2, photoUri3); // Pass the photo URIs directly
+  
+    if (error) {
+      // If there's an error, update the state to show the error message
+      dispatch({
+        actionType: 'error',
+        data: {
+          error: error,
+        },
+      });
+      return; // Prevent navigation if there's an error
+    }
+  
+    // Proceed with the photo upload if there's no error
+    handleUploadPhotos();
+  
+    // Clear the error if validation passes
+    dispatch({
+      actionType: 'input',
+      data: {
+        error: null,
+      },
+    });
+  
+    // Navigate to the next screen
+    navigation.navigate('UsernamePhoto' as never);
+  };
+  
 
   // Functions for specific photo inputs
   const handleTakePhoto1 = () => handlePhotoSelection(setPhotoUri1, setPhotoBase641, 'camera', 'photo1');
@@ -516,25 +353,13 @@ const useCheckPassword = () => {
 };
 
   return {
-    username,
-    setUsername,
-    password,
-    reEnteredPassword,
-    passwordError,
-    handlePasswordChange,
-    handleReEnteredPasswordChange,
+   
     handleNextPress,
     sitio,
     barangay,
-    birthday, 
-    birthdayError,
-    handleMnameChange, 
-    handleLnameChange, 
-    handleFnameChange, 
-    handleBirthdayChange, 
+   
     handleBarangayChange, 
     handleSitioChange, 
-    nameError, 
     setBarangay, 
     setSitio,
     barangaySitioError,
@@ -554,11 +379,13 @@ const useCheckPassword = () => {
     usernamePhotoError,
     handleConfirmUsernamePhoto,
 
-    handlePassordLoginChange,
-    handleUsernameLoginChange,
+    
     handleCitizenLogin,
-    loginError
-  
+    handleChangeState,
+    state,
+    onBirthdayChange,
+
+    handleCitizenPhotoNext
   };
 };
 

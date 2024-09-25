@@ -3,19 +3,23 @@ import { useNavigation } from "expo-router";
 import useLocation from "./useLocation";
 import useSMS from "./useSMS";
 import * as SMS from 'expo-sms';
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {markerSubmit} from  "@/app/services/markerservice";
+import {serviceRequestSubmit} from  "@/app/services/servicerequest";
+import {ActionMarker, MarkerState,InitialMarker,markerReducer} from '@/app/types/marker'
+import {ActionServiceRequest, ServiceRequestState, InitialServiceRequest, serviceRequestReducer} from '@/app/types/servicerequest'
+
 
 // request status = 'pending' | 'approved' | 'rejected'
   
 const useHandleClicks = () => {
-    const {latitude,longitude,setTitle,setDescription, fetchLocation} = useLocation();
+    const {latitude, longitude, fetchLocation} = useLocation();
     const {isAvailable,setResult} = useSMS();
+  
 
+  
 
-    // for service request
-    const [requestType, setRequestType] = useState<string | undefined>();
-    const [requestStatus, setRequestStatus] = useState<string | undefined>();
 
     const [markerEmoji, setMarkerEmoji] = useState<any>();
     const [markerImageSize, setMarkerImageSize] =useState<{width: any, height: any}> ({ width: 65, height: 70 });
@@ -67,81 +71,66 @@ const useHandleClicks = () => {
         navigation.navigate('CitizenLogin' as never);
     };
     
-    const handleEmergencyAssistanceRequestPress = async () => {
-        
-      setTitle("Emergency Assistance Request");
-      setDescription("Emergency Assistance Request");
-      
-      setRequestType("Emergency Assistance Request")
-      setRequestStatus("pending")
-      console.log("Request type and request status: " + requestType,requestStatus);
-    }
 
     
 
-    const handleRouteAssistanceRequestPress = async () => {
-        setTitle("Route Assistance");
-        setDescription("Route Assistance Request");
-        
-        const requestType = "Emergency Assistance Request";
-        const requestStatus = "pending"; 
-       
-        console.log("Request type and request status: " + requestType,requestStatus);
-      }
+  
 
   
 
 
     const EmergencyAssistanceRequest = async (requestType: string, markeremoji: any, imageWidth: number = 65, imageHeight: number = 70, requestStatus: string | null) => {
 
-        setMarkerEmoji(markeremoji);
-        setMarkerImageSize({ width: imageWidth, height: imageHeight });
-        // Fetch the location
-        await fetchLocation();
+      setMarkerEmoji(markeremoji);
+      setMarkerImageSize({ width: imageWidth, height: imageHeight });
+      // Fetch the location
+    
 
-        // gets the id
-        const USERID = await AsyncStorage.getItem('id');
+      // gets the id
+      const USERID = await AsyncStorage.getItem('id');
 
-        try {
-          // Submit marker data
-          const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
-            latitude,
-            longitude,
-            title: requestType,
-            description: "Emergency Assistance Request",
-            UserID: USERID 
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log('Marker submission success:', markerResponse.data);
-      
-          // Submit service request data
-          const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
-            UserID: USERID,
-            requesttype: requestType,  
-            requeststatus: requestStatus,                    
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log('Service request success:', serviceRequestResponse.data);
-          console.log('Request type set to: ' + requestType);
+      try {
+        // Submit marker data
+        const markerResponse = await axios.post('http://192.168.100.127:3000/marker/submit', {
+          latitude,
+          longitude,
+          title: requestType,
+          description: "Emergency Assistance Request",
+          UserID: USERID 
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Marker submission success:', markerResponse.data);
+    
+        // Submit service request data
+        const serviceRequestResponse = await axios.post('http://192.168.100.127:3000/servicerequest/submit', {
+          UserID: USERID,
+          requesttype: requestType,  
+          requeststatus: requestStatus,                    
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Service request success:', serviceRequestResponse.data);
+        console.log('Request type set to: ' + requestType);
 
-          const markerID = markerResponse.data.id;
-          
-          
+        const markerID = markerResponse.data.id;
         
-
-        } catch (error: any) {
-          handleAxiosError(error);
-        }
+        
       
-        // Send SMS notification
-        // sendSMS("Emergency Assistance Request");
-      };
+
+      } catch (error: any) {
+        handleAxiosError(error);
+      }
+    
+      // Send SMS notification
+      // sendSMS("Emergency Assistance Request");
+    };
+    
+    
       
   
     const RouteAssistance = async () => {
@@ -151,8 +140,7 @@ const useHandleClicks = () => {
         try {
       
           const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
-              latitude,
-              longitude,
+             
               title: "Emergency Assistance Request",
               description: "Emergency Assistance Request",
           }, {
@@ -165,11 +153,11 @@ const useHandleClicks = () => {
         handleAxiosError(error);
         }
     
-        // Send SMS notification
-        //sendSMS("Route Assistance Request");
+      
     };
       
   
+    
 
     const sendSMS = async (message: string) => {
         if (!isAvailable) {
@@ -246,8 +234,6 @@ const useHandleClicks = () => {
         handleLoginButtonInSignupAsCitizenPress,
         EmergencyAssistanceRequest,
         RouteAssistance,
-        handleRouteAssistanceRequestPress,
-        handleEmergencyAssistanceRequestPress,
 
         onFileChange,
         onFileUpload,

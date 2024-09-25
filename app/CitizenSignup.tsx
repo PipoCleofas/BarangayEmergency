@@ -8,9 +8,9 @@ import Sitio from '@/components/Sitio';
 import useDataInput from '@/hooks/useDataInput';
 
 export default function CitizenSignup() {
-  const { handleBackButtonPress,} = useHandleClicks();
+  const { handleBackButtonPress} = useHandleClicks();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { barangay, sitio, handlePasswordChange, handleReEnteredPasswordChange, handleNextPress, barangaySitioError, passwordError, birthday,birthdayError, handleMnameChange, handleLnameChange, handleFnameChange, handleBirthdayChange, handleBarangayChange, handleSitioChange, nameError } = useDataInput();
+  const { onBirthdayChange, handleChangeState, barangay, sitio, handleNextPress, barangaySitioError, handleBarangayChange, handleSitioChange, state } = useDataInput();
 
 
   return (
@@ -23,20 +23,31 @@ export default function CitizenSignup() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>LAST NAME:</Text>
-        <TextInput style={styles.textInput}  maxLength={15} onChangeText={(text) => handleLnameChange(text)} />
+        <TextInput 
+          style={styles.textInput}  
+          maxLength={15}   
+          value={state.lastname ?? ''}
+          onChangeText={(text) => handleChangeState('lastname', text)} />
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>FIRST NAME:</Text>
-        <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleFnameChange(text)} />
+        <TextInput 
+          style={styles.textInput} 
+          maxLength={15} 
+          value={state.firstname ?? ''}
+          onChangeText={(text) => handleChangeState('firstname', text)} />
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>MIDDLE NAME:</Text>
-        <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleMnameChange(text)} />
+        <TextInput 
+          style={styles.textInput} 
+          maxLength={15} 
+          value={state.middlename ?? ''}
+          onChangeText={(text) => handleChangeState('middlename', text)} />
       </View>
 
-      {nameError && <Text style={styles.errorText}>{nameError}</Text>}
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>PASSWORD:</Text>
@@ -44,7 +55,8 @@ export default function CitizenSignup() {
           <TextInput
             style={styles.textInput}
             maxLength={15}
-            onChangeText={(text) => handlePasswordChange(text)}
+            value={state.password ?? ''}
+            onChangeText={(text) => handleChangeState('password', text)}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconWrapper}>
@@ -59,7 +71,8 @@ export default function CitizenSignup() {
           <TextInput
             style={styles.textInput}
             maxLength={15}
-            onChangeText={(text) => handleReEnteredPasswordChange(text)}
+            value={state.repassword ?? ''}
+            onChangeText={(text) => handleChangeState('repassword', text)}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconWrapper}>
@@ -68,9 +81,8 @@ export default function CitizenSignup() {
         </View>
       </View>
 
-      {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
-
+      {/*value={birthday}*/}
       <View style={styles.inputContainer}>
         <Text style={styles.labelInput}>BIRTHDAY:</Text>
         <TextInput
@@ -79,12 +91,11 @@ export default function CitizenSignup() {
           placeholder="MM/DD/YYYY"
           placeholderTextColor="#cccccc"
           keyboardType="numeric"
-          value={birthday}
-          onChangeText={(text) => handleBirthdayChange(text)}
+          value={state.birthdate ? state.birthdate.toString() : undefined}
+          onChangeText={(text) => onBirthdayChange(text)}
         />
       </View>
 
-      {birthdayError && <Text style={styles.errorText}>{birthdayError}</Text>}
 
 
       <View style={styles.inputContainer}>
@@ -97,7 +108,7 @@ export default function CitizenSignup() {
         <Barangay value={barangay} onValueChange={handleBarangayChange} />
       </View>
 
-      {barangaySitioError && <Text style={styles.errorText}>{barangaySitioError}</Text>}
+      {state.error && <Text style={styles.errorText}>{state.error}</Text>}
 
 
 

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Modal, Alert, Pressable } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import useHandleClicks from "@/hooks/useHandleClicks";
+import useDataInput from "@/hooks/useDataInput";
 import usePhoto from '@/hooks/usePhoto';
 
 export default function CitizenPhoto() {
@@ -12,6 +13,7 @@ export default function CitizenPhoto() {
 
   const { handleLoginButtonPress,handleBackButtonInCitizenPhotoPress } = useHandleClicks();
   const { handleUploadPhotos, photoUri1, photoUri2, photoUri3, handleSelectPhoto1 , handleSelectPhoto2, handleSelectPhoto3,handleTakePhoto1, handleTakePhoto2,handleTakePhoto3 } = usePhoto();
+  const {handleCitizenPhotoNext,state} = useDataInput();
 
   return (
 
@@ -136,27 +138,27 @@ export default function CitizenPhoto() {
 
         {photoUri1 && (
           <View style={styles.previewContainer}>
-            <Text>Selected Image:</Text>
+            <Text>Valid ID:</Text>
             <Image source={{ uri: photoUri1 }} style={styles.previewImage} />
           </View>
         )}
 
         {photoUri2 && (
           <View style={styles.previewContainer}>
-            <Text>Selected Image:</Text>
+            <Text>Front View:</Text>
             <Image source={{ uri: photoUri2 }} style={styles.previewImage} />
           </View>
         )}
 
         {photoUri3 && (
           <View style={styles.previewContainer}>
-            <Text>Selected Image:</Text>
+            <Text>Back View:</Text>
             <Image source={{ uri: photoUri3 }} style={styles.previewImage} />
           </View>
         )}
       </View>
       
-
+      {state.error && <Text style={styles.errorText}>{state.error}</Text>}
       <View style={styles.columnButtons}>
         <TouchableOpacity style={styles.button1}>
           <SimpleLineIcons name="arrow-left" size={16} color="black" style={styles.icon} onPress={handleBackButtonInCitizenPhotoPress} />
@@ -327,7 +329,12 @@ const styles = StyleSheet.create({
     
     color: 'white',
   },
-  
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
   
 
 });
