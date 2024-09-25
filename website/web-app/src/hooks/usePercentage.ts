@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export const usePercentage = (data: any) => {
-  const [percentages, setPercentages] = useState({});
+export const usePercentage = (data: Record<string, number>) => {
+  const [percentages, setPercentages] = useState<Record<string, string>>({});
 
-  const calculatePercentages = (data: any) => {
-    const total = Object.values(data).reduce((acc, value) => acc + value, 0);
-    const result = Object.keys(data).reduce((acc, key) => {
+  const calculatePercentages = (data: Record<string, number>) => {
+    const total = Object.values(data).reduce((acc: number, value: number) => acc + value, 0);
+    const result = Object.keys(data).reduce((acc: Record<string, string>, key: string) => {
       acc[key] = ((data[key] / total) * 100).toFixed(2);
       return acc;
     }, {});
     setPercentages(result);
   };
 
-  // Calculate the percentages on the first render
-  if (!Object.keys(percentages).length) {
-    calculatePercentages(data);
-  }
+  useEffect(() => {
+    if (Object.keys(data).length) {
+      calculatePercentages(data);
+    }
+  }, [data]);
 
   return percentages;
 };
