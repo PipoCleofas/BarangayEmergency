@@ -65,6 +65,37 @@ router.get('/getUser', (req, res) => {
   });
 });
 
+router.get('/getUserList', (req, res) => {
+  const { username, password } = req.query;
+
+  const verify = 'SELECT * FROM userr';
+
+  connection.query(verify, [username, password], (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.length > 0) {
+      const user = [...results];
+      return res.status(200).json({
+        id: user.UserID,
+        username: user.Username,
+        fname: user.FirstName,
+        lname: user.LastName,
+        mname: user.MiddleName,
+        password: user.Password,
+        birthday: user.Birthday,
+        email: user.Email,
+        phone: user.PhoneNumber,
+        address: user.Address,
+        adminID: user.AdminID
+      });
+    } else {
+      return res.status(401).json({ message: 'No account found' });
+    }
+  });
+});
 
 
 router.put('/updateUser/:newUsername', (req, res) => {

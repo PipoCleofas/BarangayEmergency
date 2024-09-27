@@ -1,11 +1,10 @@
-
 import logo from '../pictures/logo.gif'; 
-
+import { useHandleClicks } from '../hooks/useHandleClicks';
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLogin() {
-
-
-
+  const navigate = useNavigate();
+  const {onLoginClick} = useHandleClicks();
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -17,7 +16,7 @@ export default function AdminLogin() {
           <input type="text" style={{ width: '175px', padding: '4px', marginBottom: '20px', backgroundColor: '#F08080', textAlign: 'left', border: 'none', borderRadius: '15px' }} />
           <label style={{ fontSize: 14, marginBottom: 10, marginInline: '6px', textAlign: 'left' }}>Password:</label>&nbsp;
           <input type="password" style={{ width: '175px', padding: '4px', marginBottom: '20px', backgroundColor: '#F08080', textAlign: 'left', border: 'none', borderRadius: '15px' }} />
-          <button type="submit" style={{ width: '175px', padding: '4px', marginBottom: '20px', backgroundColor: 'maroon', border: 'none', borderRadius: '15px', color: 'white', fontSize: 16, marginInline: '84px' }}>Sign In</button>
+          <button onClick={(e) => onLoginClick(e, navigate)} type="submit" style={{ width: '175px', padding: '4px', marginBottom: '20px', backgroundColor: 'maroon', border: 'none', borderRadius: '15px', color: 'white', fontSize: 16, marginInline: '84px' }}>Sign In</button>
         </form>
       </div>
     </div>

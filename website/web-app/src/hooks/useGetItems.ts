@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
 import {handleAxiosError} from "../../utils/handleAxiosError";
 import {ServiceProvider} from '../types/ServiceProviderList'
 import {Client} from '../types/ClientList'
@@ -12,109 +11,85 @@ export function useGetItems() {
     const [serviceProviders,setserviceProviders] = useState<ServiceProvider[]>([]);
     const [error,setError] = useState<string | null>(null);
 
-    const navigate = useNavigate();
 
-    const checkAccounts = async (target: any) => {
-
-        switch(target){
+    const checkAccounts = async (target: string) => {
+        try {
+          switch(target) {
             case 'admin':
-                try{
-                    const response = await axios.get('http://192.168.100.127:3000/admin/getAdmin');
-                    
-                    if(response.status === 500){
-                        setError('Username or password is incorrect.');
-                        return;
-                    }
-        
-                    setError(null);     
-                    navigate('AdminDashboard');
-                }
-                catch(error){
-                    handleAxiosError(error);
-                }
-                break;
+              const adminResponse = await axios.get('http://192.168.100.127:3000/admin/getAdmin');
+              
+              if (adminResponse.status === 500) {
+                setError('Username or password is incorrect.');
+              } else {
+                setError(null);     
+              }
+              break;
+      
             case 'clients':
-                try{
-                    const response = await axios.get<Client[]>('http://192.168.100.127:3000/user/getUserList');
-                    
-                    const clientList = response.data.map(client => ({
-                        UserID: client.UserID,
-                        Username: client.Username,
-                        FirstName: client.FirstName,
-                        LastName: client.LastName,
-                    }));
-
-                    setClients(clientList);
-
-                    
-                    if(response.status === 500){
-                        setError('No clients found.');;
-                        return;
-                    }
-        
-                    setError(null);
-                }
-                catch(error){
-                    handleAxiosError(error);
-                }
-                break;
+              const clientResponse = await axios.get<Client[]>('http://192.168.100.127:3000/user/getUserList');
+              const clientList = clientResponse.data.map(client => ({
+                UserID: client.UserID,
+                Username: client.Username,
+                FirstName: client.FirstName,
+                LastName: client.LastName,
+              }));
+      
+              setClients(clientList);
+      
+              if (clientResponse.status === 500) {
+                setError('No clients found.');
+              } else {
+                setError(null);
+              }
+              break;
+      
             case 'serviceProviders':
-                try{
-                    const response = await axios.get<ServiceProvider[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
-                    
-                    const serviceProviderList = response.data.map(sp => ({
-                        ProviderId: sp.ProviderId,
-                        ProviderType: sp.ProviderType,
-                        Username: sp.Username,
-                        Phonenumber: sp.Phonenumber,
-                    }));
-
-                    setserviceProviders(serviceProviderList);
-
-
-                    if(response.status === 500){
-                        setError('No service providers found.');;
-                        return;
-                    }
-                    setError(null);        
-                }
-                catch(error){
-                    handleAxiosError(error);
-                }
-                break;
+              const spResponse = await axios.get<ServiceProvider[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
+              const serviceProviderList = spResponse.data.map(sp => ({
+                ProviderId: sp.ProviderId,
+                ProviderType: sp.ProviderType,
+                Username: sp.Username,
+                Phonenumber: sp.Phonenumber,
+              }));
+      
+              setserviceProviders(serviceProviderList);
+      
+              if (spResponse.status === 500) {
+                setError('No service providers found.');
+              } else {
+                setError(null);        
+              }
+              break;
+      
             case 'requests':
-                try{
-                    const response = await axios.get<Request[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
-                    
-                    const requests = response.data.map(r => ({
-                        RequestID: r.RequestID,
-                        UserID: r.UserID,
-                        RequestType: r.RequestType,
-                        RequestStatus: r.RequestStatus,
-                        timestamp: r.timestamp,
-                    }));
-
-                    setRequests(requests);
-
-
-                    if(response.status === 500){
-                        setError('No requests found.');;
-                        return;
-                    }
-                    setError(null);        
-                }
-                catch(error){
-                    handleAxiosError(error);
-                }
-                break;
-            
-
+              const requestResponse = await axios.get<Request[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
+              const requests = requestResponse.data.map(r => ({
+                RequestID: r.RequestID,
+                UserID: r.UserID,
+                RequestType: r.RequestType,
+                RequestStatus: r.RequestStatus,
+                timestamp: r.timestamp,
+              }));
+      
+              setRequests(requests);
+      
+              if (requestResponse.status === 500) {
+                setError('No requests found.');
+              } else {
+                setError(null);        
+              }
+              break;
+      
+            default:
+              setError('Invalid target.');
+          }
+        } catch (error) {
+          handleAxiosError(error); // Handle Axios error outside
         }
-        
-
-    }
+    };
 
     useEffect(() => {
+
         checkAccounts('clients');
         checkAccounts('serviceProviders');
         checkAccounts('requests');
