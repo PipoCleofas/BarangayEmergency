@@ -1,12 +1,12 @@
 import ViewRequestleft from '../components/ViewRequestleft';
-import AdminDashboardComponentRight from '../components/AdminDashboardComponentright';
+import ViewRequestRight from '../components/ViewRequestRight';
 import '../../utils/Home.css';
 
 export default function ViewRequest() {
   return (
     <div className='admin-dashboard'>
       <ViewRequestleft/>
-      <AdminDashboardComponentRight />
+      <ViewRequestRight />
     </div>
   );
 }

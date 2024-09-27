@@ -1,106 +1,73 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import {handleAxiosError} from "../../utils/handleAxiosError";
-import {ServiceProvider} from '../types/ServiceProviderList'
-import {Client} from '../types/ClientList'
-import {Request} from '../types/Request'
+import { handleAxiosError } from "../../utils/handleAxiosError";
+import { Client } from '../types/ClientList';
+import { Request } from '../types/Request';
 
 export function useGetItems() {
-    const [requests,setRequests] = useState<Request[]>([]);
-    const [clients,setClients] = useState<Client[]>([]);
-    const [serviceProviders,setserviceProviders] = useState<ServiceProvider[]>([]);
-    const [error,setError] = useState<string | null>(null);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-
-    const checkAccounts = async (target: string) => {
-        try {
-          switch(target) {
-            case 'admin':
-              const adminResponse = await axios.get('http://192.168.100.127:3000/admin/getAdmin');
-              
-              if (adminResponse.status === 500) {
-                setError('Username or password is incorrect.');
-              } else {
-                setError(null);     
-              }
-              break;
-      
-            case 'clients':
-              const clientResponse = await axios.get<Client[]>('http://192.168.100.127:3000/user/getUserList');
-              const clientList = clientResponse.data.map(client => ({
-                UserID: client.UserID,
-                Username: client.Username,
-                FirstName: client.FirstName,
-                LastName: client.LastName,
-              }));
-      
-              setClients(clientList);
-      
-              if (clientResponse.status === 500) {
-                setError('No clients found.');
-              } else {
-                setError(null);
-              }
-              break;
-      
-            case 'serviceProviders':
-              const spResponse = await axios.get<ServiceProvider[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
-              const serviceProviderList = spResponse.data.map(sp => ({
-                ProviderId: sp.ProviderId,
-                ProviderType: sp.ProviderType,
-                Username: sp.Username,
-                Phonenumber: sp.Phonenumber,
-              }));
-      
-              setserviceProviders(serviceProviderList);
-      
-              if (spResponse.status === 500) {
-                setError('No service providers found.');
-              } else {
-                setError(null);        
-              }
-              break;
-      
-            case 'requests':
-              const requestResponse = await axios.get<Request[]>('http://192.168.100.127:3000/serviceprovider/getSPList');
-              const requests = requestResponse.data.map(r => ({
-                RequestID: r.RequestID,
-                UserID: r.UserID,
-                RequestType: r.RequestType,
-                RequestStatus: r.RequestStatus,
-                timestamp: r.timestamp,
-              }));
-      
-              setRequests(requests);
-      
-              if (requestResponse.status === 500) {
-                setError('No requests found.');
-              } else {
-                setError(null);        
-              }
-              break;
-      
-            default:
-              setError('Invalid target.');
+  const checkAccounts = async (target: string, username: string, password: string): Promise<boolean> => {
+    try {
+      switch (target) {
+        case 'admin': {
+          const adminResponse = await axios.get(`http://192.168.100.127:3000/admin/getAdmin`, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            params: {
+              username,
+              password
+            }
+          });
+          
+          if (adminResponse.status === 200) {
+            console.log('Admin authenticated:', adminResponse.data);
+            return true; 
+          } else {
+            setError('Invalid username or password'); // Set a custom error message
+            return false; 
           }
-        } catch (error) {
-          handleAxiosError(error); // Handle Axios error outside
         }
-    };
-
-    useEffect(() => {
-
-        checkAccounts('clients');
-        checkAccounts('serviceProviders');
-        checkAccounts('requests');
-
-    },[clients,serviceProviders]);
-
-    return {
-        error,
-        requests,
-        clients,
-        serviceProviders,
-        checkAccounts
-    };
+  
+        // Handle clients and requests similarly...
+        case 'clients': {
+          const clientResponse = await axios.get<Client[]>('http://192.168.100.127:3000/user/getUserList');
+          console.log(clientResponse.data);
+          setClients(clientResponse.data);
+          setError(null);
+          return true;
+        }
+  
+        case 'requests': {
+          const requestResponse = await axios.get<Request[]>('http://192.168.100.127:3000/servicerequest/getRequests');
+          console.log(requestResponse.data);
+          setRequests(requestResponse.data);
+          setError(null);
+          return true;
+        }
+  
+        default:
+          setError('Invalid target.');
+          return false;
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        setError('Invalid username or password');
+      } else {
+        const message = handleAxiosError(error);
+        setError(message || 'An error occurred while fetching data.');
+      }
+      return false; 
+    }
+  };
+  
+  return {
+    error,
+    requests,
+    clients,
+    checkAccounts,
+  };
 }

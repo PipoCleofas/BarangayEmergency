@@ -24,16 +24,26 @@ function validateUserData(req, res, next) {
 
 
 router.get('/getAdmin', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.query; // Use req.query instead of req.body
 
-  const verify = `SELECT * FROM admin WHERE username = ${username} AND password = ${password}`
+  const verify = `SELECT * FROM admin WHERE Username = ? AND Password = ?`;
 
   connection.query(verify, [username, password], (error, results) => {
-    if (verify) {
-      return res.status(201).send('Login successful');
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).json({ message: 'Database error' });
     }
-    res.status(500).send('Username or password is incorrect.');
+    if (results.length > 0) {
+      let admin = results[0];
+      return res.status(200).json({ 
+        username: admin.Username,
+      });
+    } else {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
   });
 });
+
+
 
 module.exports = { router, setConnectionAdmin };
