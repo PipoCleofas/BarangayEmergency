@@ -3,11 +3,22 @@ import { useState } from "react";
 
 
 export const useLanguage = () => {
-    const [language, setLanguage] = useState<string>('en');
+    const [language, setLanguage] = useState<string>('English');
 
     const changeLanguage = (lang: string) => {
         setLanguage(lang);
       };
+
+    const data = [
+      {
+          label: 'English',
+          value: 'English'
+      },
+      {
+          label: 'Filipino',
+          value: 'Filipino'
+      },
+      ];
 
       const translations = {
         en: {
@@ -20,9 +31,10 @@ export const useLanguage = () => {
         }
       };
 
-      
       return { 
+        data,
         language, 
-        changeLanguage 
+        changeLanguage,
+        
       };
 }

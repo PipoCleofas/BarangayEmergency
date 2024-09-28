@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import { Client } from '../types/ClientList';
@@ -8,7 +8,6 @@ export function useGetItems() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const checkAccounts = async (target: string, username?: string, password?: string): Promise<boolean> => {
 
