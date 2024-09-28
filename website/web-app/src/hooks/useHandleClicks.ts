@@ -34,6 +34,6 @@ export const useHandleClicks = () => {
   return {
     onLoginClick,
     handleNavClick,
-    error // Return the error state to be used in the AdminLogin component
+    error 
   };
 };

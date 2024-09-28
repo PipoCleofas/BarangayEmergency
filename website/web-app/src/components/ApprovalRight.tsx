@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import {useGetItems} from '../hooks/useGetItems'
-
+import { useGetItems } from '../hooks/useGetItems';
 
 export default function ApprovalRight() {
     const { checkAccounts, clients } = useGetItems();
@@ -8,20 +7,23 @@ export default function ApprovalRight() {
 
     useEffect(() => {
         const fetchData = async () => {
-            //await checkAccounts('clients');
+            const success = await checkAccounts('clients');
+            if (success) {
+                console.log('Clients fetched successfully:', clients);
+            }
             setLoading(false); 
         };
 
         fetchData();
-    }, [checkAccounts]);
+    }, [checkAccounts, clients]);
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    return(
+    return (
         <div>
-            {clients.map((user: any) => (
+            {clients.map((user) => (
                 <div key={user.UserID}>
                     <p>{user.UserID}</p>
                     <p>{user.Username}</p>
