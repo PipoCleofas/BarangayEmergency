@@ -18,7 +18,7 @@ export const userSubmit = async (
           fname: state.firstname,
           mname: state.middlename,
           password: state.password,
-          repasswrod: state.repassword,
+          repassword: state.repassword,
           birthday: state.birthdate?.toString(),
         },
         {
@@ -27,7 +27,18 @@ export const userSubmit = async (
           }
         }
       );
-  
+      
+      const { userId } = userResponse.data;
+
+
+      if (userId) {
+        await AsyncStorage.setItem('firstId', userId.toString());
+        console.log('User ID saved to AsyncStorage:', userId);
+      } else {
+        throw new Error('User ID is missing from the backend response');
+      }
+
+
       // Save user details in AsyncStorage
       if (state.firstname) await AsyncStorage.setItem('fname', state.firstname);
       if (state.lastname) await AsyncStorage.setItem('lname', state.lastname);

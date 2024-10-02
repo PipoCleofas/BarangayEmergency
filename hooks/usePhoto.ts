@@ -86,6 +86,7 @@ const usePhotoPicker = () => {
       { uri: photoUri3, base64: photoBase643, key: 'photo3' },
     ];
 
+    navigation.navigate('UsernamePhoto' as never)
     // Trigger onFileUpload for each photo if available
     photos.forEach(photo => {
       if (photo.uri && photo.base64) {

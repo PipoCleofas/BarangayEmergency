@@ -36,7 +36,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.11.0",
     "prop-types": "^15.8.1",

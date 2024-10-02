@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useGetItems } from '../hooks/useGetItems';
 
 export default function ApprovalRight() {
     const { checkAccounts, clients } = useGetItems();
     const [loading, setLoading] = useState(true);
+    const [updatingStatus, setUpdatingStatus] = useState<number | null>(null); // Stores the userId currently being updated
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,6 +18,32 @@ export default function ApprovalRight() {
 
         fetchData();
     }, [checkAccounts, clients]);
+
+    const updateUserStatus = async (status: string, userId: number) => {
+        const url = `http://192.168.100.127:3000/user/updateStatusUser/${status}`;
+        console.log('Attempting to update user status at:', url);  // Log the full URL
+    
+        try {
+            setUpdatingStatus(userId); // Set the updating status
+            const response = await axios.put(url, {
+                UserID: userId
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('User status updated:', response.data);
+    
+            await checkAccounts('clients'); // Refresh the clients list after the update
+        } catch (error) {
+            console.error('Error updating user status:', error);
+        } finally {
+            setUpdatingStatus(null); // Reset updating status after operation
+        }
+    };
+
+    // Filter out approved or rejected users
+    const filteredClients = clients.filter(user => user.Status === 'pending'); // error is here
 
     if (loading) {
         return <div>Loading...</div>;
@@ -30,10 +58,10 @@ export default function ApprovalRight() {
             display: 'flex', 
             flexDirection: 'column',
             alignItems: 'center',
-            margin: 0, // Remove default margin
-            boxSizing: 'border-box' // Ensure padding doesn't add extra width/height
+            margin: 0, 
+            boxSizing: 'border-box' 
         }}>
-            {clients.map((user) => (
+            {filteredClients.map((user) => (
                 <div
                     key={user.UserID}
                     style={{
@@ -44,7 +72,6 @@ export default function ApprovalRight() {
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                         width: '100%',
                         maxWidth: '500px',
-                       
                     }}
                 >
                     <p style={{ marginBottom: '10px', fontSize: '18px' }}>User ID: {user.UserID}</p>
@@ -59,14 +86,16 @@ export default function ApprovalRight() {
                                 borderRadius: '5px',
                                 border: 'none',
                                 cursor: 'pointer',
-                                backgroundColor: '#d9534f',
+                                backgroundColor: '#5cb85c',
                                 color: '#fff',
-                                transition: 'background-color 0.3s'
+                                transition: 'background-color 0.3s',
+                                opacity: updatingStatus === user.UserID ? 0.6 : 1, // Change button appearance while updating
+                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', // Disable while updating
                             }}
-                            onMouseEnter={e => (e.target as HTMLElement).style.backgroundColor = '#c9302c'}
-                            onMouseLeave={e => (e.target as HTMLElement).style.backgroundColor = '#d9534f'}
+                            onClick={() => updateUserStatus('approved', user.UserID)}
+                            disabled={updatingStatus === user.UserID} // Disable button while updating
                         >
-                            Approve
+                            {updatingStatus === user.UserID ? 'Approving...' : 'Approve'}
                         </button>
                         <button
                             style={{
@@ -77,12 +106,14 @@ export default function ApprovalRight() {
                                 cursor: 'pointer',
                                 backgroundColor: '#d9534f',
                                 color: '#fff',
-                                transition: 'background-color 0.3s'
+                                transition: 'background-color 0.3s',
+                                opacity: updatingStatus === user.UserID ? 0.6 : 1, // Change button appearance while updating
+                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', // Disable while updating
                             }}
-                            onMouseEnter={e => (e.target as HTMLElement).style.backgroundColor = '#c9302c'}
-                            onMouseLeave={e => (e.target as HTMLElement).style.backgroundColor = '#d9534f'}
+                            onClick={() => updateUserStatus('rejected', user.UserID)}
+                            disabled={updatingStatus === user.UserID} // Disable button while updating
                         >
-                            Reject
+                            {updatingStatus === user.UserID ? 'Rejecting...' : 'Reject'}
                         </button>
                     </div>
                 </div>
@@ -90,3 +121,4 @@ export default function ApprovalRight() {
         </div>
     );
 }
+

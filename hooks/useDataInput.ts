@@ -78,53 +78,51 @@ const useCheckPassword = () => {
 
   const handleNextPress = async () => {
     try {
-      // Validate the user inputs before proceeding
+      // Validate the user inputs
       const nameError = validateName(state.firstname ?? '', state.middlename ?? '', state.lastname ?? '');
       const passwordError = validatePassword(state.password, state.repassword);
       const birthdayError = validateBirthday(state.birthdate ? state.birthdate.toString() : '');
       const barangaySitioError = validateBarangayAndSitio(barangay, sitio);
-
+  
       if (nameError || passwordError || birthdayError || barangaySitioError) {
-        // If there's an error, update the state to show the error message
         dispatch({
           actionType: 'error',
-          data: {
-            error: nameError || passwordError || birthdayError || barangaySitioError, // Set the first encountered error
-          },
+          data: { error: nameError || passwordError || birthdayError || barangaySitioError },
         });
         return; // Prevent navigation if there are errors
       }
   
-      // Clear the error if validation passes
-      dispatch({
-        actionType: 'input',
-        data: {
-          error: null,
-        },
-      });
+      // Clear errors
+      dispatch({ actionType: 'input', data: { error: null } });
   
-      // Submit the user data
+      // Submit the user data and await response
       await userSubmit(state, dispatch);
   
-      // Submit barangay and sitio
-      const barangayResponse = await axios.post('http://192.168.100.127:3000/barangay/submit', {
-        barangayname: barangay,
-        sitio,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      // Retrieve the user ID from AsyncStorage
+      const id = await AsyncStorage.getItem('firstId');
+      if (!id) {
+        throw new Error('User ID not found in AsyncStorage');
+      }
+  
+      console.log('Retrieved User ID:', id);
+  
+      // Submit barangay and sitio data
+      const barangayResponse = await axios.post(
+        'http://192.168.100.127:3000/barangay/submit',
+        { barangayname: barangay, sitio, UserID: id },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
   
       console.log('Barangay data saved:', barangayResponse.data);
   
-      // Navigate to the next screen only if all validation passes
+      // Navigate to the next screen
       navigation.navigate('CitizenPhoto' as never);
-      
+  
     } catch (error: any) {
       handleAxiosError(error);
     }
   };
+  
   
 
   // username and photo
@@ -132,7 +130,7 @@ const useCheckPassword = () => {
   const handleConfirmUsernamePhoto = async () => {
     try {
       // Validate the username and photo
-      const usernamePhotoError = validateUsernamePhoto(state.username ?? '', photoUri4);
+      const usernamePhotoError = validateUsernamePhoto(state.username ?? '');
   
       if (usernamePhotoError) {
         // If there's an error, update the state to show the error message

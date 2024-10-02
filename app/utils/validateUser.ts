@@ -116,17 +116,20 @@ export const validateName = (fname: string | null, mname: string | null, lname: 
     return null; 
   };
 
-  export const validateUsernamePhoto = (username: string | null, photo: any) => {
+  export const validateUsernamePhoto = (username: string | null, photo?: any) => {
     if (!username || username.trim() === "") {
       return "Username cannot be empty.";
     }
-  
+    
+    /*
     if (!photo || photo === "" || typeof photo !== 'string') {
       return "Photo cannot be empty or invalid.";
     }
-  
+    */
+   
     return null; // No error
   };
+  
 
   export const validatePhotos = (photo1: string | null,photo2: string | null,photo3: string | null) => {
 

@@ -25,24 +25,30 @@ function validateUserData(req, res, next) {
 
 
 router.post('/submit', validateUserData, (req, res) => {
-  const {  lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID } = req.body;
+  const { lname, fname, mname, password, birthday, Email, PhoneNumber, AdminID } = req.body;
 
-  const query = 'INSERT INTO userr (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, Address, AdminID) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = `INSERT INTO user (LastName, FirstName, MiddleName, Password, Birthday, Email, PhoneNumber, AdminID) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  connection.query(query, [ lname, fname, mname, password, birthday, Email, PhoneNumber, Address, AdminID], (error, results) => {
+  connection.query(query, [lname, fname, mname, password, birthday, Email, PhoneNumber, AdminID], (error, results) => {
     if (error) {
       console.error('Database error:', error.message);
       return res.status(500).send('Database error');
     }
-    res.status(201).send('Data saved successfully');
+
+    // Check if insertion was successful and return the inserted UserID
+    const insertedUserId = results.insertId; // This is the auto-incremented ID
+    res.status(201).json({ message: 'Data saved successfully', userId: insertedUserId });
   });
 });
+
+
 
 
 router.get('/getUser', (req, res) => {
   const { username, password } = req.query;
 
-  const verify = `SELECT * FROM userr WHERE Username = ? AND Password = ?`;
+  const verify = `SELECT * FROM user WHERE Username = ? AND Password = ?`;
 
   connection.query(verify, [username, password], (error, results) => {
     if (error) {
@@ -66,7 +72,7 @@ router.get('/getUser', (req, res) => {
 });
 
 router.get('/getUserList', (req, res) => {
-  const verify = 'SELECT * FROM userr';
+  const verify = 'SELECT * FROM user';
 
   connection.query(verify, (error, results) => {
     if (error) {
@@ -95,7 +101,7 @@ router.put('/updateUser/:newUsername', (req, res) => {
     return res.status(400).send('First name, last name, and middle name are required to identify the user');
   }
 
-  const query = `UPDATE userr SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
+  const query = `UPDATE user SET username = ? WHERE FirstName = ? AND LastName = ? AND MiddleName = ?`;
   const values = [newUsername, fname, lname, mname]; 
 
   connection.query(query, values, (error, results) => {
@@ -111,6 +117,37 @@ router.put('/updateUser/:newUsername', (req, res) => {
     res.status(200).send('Username updated successfully backend');
   });
 });
+
+router.put('/updateStatusUser/:status', (req, res) => {
+  const { status } = req.params;  // Extract the status from URL
+  const { UserID } = req.body;    // Extract user ID from request body
+    
+  if (!UserID) {
+      return res.status(400).send('UserID is required');
+  }
+
+  if (!UserID) {
+    return res.status(400).send('UserID is required');
+  }
+
+  const query = 'UPDATE user SET Status = ? WHERE UserID = ?';
+  const values = [status, UserID]; 
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    res.status(200).send('User status updated successfully');
+  });
+});
+
+
 
 
 

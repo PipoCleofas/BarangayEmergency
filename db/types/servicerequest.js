@@ -50,6 +50,32 @@ router.get('/getRequests', (req, res) => {
   });
 });
 
+router.put('/updateRequest/:newStatus', (req, res) => {
+  const newStatus = req.params.newStatus; 
+  const { UserID } = req.body;    
+
+  console.log('Received data:', { newStatus, UserID });
+
+  if (!UserID) {
+    return res.status(400).send('UserID is required');
+  }
+
+  const query = `UPDATE servicerequesttt SET RequestStatus = ? WHERE UserID = ?`;
+  const values = [newStatus, UserID]; 
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Database error:', error.message);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).send('Request not found');
+    }
+
+    res.status(200).send('Status updated successfully backend');
+  });
+});
 
 
 
