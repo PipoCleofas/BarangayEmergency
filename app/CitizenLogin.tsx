@@ -24,6 +24,7 @@ export default function CitizenLogin() {
             </View>
 
             {state.error && <Text style={styles.errorText}>{state.error}</Text>}
+            
             <View style={styles.columnButtons}>
                 <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
                     <SimpleLineIcons name="arrow-left" />

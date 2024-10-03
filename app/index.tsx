@@ -9,6 +9,7 @@ import { useNavigation } from 'expo-router';
 
 
 export default function Index() {
+
   const { location, errorMsg, isFetching } = useLocation();
   const { 
 

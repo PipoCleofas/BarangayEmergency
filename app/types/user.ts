@@ -104,11 +104,12 @@ export interface Action {
           username: action.data.username ?? state.username,
           error: null,
         };
-      case 'error':
-        return {
-          ...state,
-          error: action.data.error ?? 'Unknown error',
-        };
+        case 'error':
+          return {
+              ...state,
+              error: action.data.error ?? 'Unknown error',
+          };
+      
       case 'get': 
         return{
           ...state,
@@ -126,8 +127,7 @@ export interface Action {
     }
   };
   
-  
-  export const validateLogin = (username: string | null, password: string | null) => {
+  export const validateLogin = (username: string | null, password: string | null, state: any) => {
     if (!username || username.trim() === "") {
       return "Username cannot be empty.";
     }
@@ -136,5 +136,6 @@ export interface Action {
       return "Password cannot be empty.";
     }
 
-    return null; // No error
-  };
+    // Remove the state.error check in the validation, as it may conflict with dispatch handling
+    return null; // No error, valid input
+};

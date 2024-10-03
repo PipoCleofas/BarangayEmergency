@@ -5,12 +5,12 @@ import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import useHandleClicks from './useHandleClicks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {InitialCitizen,reducerCitizen} from '@/app/types/user'
+import {InitialCitizen,reducerCitizen, validateLogin} from '@/app/types/user'
 import {handleBirthdayChange} from '@/app/utils/validateUser'
 import {userSubmit, updateUser, getUser} from '@/app/services/userservice'
 import {BarangayReducer,InitialBarangay} from '@/app/types/barangay'
 import {submitBarangay} from '@/app/services/barangayservice'
-import  {validateLogin,validateName,validateBirthday,validatePassword, validateBarangayAndSitio,validateUsernamePhoto, validatePhotos} from '@/app/utils/validateUser'
+import  {validateName,validateBirthday,validatePassword, validateBarangayAndSitio,validateUsernamePhoto, validatePhotos} from '@/app/utils/validateUser'
 
 const useCheckPassword = () => {
   const navigation = useNavigation();
@@ -164,45 +164,69 @@ const useCheckPassword = () => {
   
   
   // citizen login
-
   const handleCitizenLogin = async () => {
     try {
+        // Validate login fields
+        const validationError = validateLogin(state.username!, state.password!, state);
+        console.log('Validation Error:', validationError);
 
-      const error = validateLogin(state.username ?? '', state.password ?? '');
-  
-      if (error) {
+        if (validationError) {
+            // Dispatch validation error to state
+            dispatch({
+                actionType: 'error',
+                data: {
+                    error: validationError,
+                },
+            });
+            return; // Stop further execution if there is a validation error
+        }
+
+        // Reset error state before making API call
         dispatch({
-          actionType: 'error',
-          data: {
-            error: error,
-          },
+            actionType: 'input',
+            data: {
+                error: null,
+            },
         });
-        return;
-      }
-  
-      dispatch({
-        actionType: 'input',
-        data: {
-          error: null,
-        },
-      });
-  
-      await getUser(state.username ?? 'Lebron James', state.password ?? 'Lebron', dispatch);
-      navigation.navigate('index' as never);
-  
+
+        // Call the API to check user credentials
+        let userLoginError = null; // Local variable to track error
+
+        await getUser(state.username ?? 'Lebron James', state.password ?? 'Lebron', (action) => {
+            dispatch(action); // Update the state as usual
+            if (action.actionType === 'error') {
+                userLoginError = action.data.error; // Capture any error returned by getUser
+            }
+        });
+
+        // Check if there was an error during login
+        if (!userLoginError) {
+            navigation.navigate('index' as never); // Proceed with navigation only if no error
+        } else {
+            console.log('Login failed, will not navigate:', userLoginError);
+        }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        dispatch({
-          actionType: 'error',
-          data: {
-            error: 'Username or Password is incorrect',
-          },
-        });
-      } else {
-        handleAxiosError(error);
-      }
+        if (error.response && error.response.status === 401) {
+            console.log('Server responded with 401:', error.response.data);
+            dispatch({
+                actionType: 'error',
+                data: {
+                    error: 'Username or Password is incorrect',
+                },
+            });
+        } else {
+            handleAxiosError(error);
+        }
     }
-  };
+};
+
+
+
+
+
+
+
+
   
   
 

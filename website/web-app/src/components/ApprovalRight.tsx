@@ -21,10 +21,10 @@ export default function ApprovalRight() {
 
     const updateUserStatus = async (status: string, userId: number) => {
         const url = `http://192.168.100.127:3000/user/updateStatusUser/${status}`;
-        console.log('Attempting to update user status at:', url);  // Log the full URL
+        console.log('Attempting to update user status at:', url);  
     
         try {
-            setUpdatingStatus(userId); // Set the updating status
+            setUpdatingStatus(userId); 
             const response = await axios.put(url, {
                 UserID: userId
             }, {
@@ -34,16 +34,15 @@ export default function ApprovalRight() {
             });
             console.log('User status updated:', response.data);
     
-            await checkAccounts('clients'); // Refresh the clients list after the update
+            await checkAccounts('clients');
         } catch (error) {
             console.error('Error updating user status:', error);
         } finally {
-            setUpdatingStatus(null); // Reset updating status after operation
+            setUpdatingStatus(null); 
         }
     };
 
-    // Filter out approved or rejected users
-    const filteredClients = clients.filter(user => user.Status === 'pending'); // error is here
+    const filteredClients = clients.filter(user => user.Status === 'pending'); 
 
     if (loading) {
         return <div>Loading...</div>;
@@ -89,11 +88,11 @@ export default function ApprovalRight() {
                                 backgroundColor: '#5cb85c',
                                 color: '#fff',
                                 transition: 'background-color 0.3s',
-                                opacity: updatingStatus === user.UserID ? 0.6 : 1, // Change button appearance while updating
-                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', // Disable while updating
+                                opacity: updatingStatus === user.UserID ? 0.6 : 1, 
+                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', 
                             }}
                             onClick={() => updateUserStatus('approved', user.UserID)}
-                            disabled={updatingStatus === user.UserID} // Disable button while updating
+                            disabled={updatingStatus === user.UserID} 
                         >
                             {updatingStatus === user.UserID ? 'Approving...' : 'Approve'}
                         </button>
@@ -107,11 +106,11 @@ export default function ApprovalRight() {
                                 backgroundColor: '#d9534f',
                                 color: '#fff',
                                 transition: 'background-color 0.3s',
-                                opacity: updatingStatus === user.UserID ? 0.6 : 1, // Change button appearance while updating
-                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', // Disable while updating
+                                opacity: updatingStatus === user.UserID ? 0.6 : 1,
+                                pointerEvents: updatingStatus === user.UserID ? 'none' : 'auto', 
                             }}
                             onClick={() => updateUserStatus('rejected', user.UserID)}
-                            disabled={updatingStatus === user.UserID} // Disable button while updating
+                            disabled={updatingStatus === user.UserID}
                         >
                             {updatingStatus === user.UserID ? 'Rejecting...' : 'Reject'}
                         </button>

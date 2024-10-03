@@ -112,45 +112,46 @@ export const userSubmit = async (
     username: string,
     password: string,
     dispatch: React.Dispatch<Action>
-  ) => {
+) => {
     try {
-      const response = await axios.get(`http://192.168.100.127:3000/user/getUser`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        params: {
-          username, 
-          password,
-        },
-      });
-  
-      const user = response.data;
-      const id = user?.id;
-  
-      if (id) {
-        await AsyncStorage.setItem('id', id.toString());
-  
-        dispatch({
-          actionType: 'get',
-          data: {
-            username: user.username,
-            password: user.password,
-          },
+        const response = await axios.get(`http://192.168.100.127:3000/user/getUser`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            params: {
+                username,
+                password,
+            },
         });
-      } else {
-        console.error('ID not found in response data');
+
+        const user = response.data;
+        const id = user?.id;
+
+        if (id) {
+            await AsyncStorage.setItem('id', id.toString());
+
+            dispatch({
+                actionType: 'get',
+                data: {
+                    username: user.username,
+                    password: user.password,
+                },
+            });
+        } else {
+            dispatch({
+                actionType: 'error',
+                data: { error: 'User ID not found' }, // Only this error message is shown in the app
+            });
+        }
+    } catch (error: any) {
         dispatch({
-          actionType: 'error',
-          data: { error: 'User ID not found' },
+            actionType: 'error',
+            data: { error: 'Invalid username or password' }, // Friendly error message
         });
-      }
-  
-    } catch (error) {
-      dispatch({
-        actionType: 'error',
-        data: { error: 'Invalid username or password' },
-      });
-      handleAxiosError(error);
+        // You can silently catch the error without showing detailed logs.
+        // handleAxiosError(error); // You can remove or customize this to avoid console errors
     }
-  };
+};
+
+
   
