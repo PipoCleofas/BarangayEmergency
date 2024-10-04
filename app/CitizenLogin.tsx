@@ -1,12 +1,16 @@
+import React, { useState } from 'react';
 import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { Feather } from '@expo/vector-icons'; // Import Feather icons
 import useHandleClicks from "@/hooks/useHandleClicks";
 import useDataInput from "@/hooks/useDataInput";
 
 export default function CitizenLogin() {
 
-    const {handleChangeState,handleCitizenLogin,state} = useDataInput();
+    const { handleChangeState, handleCitizenLogin, state } = useDataInput();
     const { handleBackButtonPress } = useHandleClicks();
+
+    const [showPassword, setShowPassword] = useState(false);  // State for password visibility
 
     return (
         <View style={styles.container}>
@@ -14,17 +18,27 @@ export default function CitizenLogin() {
             <Text style={{ marginBottom: 20 }}>FOR CITIZEN</Text>
 
             <View style={styles.inputContainer}>
-                <Text style={styles.labeInput}>USERNAME: </Text>
-                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleChangeState('username', text)}/>
+                <Text style={styles.labelInput}>USERNAME:</Text>
+                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleChangeState('username', text)} />
             </View>
 
             <View style={[styles.inputContainer, { marginBottom: 35 }]}>
-                <Text style={styles.labeInput}>PASSWORD: </Text>
-                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} onChangeText={(text) => handleChangeState('password', text)}/>
+                <Text style={styles.labelInput}>PASSWORD:</Text>
+                <View style={styles.inputPasswordWrapper}>
+                    <TextInput
+                        style={styles.textInput}
+                        maxLength={20}
+                        secureTextEntry={!showPassword}  // Toggle visibility based on state
+                        onChangeText={(text) => handleChangeState('password', text)}
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconWrapper}>
+                        <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} style={styles.icon} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             {state.error && <Text style={styles.errorText}>{state.error}</Text>}
-            
+
             <View style={styles.columnButtons}>
                 <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
                     <SimpleLineIcons name="arrow-left" />
@@ -41,6 +55,12 @@ export default function CitizenLogin() {
 }
 
 const styles = StyleSheet.create({
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 30,
+        textAlign: 'center',
+    },
     container: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -52,30 +72,42 @@ const styles = StyleSheet.create({
         height: 150,
         marginBottom: 50,
     },
-    labeInput: {
-        marginRight: 15,
-        fontSize: 13
+    labelInput: {
+        width: 100, // Set fixed width for label
+        fontSize: 13,
+        textAlign: 'right',
+        marginRight: 10,
     },
     inputContainer: {
         flexDirection: 'row',
-        marginBottom: 15
+        justifyContent: 'center',
+        alignItems: 'center', // Align items vertically in the center
+        marginBottom: 15,
+        width: '80%',  // Adjust the width of the container
     },
-    errorText: {
-        color: 'red',
-        fontSize: 14,
-        marginBottom: 30,
-        textAlign: 'center',
-      },
+    inputPasswordWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
     textInput: {
         color: 'white', // Maroon color
-        width: 200,
+        flex: 1, // Flex to fill the remaining space
         backgroundColor: '#944547',
-        height: 25,
-        fontSize: 18, // Increase font size for better visibility
+        height: 25,  // Height adjusted for alignment
+        fontSize: 15, // Increase font size for better visibility
         borderColor: '#D3D3D3',
         borderWidth: 1,
         borderRadius: 5,
-        paddingHorizontal: 3,
+        paddingHorizontal: 5,  // Padding for better look
+    },
+    iconWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
+    icon: {
+        marginHorizontal: 5,
     },
     columnButtons: {
         flexDirection: 'row',
@@ -86,7 +118,7 @@ const styles = StyleSheet.create({
     button1: {
         backgroundColor: '#FFFDD0',
         width: 100,
-        height: 35,
+        height: 40,
         borderColor: '#D3D3D3',
         borderRadius: 20,
         justifyContent: 'center',
@@ -104,7 +136,7 @@ const styles = StyleSheet.create({
     button2: {
         backgroundColor: '#714423',
         width: 100,
-        height: 35,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center', // Center the content inside the button
         flexDirection: 'row',
@@ -125,4 +157,3 @@ const styles = StyleSheet.create({
         marginHorizontal: 5, // Add some space between icon and text
     },
 });
-    

@@ -19,7 +19,9 @@ const useCheckPassword = () => {
   const[barangaySitioError, setbarangaySitioError] = useState<string | null>(null);
   const[barangay,setBarangay] = useState<string | null>(null);
   const [sitio,setSitio] =  useState<string | null>(null);
-  
+  const [providerName, setProviderName] = useState<string | null>()
+  const [providerPassword, setProviderPassword] = useState<string | null>()
+  const [providerLoginError,setProviderLoginError] = useState<string | null>()
 
    // State to store image URIs and base64 data for each photo
    const [photoUri1, setPhotoUri1] = useState<string | null>(null);
@@ -40,6 +42,9 @@ const useCheckPassword = () => {
   // user
   const [state,dispatch] = useReducer(reducerCitizen, InitialCitizen);
 
+
+
+
   const handleChangeState = (key: string, value: string | number) => {
     dispatch({
       actionType: 'input',
@@ -48,6 +53,34 @@ const useCheckPassword = () => {
   };
 
  
+  // provider login
+  const handleProviderLogin = async () => {
+    try {
+      if (!providerName || !providerPassword) {
+        setProviderLoginError('Fill up the required fields.')
+        return;
+      }
+  
+      const response = await axios.get(`http://192.168.100.127:3000/serviceprovider/getServiceProvider`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        params: {
+          username: providerName,
+          password: providerPassword,
+        },
+      });
+  
+      // Check if the login was successful
+      if (response.data.success) {
+        navigation.navigate('index' as never);
+      } else {
+        setProviderLoginError(response.data.message)
+      }
+    } catch (error: any) {
+      console.error("Login error: ", error);
+    }
+  };
   
 
   
@@ -407,7 +440,14 @@ const useCheckPassword = () => {
     state,
     onBirthdayChange,
 
-    handleCitizenPhotoNext
+    handleCitizenPhotoNext,
+
+    setProviderName,
+    setProviderPassword,
+    handleProviderLogin,
+
+    providerLoginError,
+
   };
 };
 

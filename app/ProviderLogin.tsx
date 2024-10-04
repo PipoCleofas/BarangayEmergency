@@ -1,24 +1,43 @@
+import React, { useState } from 'react';
 import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { Feather } from '@expo/vector-icons'; // Import Feather icons
 import useHandleClicks from "@/hooks/useHandleClicks";
+import useDataInput from "@/hooks/useDataInput";
+
 export default function CitizenLogin() {
 
-    const { handleBackButtonPress, handleLoginButtonPress } = useHandleClicks();
+    const { handleChangeState, handleCitizenLogin, state } = useDataInput();
+    const { handleBackButtonPress } = useHandleClicks();
+
+    const [showPassword, setShowPassword] = useState(false);  // State for password visibility
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('../app/pictures/logo.gif')} />
-            <Text style={{ marginBottom: 20 }}>FOR PROVIDERS</Text>
+            <Image style={styles.logo} source={require('../app/pictures/logoo.jpeg')} />
+            <Text style={{ marginBottom: 20 }}>FOR PROVIDER</Text>
 
             <View style={styles.inputContainer}>
-                <Text style={styles.labeInput}>USERNAME: </Text>
-                <TextInput style={styles.textInput} maxLength={15} />
+                <Text style={styles.labelInput}>USERNAME:</Text>
+                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleChangeState('username', text)} />
             </View>
 
-            <View style={[styles.inputContainer, { marginBottom: 65 }]}>
-                <Text style={styles.labeInput}>PASSWORD: </Text>
-                <TextInput style={styles.textInput} maxLength={20} secureTextEntry={true} />
+            <View style={[styles.inputContainer, { marginBottom: 35 }]}>
+                <Text style={styles.labelInput}>PASSWORD:</Text>
+                <View style={styles.inputPasswordWrapper}>
+                    <TextInput
+                        style={styles.textInput}
+                        maxLength={20}
+                        secureTextEntry={!showPassword}  // Toggle visibility based on state
+                        onChangeText={(text) => handleChangeState('password', text)}
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconWrapper}>
+                        <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} style={styles.icon} />
+                    </TouchableOpacity>
+                </View>
             </View>
+
+            {state.error && <Text style={styles.errorText}>{state.error}</Text>}
 
             <View style={styles.columnButtons}>
                 <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
@@ -26,7 +45,7 @@ export default function CitizenLogin() {
                     <Text style={styles.buttonText}>BACK</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button2} onPress={() => handleLoginButtonPress()}>
+                <TouchableOpacity style={styles.button2} onPress={handleCitizenLogin}>
                     <Text style={[styles.buttonText, { color: 'white' }]}>LOGIN</Text>
                     <SimpleLineIcons style={{ color: 'white' }} name="arrow-right" />
                 </TouchableOpacity>
@@ -36,6 +55,12 @@ export default function CitizenLogin() {
 }
 
 const styles = StyleSheet.create({
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 30,
+        textAlign: 'center',
+    },
     container: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -47,39 +72,57 @@ const styles = StyleSheet.create({
         height: 150,
         marginBottom: 50,
     },
-    labeInput: {
-        marginRight: 15,
-        fontSize: 13
+    labelInput: {
+        width: 100, // Set fixed width for label
+        fontSize: 13,
+        textAlign: 'right',
+        marginRight: 10,
     },
     inputContainer: {
         flexDirection: 'row',
-        marginBottom: 15
+        justifyContent: 'center',
+        alignItems: 'center', // Align items vertically in the center
+        marginBottom: 15,
+        width: '80%',  // Adjust the width of the container
+    },
+    inputPasswordWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
     },
     textInput: {
-        color: 'white', 
-        width: 200,
+        color: 'white', // Maroon color
+        flex: 1, // Flex to fill the remaining space
         backgroundColor: '#944547',
-        height: 25,
-        fontSize: 18, 
+        height: 25,  // Increase height for better alignment
+        fontSize: 15, // Increase font size for better visibility
         borderColor: '#D3D3D3',
         borderWidth: 1,
         borderRadius: 5,
-        paddingHorizontal: 3,
+        paddingHorizontal: 5,  // Increase padding for better look
+    },
+    iconWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
+    icon: {
+        marginHorizontal: 5,
     },
     columnButtons: {
         flexDirection: 'row',
-        justifyContent: 'center', 
+        justifyContent: 'center', // Center the buttons horizontally
         alignItems: 'center',
         marginBottom: 60,
     },
     button1: {
         backgroundColor: '#FFFDD0',
         width: 100,
-        height: 35,
+        height: 40,
         borderColor: '#D3D3D3',
         borderRadius: 20,
         justifyContent: 'center',
-        alignItems: 'center', 
+        alignItems: 'center', // Center the content inside the button
         flexDirection: 'row',
         padding: 8,
 
@@ -88,14 +131,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 3.84,
         elevation: 5,
-        marginHorizontal: 10, 
+        marginHorizontal: 10, // Add margin between buttons
     },
     button2: {
         backgroundColor: '#714423',
         width: 100,
-        height: 35,
+        height: 40,
         justifyContent: 'center',
-        alignItems: 'center', 
+        alignItems: 'center', // Center the content inside the button
         flexDirection: 'row',
         padding: 8,
 
@@ -108,10 +151,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 3.84,
         elevation: 5,
-        marginHorizontal: 10,
+        marginHorizontal: 10, // Add margin between buttons
     },
     buttonText: {
-        marginHorizontal: 5, 
+        marginHorizontal: 5, // Add some space between icon and text
     },
 });
-    
