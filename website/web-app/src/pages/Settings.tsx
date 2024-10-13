@@ -1,12 +1,15 @@
-import Settingsleft from '../components/Settingsleft';
+import SettingsLeft from '../components/Settingsleft';
 import SettingsRight from '../components/SettingsRight';
 import '../../utils/Home.css';
+import { LanguageProvider } from '../context/LanguageProvider'; 
 
 export default function Settings() {
   return (
-    <div className='admin-dashboard'>
-      <Settingsleft />
-      <SettingsRight />
-    </div>
+    <LanguageProvider> 
+      <div className="settings-container"> 
+        <SettingsLeft />
+        <SettingsRight />
+      </div>
+    </LanguageProvider>
   );
 }

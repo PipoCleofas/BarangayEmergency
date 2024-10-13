@@ -37,30 +37,43 @@ router.post('/submit', validateMarker ,(req, res) => {
 });
 
 router.get('/getMarker', (req, res) => {
-  const { id, latitude, longitude, title, description, UserID } = req.query;
+  const query = `SELECT * FROM markerrr WHERE title != 'Canceled Service'`;
 
-  const verify = `SELECT * FROM markerrr WHERE id = ? AND UserID = ?`;
-
-  connection.query(verify, [id, UserID], (error, results) => {
+  connection.query(query, (error, results) => {
     if (error) {
       console.error('Database error:', error);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    return res.status(200).json(results); 
+  });
+});
+
+router.put('/updateMarkerTitle/:id', (req, res) => {
+  const id = req.params.id;  // Get the ID from the URL parameter
+  const { newTitle } = req.body;  // Get the new title from the request body
+
+  if (!newTitle) {
+    return res.status(400).send('New title is required');
+  }
+
+  const query = `UPDATE marker SET title = ? WHERE id = ?`;
+  const values = [newTitle, id];  // Set the new title and id
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Database error:', error.message);
       return res.status(500).send('Database error');
     }
 
-    if (results.length > 0) {
-      const markerrr = results[0];
-      return res.status(200).json({
-        id: markerrr.id,
-        latitude: markerrr.latitude,
-        longitude: markerrr.longitude,
-        title: markerrr.title,
-        description: markerrr.description,
-        UserID: markerrr.UserID,
-      });
-    } else {
-      return res.status(401).json({ message: 'Markers details are incorrect.' });
+    if (results.affectedRows === 0) {
+      return res.status(404).send('Marker not found');
     }
+
+    res.status(200).send('Marker title updated successfully');
   });
 });
+
+
 
 module.exports = { router, setConnectionMarker };

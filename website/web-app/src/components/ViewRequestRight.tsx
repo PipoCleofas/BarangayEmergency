@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useGetItems } from '../hooks/useGetItems';
-import { updateStatusRequest } from '../services/servicerequest'; // Assuming you have this function exported somewhere
+import { updateStatusRequest } from '../services/servicerequest';
+import { updateMarkerRequest } from '../services/marker'; 
+import axios from 'axios';
 
 export default function ViewRequestRight() {
     const { checkAccounts, requests } = useGetItems();
@@ -18,11 +20,28 @@ export default function ViewRequestRight() {
     const handleStatusUpdate = async (status: string, userId: number) => {
         try {
             await updateStatusRequest(status, userId);
+    
+            const requestIds = requests.map(request => request.UserID);
+    
+            for (let id of requestIds) {
+                const response = await axios.put(`http://192.168.100.127:3000/marker/updateMarkerTitle/${id}`, {
+                    newTitle: 'Cancelled Service'  
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                console.log(`Title updated for request ID ${id}:`, response.data);
+            }
+    
+            // Log after the for loop
             console.log(`Request status updated to ${status} for UserID: ${userId}`);
         } catch (error) {
             console.error('Error updating request status:', error);
         }
     };
+    
 
     if (loading) {
         return <div>Loading...</div>;

@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useHandleClicks } from "../hooks/useHandleClicks";
+import { useLanguageContext } from "../context/LanguageProvider";  // Import useLanguageContext
 
-export default function AdminDashboardComponentLeft() {
+export default function ViewRequestleft() {
 
     const navigate = useNavigate();  
-    const { handleNavClick } = useHandleClicks(); 
+    const { handleNavClick } = useHandleClicks();
+    
+    const { translations, language } = useLanguageContext();
 
     return (
       <div className="left-side">
@@ -19,23 +22,28 @@ export default function AdminDashboardComponentLeft() {
                 onClick={() => handleNavClick(navigate, '/admindashboard')}
                 style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}
                 >
-                  Home
+                  {translations[language].home}
               </li>
-              <li className="active" style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}>View Request</li>
+              <li 
+                className="active" 
+                style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}
+                >
+                  {translations[language].viewRequest}
+              </li>
               <li 
                 onClick={() => handleNavClick(navigate, '/approval')}
                 style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}
                 >
-                  Approval
+                  {translations[language].approval}
               </li>
               <li 
                 onClick={() => handleNavClick(navigate, '/settings')}
                 style={{ marginBottom: '20px', padding: '20px', border: 'none', borderRadius: '0' }}
                 >
-                  Settings
+                  {translations[language].settings}
               </li>
             </ul>
         </div>
       </div>
     );
-  }
+}

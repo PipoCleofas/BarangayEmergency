@@ -6,9 +6,34 @@ import useHandleClicks from '@/hooks/useHandleClicks';
 import { useNavigation } from 'expo-router';
 
 
+// Define the type for the marker object
+interface MarkerType {
+  latitude: number;
+  longitude: number;
+  title: string;  // Add the title field
+}
 
+const getMarkerImage = (title: string) => {
+  switch (title) {
+    case 'BFP':
+      return require('./pictures/fire.png');
+    case 'PNP':
+      return require('./pictures/police.webp');
+    case 'Medical':
+      return require('./pictures/medic.png');
+    case 'NDRRMC':
+      return require('./pictures/ndrrmc.png');
+
+  }
+};
 
 export default function Index() {
+
+  const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers with proper type
+
+  const [isPressed, setIsPressed] = useState<boolean>(false);
+  const [canSelectLocation, setcanSelectLocation] = useState<any>();
+
 
   const { location, errorMsg, isFetching } = useLocation();
   const { 
@@ -37,7 +62,10 @@ export default function Index() {
   }
 
   function RA (){
-    setrouteAssistanceModalVisible(!routeAssistanceModalVisible)
+    setIsPressed(!isPressed);
+    setcanSelectLocation(!canSelectLocation);
+
+
   }
 
   function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
@@ -49,6 +77,19 @@ export default function Index() {
     EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height, 'rejected');
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
   }
+
+  const handleMapPress = (event: any) => {
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+  
+    if (canSelectLocation === true) {
+      setMarkers((prevMarkers) => [
+        ...prevMarkers,
+        { latitude, longitude, title: 'New Marker' }, // Add default title
+      ]);
+    } else {
+      console.log("Can't select location");
+    }
+  };
 
   const defaultRegion = {
     latitude: 15.4817, // Tarlac City latitude
@@ -77,6 +118,27 @@ export default function Index() {
     return () => clearTimeout(timer);
   }, []);
   
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        const response = await fetch('http://192.168.100.127:3000/marker/getMarker');
+        const data = await response.json();
+  
+        if (Array.isArray(data)) {
+          setMarkers(data);  
+        } else {
+          console.error('Error', 'Invalid data format from API');
+        }
+      } catch (error) {
+        console.error('Error fetching markers:', error);
+        console.error('Error', 'Failed to load markers');
+      }
+    };
+  
+    fetchMarkers();
+  }, []);
+  
+
 
   return (
     <View style={styles.container}>
@@ -194,6 +256,8 @@ export default function Index() {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}
+          onPress={handleMapPress} 
+
         >
           <Marker
             coordinate={{
@@ -203,13 +267,28 @@ export default function Index() {
             title=""
             description=""
           >
-            {/* Custom image with adjustable size */}
           <Image
             source={markerEmoji}
-            style={{ width: markerImageSize.width, height: markerImageSize.height }} // Dynamic size
+            style={{ width: markerImageSize.width, height: markerImageSize.height }} 
           />
 
           </Marker>
+          {markers.map((marker, index) => (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: marker.latitude,
+                    longitude: marker.longitude,
+                  }}
+                  title={marker.title} // Title from database
+                  description={`Latitude: ${marker.latitude}, Longitude: ${marker.longitude}`}
+                >
+                  <Image
+                    source={getMarkerImage(marker.title)} // Use title to determine marker image
+                    style={{ width: 40, height: 40 }}  // Adjust size as needed
+                  />
+                </Marker>
+              ))}
         </MapView>
       )}
 
@@ -222,7 +301,7 @@ export default function Index() {
               <Text style={styles.buttonText}>Emergency Assistance</Text>
               <Text style={styles.buttonText}>Request</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={RA}>
+            <TouchableOpacity style={[styles.button, isPressed ? styles.buttonPressed : null]} onPress={RA}>
               <Text style={styles.buttonText}>Route Assistance</Text>
             </TouchableOpacity>
           </View>
@@ -242,7 +321,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: '100%',
-    height: '80%', // Take up 80% of the screen height for the map
+    height: '80%', 
   },
   loaderContainer: {
     flex: 1,
@@ -251,7 +330,7 @@ const styles = StyleSheet.create({
   },
   tabBarContainer: {
     width: '100%',
-    height: '20%', // 20% of the screen height for the tab bar
+    height: '20%', 
     backgroundColor: 'white',
     paddingVertical: 10,
     justifyContent: 'center',
@@ -260,11 +339,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    elevation: 5, // Android shadow
+    elevation: 5, 
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonPressed: {
+    borderWidth: 2,         // Add a border to show when pressed
+    borderColor: '#FFD700', // Gold color for the border
   },
   iconsRow: {
     flexDirection: 'row',

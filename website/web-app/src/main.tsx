@@ -7,19 +7,22 @@ import Approval from './pages/Approval';
 import AdminDashboard from './pages/AdminDashboard';
 import ViewRequest from './pages/ViewRequest';
 import Settings from './pages/Settings';
+import { LanguageProvider } from './context/LanguageProvider';  
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Router>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/login" element={<AdminLogin />} />
-        <Route path="/approval" element={<Approval />} />
-        <Route path="/admindashboard" element={<AdminDashboard />} />
-        <Route path="/viewrequest" element={<ViewRequest />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/login" element={<AdminLogin />} />
+          <Route path="/approval" element={<Approval />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/viewrequest" element={<ViewRequest />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Router>
+    </LanguageProvider>
   </StrictMode>
 );

@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "components/AdminDashboardComponent.tsx"]
+  "include": ["src", "components/AdminDashboardComponent.tsx", "src/context/LanguageProvider.tsx"]
 }
