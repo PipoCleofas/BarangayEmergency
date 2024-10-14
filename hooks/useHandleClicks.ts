@@ -3,12 +3,9 @@ import { useNavigation } from "expo-router";
 import useLocation from "./useLocation";
 import useSMS from "./useSMS";
 import * as SMS from 'expo-sms';
-import { useEffect, useReducer, useState } from "react";
+import {useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {markerSubmit} from  "@/app/services/markerservice";
-import {serviceRequestSubmit} from  "@/app/services/servicerequest";
-import {ActionMarker, MarkerState,InitialMarker,markerReducer} from '@/app/types/marker'
-import {ActionServiceRequest, ServiceRequestState, InitialServiceRequest, serviceRequestReducer} from '@/app/types/servicerequest'
+
 
 
 // request status = 'pending' | 'approved' | 'rejected'

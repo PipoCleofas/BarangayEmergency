@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons'; // Import Feather icons
-import useHandleClicks from "@/hooks/useHandleClicks";
-import useDataInput from "@/hooks/useDataInput";
+import  useHandleClick from '../hooks/useHandleClick'
 
 export default function CitizenLogin() {
 
-    const { handleChangeState, handleCitizenLogin, state } = useDataInput();
-    const { handleBackButtonPress } = useHandleClicks();
+    const { onPasswordChange, onLoginPress, onUnameChange } = useHandleClick();
 
     const [showPassword, setShowPassword] = useState(false);  // State for password visibility
 
@@ -19,7 +17,7 @@ export default function CitizenLogin() {
 
             <View style={styles.inputContainer}>
                 <Text style={styles.labelInput}>USERNAME:</Text>
-                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => handleChangeState('username', text)} />
+                <TextInput style={styles.textInput} maxLength={15} onChangeText={(text) => onUnameChange(text)} />
             </View>
 
             <View style={[styles.inputContainer, { marginBottom: 35 }]}>
@@ -29,7 +27,7 @@ export default function CitizenLogin() {
                         style={styles.textInput}
                         maxLength={20}
                         secureTextEntry={!showPassword}  
-                        onChangeText={(text) => handleChangeState('password', text)}
+                        onChangeText={(text) => onPasswordChange(text)}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconWrapper}>
                         <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} style={styles.icon} />
@@ -37,15 +35,10 @@ export default function CitizenLogin() {
                 </View>
             </View>
 
-            {state.error && <Text style={styles.errorText}>{state.error}</Text>}
 
             <View style={styles.columnButtons}>
-                <TouchableOpacity style={styles.button1} onPress={() => handleBackButtonPress()}>
-                    <SimpleLineIcons name="arrow-left" />
-                    <Text style={styles.buttonText}>BACK</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.button2} onPress={handleCitizenLogin}>
+              
+                <TouchableOpacity style={styles.button2} onPress={onLoginPress}>
                     <Text style={[styles.buttonText, { color: 'white' }]}>LOGIN</Text>
                     <SimpleLineIcons style={{ color: 'white' }} name="arrow-right" />
                 </TouchableOpacity>

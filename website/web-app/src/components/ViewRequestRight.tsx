@@ -8,6 +8,7 @@ export default function ViewRequestRight() {
     const { checkAccounts, requests } = useGetItems();
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
         const fetchData = async () => {
             await checkAccounts('requests');
@@ -32,7 +33,7 @@ export default function ViewRequestRight() {
                     },
                 });
     
-                console.log(`Title updated for request ID ${id}:`, response.data);
+                console.log(`Title updated for marker ID ${id}:`);
             }
     
             // Log after the for loop
