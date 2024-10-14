@@ -12,8 +12,8 @@ export default function CitizenLogin() {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('../app/pictures/logoo.jpeg')} />
-            <Text style={{ marginBottom: 20 }}>FOR PROVIDER</Text>
+            <Image style={styles.logo} source={require('../assets/images/logoo.gif')} />
+            <Text style={{ marginBottom: 20 }}>PROVIDER LOGIN</Text>
 
             <View style={styles.inputContainer}>
                 <Text style={styles.labelInput}>USERNAME:</Text>

@@ -26,28 +26,7 @@ export default function useHandleClicks(){
     }
 
      
-    const RouteAssistance = async () => {
-        // Fetch the location
-        await fetchLocation();
-    
-        try {
-      
-          const markerResponse = await axios.post('http://192.168.100.28:3000/marker/submit', {
-             
-              title: "Emergency Assistance Request",
-              description: "Emergency Assistance Request",
-          }, {
-              headers: {
-              'Content-Type': 'application/json',
-              },
-          });
-          console.log('Marker submission success:', markerResponse.data);
-        } catch (error: any) {
-        handleAxiosError(error);
-        }
-    
-      
-    };
+   
 
     function handleAxiosError (error: any): void  {
         if (error.response) {
@@ -66,7 +45,6 @@ export default function useHandleClicks(){
         onUnameChange,
         onPasswordChange,
         onLoginPress,
-        RouteAssistance,
         markerEmoji,
         markerImageSize,
     }

@@ -57,16 +57,9 @@ export default function Index() {
 
   function serviceVisible (){
     setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
-
-    
   }
 
-  function RA (){
-    setIsPressed(!isPressed);
-    setcanSelectLocation(!canSelectLocation);
-
-
-  }
+ 
 
   function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
     EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight, 'pending');
@@ -191,7 +184,7 @@ export default function Index() {
                 </Pressable>
               </View>
 
-              {/* Close Button */}
+            
 
               <Pressable
                 style={[modalStyles.closeButton]}
@@ -280,12 +273,12 @@ export default function Index() {
                     latitude: marker.latitude,
                     longitude: marker.longitude,
                   }}
-                  title={marker.title} // Title from database
+                  title={marker.title} 
                   description={`Latitude: ${marker.latitude}, Longitude: ${marker.longitude}`}
                 >
                   <Image
-                    source={getMarkerImage(marker.title)} // Use title to determine marker image
-                    style={{ width: 40, height: 40 }}  // Adjust size as needed
+                    source={getMarkerImage(marker.title)} 
+                    style={{ width: 40, height: 40 }}  
                   />
                 </Marker>
               ))}
@@ -300,9 +293,6 @@ export default function Index() {
             <TouchableOpacity style={styles.button} onPress={serviceVisible}>
               <Text style={styles.buttonText}>Emergency Assistance</Text>
               <Text style={styles.buttonText}>Request</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, isPressed ? styles.buttonPressed : null]} onPress={RA}>
-              <Text style={styles.buttonText}>Route Assistance</Text>
             </TouchableOpacity>
           </View>
         </View>
