@@ -28,6 +28,7 @@ export default function useHandleClicks(){
           console.log(uname, password);
       
           if (loginErr) {
+            console.log(loginErr)
             return;
           }
       
