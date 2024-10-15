@@ -29,11 +29,6 @@ export default function Signup() {
 
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button1} onPress={() => handleProviderLoginPress()}>
-          <Text style={styles.button1Text}>Provider</Text>
-          <Text style={styles.button1Text}>Login</Text>
-
-        </TouchableOpacity>
       </View>
 
     </View>
