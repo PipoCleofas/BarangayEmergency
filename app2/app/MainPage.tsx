@@ -3,7 +3,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from 'expo-router';
 import useLocation from '../hooks/useLocation'
-import useHandleClick from '@/hooks/useHandleClick';
+import useHandleClick from '@/hooks/useHandleLogin';
 
 interface MarkerType {
   latitude: number;

@@ -1,4 +1,3 @@
-
 import { useReducer, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -8,8 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InitialCitizen,reducerCitizen, validateLogin} from '@/app/types/user'
 import {handleBirthdayChange} from '@/app/utils/validateUser'
 import {userSubmit, updateUser, getUser} from '@/app/services/userservice'
-import {BarangayReducer,InitialBarangay} from '@/app/types/barangay'
-import {submitBarangay} from '@/app/services/barangayservice'
 import  {validateName,validateBirthday,validatePassword, validateBarangayAndSitio,validateUsernamePhoto, validatePhotos} from '@/app/utils/validateUser'
 
 const useCheckPassword = () => {
@@ -122,16 +119,14 @@ const useCheckPassword = () => {
           actionType: 'error',
           data: { error: nameError || passwordError || birthdayError || barangaySitioError },
         });
-        return; // Prevent navigation if there are errors
+        return;
       }
   
-      // Clear errors
       dispatch({ actionType: 'input', data: { error: null } });
   
-      // Submit the user data and await response
+    
       await userSubmit(state, dispatch);
   
-      // Retrieve the user ID from AsyncStorage
       const id = await AsyncStorage.getItem('firstId');
       if (!id) {
         throw new Error('User ID not found in AsyncStorage');
@@ -139,7 +134,6 @@ const useCheckPassword = () => {
   
       console.log('Retrieved User ID:', id);
   
-      // Submit barangay and sitio data
       const barangayResponse = await axios.post(
         'http://192.168.100.127:3000/barangay/submit',
         { barangayname: barangay, sitio, UserID: id },
@@ -148,7 +142,6 @@ const useCheckPassword = () => {
   
       console.log('Barangay data saved:', barangayResponse.data);
   
-      // Navigate to the next screen
       navigation.navigate('CitizenPhoto' as never);
   
     } catch (error: any) {
@@ -158,25 +151,21 @@ const useCheckPassword = () => {
   
   
 
-  // username and photo
 
   const handleConfirmUsernamePhoto = async () => {
     try {
-      // Validate the username and photo
       const usernamePhotoError = validateUsernamePhoto(state.username ?? '');
   
       if (usernamePhotoError) {
-        // If there's an error, update the state to show the error message
         dispatch({
           actionType: 'error',
           data: {
             error: usernamePhotoError,
           },
         });
-        return; // Prevent navigation if there's an error
+        return; 
       }
   
-      // Clear the error if validation passes
       dispatch({
         actionType: 'input',
         data: {
@@ -184,73 +173,63 @@ const useCheckPassword = () => {
         },
       });
   
-      // Update the user information
       await updateUser(state.username ?? 'Lebron James', dispatch);
   
-      // Navigate to the next screen only if validation passes
       navigation.navigate('CitizenLogin' as never);
       
     } catch (error: any) {
       handleAxiosError(error);
     }
   };
-  
-  
-  // citizen login
+
   const handleCitizenLogin = async () => {
-    try {
-        // Validate login fields
-        const validationError = validateLogin(state.username!, state.password!, state);
-        console.log('Validation Error:', validationError);
+  try {
+      const validationError = validateLogin(state.username!, state.password!, state);
 
-        if (validationError) {
-            // Dispatch validation error to state
-            dispatch({
-                actionType: 'error',
-                data: {
-                    error: validationError,
-                },
-            });
-            return; // Stop further execution if there is a validation error
-        }
+      if (validationError) {
+          dispatch({
+              actionType: 'error',
+              data: {
+                  error: validationError,
+              },
+          });
+          return; 
+      }
 
-        // Reset error state before making API call
-        dispatch({
-            actionType: 'input',
-            data: {
-                error: null,
-            },
-        });
+      dispatch({
+          actionType: 'input',
+          data: {
+              error: null,
+          },
+      });
 
-        // Call the API to check user credentials
-        let userLoginError = null; // Local variable to track error
+      let userLoginError = null; 
 
-        await getUser(state.username ?? 'Lebron James', state.password ?? 'Lebron', (action) => {
-            dispatch(action); // Update the state as usual
-            if (action.actionType === 'error') {
-                userLoginError = action.data.error; // Capture any error returned by getUser
-            }
-        });
+      await getUser(state.username ?? 'Lebron James', state.password ?? 'Lebron', (action) => {
+          dispatch(action);
+          if (action.actionType === 'error') {
+              userLoginError = action.data.error; 
+          }
+      });
 
-        // Check if there was an error during login
-        if (!userLoginError) {
-            navigation.navigate('index' as never); // Proceed with navigation only if no error
-        } else {
-            console.log('Login failed, will not navigate:', userLoginError);
-        }
-    } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-            console.log('Server responded with 401:', error.response.data);
-            dispatch({
-                actionType: 'error',
-                data: {
-                    error: 'Username or Password is incorrect',
-                },
-            });
-        } else {
-            handleAxiosError(error);
-        }
-    }
+      if (!userLoginError) {
+          navigation.navigate('index' as never); 
+      } else {
+          console.log('Login failed, will not navigate:', userLoginError);
+      }
+  } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+          console.log('Server responded with 401:', error.response.data);
+          dispatch({
+              actionType: 'error',
+              data: {
+                  error: 'Username or Password is incorrect',
+              },
+          });
+      } else {
+          handleAxiosError(error);
+      }
+  }
 };
 
 
@@ -264,7 +243,6 @@ const useCheckPassword = () => {
   
 
   // for photo
-
   
   const handlePhotoSelection = async (
     setUri: React.Dispatch<React.SetStateAction<string | null>>, 
@@ -314,23 +292,22 @@ const useCheckPassword = () => {
   };
 
   const handleCitizenPhotoNext = () => {
-    const error = validatePhotos(photoUri1, photoUri2, photoUri3); // Pass the photo URIs directly
+    const error = validatePhotos(photoUri1, photoUri2, photoUri3); 
   
     if (error) {
-      // If there's an error, update the state to show the error message
       dispatch({
         actionType: 'error',
         data: {
           error: error,
         },
       });
-      return; // Prevent navigation if there's an error
+      return; 
     }
   
-    // Proceed with the photo upload if there's no error
+   
     handleUploadPhotos();
   
-    // Clear the error if validation passes
+    
     dispatch({
       actionType: 'input',
       data: {
@@ -338,12 +315,11 @@ const useCheckPassword = () => {
       },
     });
   
-    // Navigate to the next screen
+   
     navigation.navigate('UsernamePhoto' as never);
   };
   
 
-  // Functions for specific photo inputs
   const handleTakePhoto1 = () => handlePhotoSelection(setPhotoUri1, setPhotoBase641, 'camera', 'photo1');
   const handleSelectPhoto1 = () => handlePhotoSelection(setPhotoUri1, setPhotoBase641, 'library', 'photo1');
 
@@ -376,7 +352,6 @@ const useCheckPassword = () => {
     }
   };
   
-  // Function to handle file uploads
   const handleUploadPhotos = () => {
     const photos = [
       { uri: photoUri1, base64: photoBase641, key: 'photo1' },
@@ -384,10 +359,9 @@ const useCheckPassword = () => {
       { uri: photoUri3, base64: photoBase643, key: 'photo3' },
     ];
 
-    // Trigger onFileUpload for each photo if available
     photos.forEach(photo => {
       if (photo.uri && photo.base64) {
-        onFileUpload(photo.uri, photo.key);  // Pass the photo URI and key (e.g., 'photo1')
+        onFileUpload(photo.uri, photo.key);  
       }
     });
 

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons'; // Import Feather icons
-import  useHandleClick from '../hooks/useHandleClick'
+import  useHandleLogin from '../hooks/useHandleLogin'
 
 export default function CitizenLogin() {
 
-    const { onPasswordChange, onLoginPress, onUnameChange } = useHandleClick();
+    const { onPasswordChange, onLoginPress, onUnameChange, loginError } = useHandleLogin();
 
-    const [showPassword, setShowPassword] = useState(false);  // State for password visibility
+    const [showPassword, setShowPassword] = useState(false);  
 
     return (
         <View style={styles.container}>
@@ -35,6 +35,7 @@ export default function CitizenLogin() {
                 </View>
             </View>
 
+            {loginError && <Text style={styles.errorText}>{loginError}</Text>}
 
             <View style={styles.columnButtons}>
               
