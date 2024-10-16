@@ -38,7 +38,6 @@ export function useGetItems() {
             const clientIds = clientResponse.data.map(client => client.UserID);
             
             console.log('Client IDs:', clientIds);
-  
             setError(null);
             return true;
           }
