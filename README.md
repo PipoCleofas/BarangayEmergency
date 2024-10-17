@@ -15,7 +15,7 @@
    ### For app
    ```bash
    cd BarangayEmergency
-   npm install expo
+   npm install expo - if not already installed
    npx expo start
    ```
    Scan QR code in terminal with Expo Go on Android
@@ -25,9 +25,17 @@
    cd BarangayEmergency/db
    node index.js
    ```
-   ### For website
+   ### For website (admins)
    ```bash
    cd BarangayEmergency/website/web-app
+   npm install - if not already installed
+   npm run dev
+   ```
+
+    ### For website (barangays)
+   ```bash
+   cd BarangayEmergency/websiteBarangay
+   npm install - if not already installed
    npm run dev
    ```
 
