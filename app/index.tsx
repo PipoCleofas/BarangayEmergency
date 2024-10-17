@@ -11,6 +11,7 @@ interface MarkerType {
   latitude: number;
   longitude: number;
   title: string;  // Add the title field
+  distance?: number;
 }
 
 const getMarkerImage = (title: string) => {
@@ -29,60 +30,36 @@ const getMarkerImage = (title: string) => {
 
 export default function Index() {
 
-  const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers with proper type
-
+  const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers
   const [isPressed, setIsPressed] = useState<boolean>(false);
-  const [canSelectLocation, setcanSelectLocation] = useState<any>();
-
+  const [canSelectLocation, setCanSelectLocation] = useState<any>(false);
 
   const { location, errorMsg, isFetching } = useLocation();
   const { 
-
     EmergencyAssistanceRequest,
     RouteAssistance,
     markerEmoji,
     markerImageSize
-
   } = useHandleClicks();
 
-  // for activity indicator
   const [isLoading, setIsLoading] = useState(true);
 
+  const [emergencyAssistanceModalVisible, setEmergencyAssistanceModalVisible] = useState(false);
+  const [routeAssistanceModalVisible, setRouteAssistanceModalVisible] = useState(false);
 
-  
-  // for modal index.tsx
-  const [emergencyAssistanceModalVisible, setemergencyAssistanceModalVisible] = useState(false);
-  const [routeAssistanceModalVisible, setrouteAssistanceModalVisible] = useState(false);
-
-
-  function serviceVisible (){
-    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+  function serviceVisible() {
+    setEmergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
   }
-
- 
 
   function emerAssReq(service: string, markerEmoji: any, imageWidth: number = 65, imageHeight: number = 60) {
     EmergencyAssistanceRequest(service, markerEmoji, imageWidth, imageHeight, 'pending');
-    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+    setEmergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
   }
 
-  function cancelService(){
+  function cancelService() {
     EmergencyAssistanceRequest('Canceled Service', null, markerImageSize.width, markerImageSize.height, 'rejected');
-    setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)
+    setEmergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
   }
-
-  const handleMapPress = (event: any) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate;
-  
-    if (canSelectLocation === true) {
-      setMarkers((prevMarkers) => [
-        ...prevMarkers,
-        { latitude, longitude, title: 'New Marker' }, // Add default title
-      ]);
-    } else {
-      console.log("Can't select location");
-    }
-  };
 
   const defaultRegion = {
     latitude: 15.4817, // Tarlac City latitude
@@ -91,13 +68,10 @@ export default function Index() {
     longitudeDelta: 0.05,
   };
 
-
   const navigation = useNavigation();
-
-    useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Welcome' as never); 
-
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -106,19 +80,53 @@ export default function Index() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
-  
+
+  // Haversine formula to calculate distance between two coordinates (in meters)
+  const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const toRad = (value: number) => (value * Math.PI) / 180; // Convert degrees to radians
+    const R = 6371e3; // Radius of Earth in meters
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δφ = toRad(lat2 - lat1);
+    const Δλ = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c; // Distance in meters
+    return distance;
+  };
+
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
-        const response = await fetch('http://192.168.100.127:3000/marker/getMarker');
+        const response = await fetch('http://192.168.100.127:3000/marker/getMarker'); 
         const data = await response.json();
   
         if (Array.isArray(data)) {
           setMarkers(data);  
+
+          // If location is available, check if there are nearby markers
+          if (location) {
+            data.forEach((marker: MarkerType) => {
+              const distance = haversineDistance(
+                location.coords.latitude,
+                location.coords.longitude,
+                marker.latitude,
+                marker.longitude
+              );
+              if (distance <= 50000) { // 50 km in meters
+                console.log(`Marker at (${marker.latitude}, ${marker.longitude}) is within 50 km`);
+              }
+            });
+          }
         } else {
           console.error('Error', 'Invalid data format from API');
         }
@@ -127,9 +135,12 @@ export default function Index() {
         console.error('Error', 'Failed to load markers');
       }
     };
-  
+
     fetchMarkers();
-  }, []);
+    const intervalId = setInterval(fetchMarkers, 15000); 
+
+    return () => clearInterval(intervalId); 
+  }, [location]); 
   
 
 
@@ -148,7 +159,7 @@ export default function Index() {
         transparent={true}
         visible={emergencyAssistanceModalVisible}
         onRequestClose={() => {
-          setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
+          setEmergencyAssistanceModalVisible(!emergencyAssistanceModalVisible);
         }}>
         <View style={modalStyles.centeredView}>
           <View style={modalStyles.modalView}>
@@ -194,7 +205,7 @@ export default function Index() {
 
               <Pressable
                 style={[modalStyles.closeButton]}
-                onPress={() => setemergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
+                onPress={() => setEmergencyAssistanceModalVisible(!emergencyAssistanceModalVisible)}>
                 <Text style={modalStyles.textStyle}>Close</Text>
               </Pressable>
 
@@ -211,7 +222,7 @@ export default function Index() {
         transparent={true}
         visible={routeAssistanceModalVisible}
         onRequestClose={() => {
-          setemergencyAssistanceModalVisible(!routeAssistanceModalVisible);
+          setEmergencyAssistanceModalVisible(!routeAssistanceModalVisible);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -226,7 +237,7 @@ export default function Index() {
 
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setrouteAssistanceModalVisible(!routeAssistanceModalVisible)}>
+                onPress={() => setRouteAssistanceModalVisible(!routeAssistanceModalVisible)}>
                 <Text style={styles.textStyle}>No</Text>
               </Pressable>
 
@@ -249,7 +260,6 @@ export default function Index() {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}
-          onPress={handleMapPress} 
 
         >
           <Marker
