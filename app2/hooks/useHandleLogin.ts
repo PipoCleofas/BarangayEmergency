@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import axios from "axios";
 import useLocation from './useLocation';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 export default function useHandleClicks(){
     const {fetchLocation} = useLocation();
@@ -22,35 +23,38 @@ export default function useHandleClicks(){
     }
 
     const onLoginPress = async () => {
-        try {
+      try {
           const loginErr = validateLogin(uname, password);
           setLoginError(loginErr);
           console.log(uname, password);
-      
-          if (loginErr) {
-            console.log(loginErr)
-            return;
-          }
-      
-          const response = await axios.get('http://192.168.100.127:3000/serviceprovider/getServiceProvider', {
-            params: {
-              username: uname,
-              password: password,
-            },
-          });
-      
-          if (response.data.success) {
-            console.log('Login successful');
-            navigation.navigate('MainPage' as never);
-          } else {
-            console.log('Login failed:', response.data.message);
-            setLoginError(response.data.message); 
-          }
-        } catch (err: any) {
-          handleAxiosError(err);
-        }
-      };
 
+          if (loginErr) {
+              console.log(loginErr);
+              return;
+          }
+
+          const response = await axios.get('http://192.168.100.127:3000/serviceprovider/getServiceProvider', {
+              params: {
+                  username: uname,
+                  password: password,
+              },
+          });
+
+          if (response.data.success) {
+              console.log('Login successful');
+
+              await AsyncStorage.setItem('username', uname as string);
+              console.log('Username stored in AsyncStorage:', uname);
+
+              navigation.navigate('MainPage' as never);
+          } else {
+              console.log('Login failed:', response.data.message);
+              setLoginError(response.data.message);
+          }
+      } catch (err: any) {
+          handleAxiosError(err);
+      }
+  };
      
     const validateLogin = (username: string | null, password: string | null) => {
         if (!username || username.trim() === "") {

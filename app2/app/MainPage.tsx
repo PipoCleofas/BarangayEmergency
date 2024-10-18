@@ -27,46 +27,15 @@ const getMarkerImage = (title: string) => {
 
 export default function MainPage() {
 
+  const [serviceProviderMarkerImage,setServiceProviderMarkerImage] = useState<any>(null)
   const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers with proper type
-
   const [isPressed, setIsPressed] = useState<boolean>(false);
-  const [canSelectLocation, setcanSelectLocation] = useState<any>();
+  const [canSelectLocation, setCanSelectLocation] = useState<any>();
 
-
-  const { 
-    location, 
-    errorMsg, 
-    isFetching 
-  } = useLocation();
-
-  const { 
-    markerEmoji,
-    markerImageSize
-  } = useHandleClick();
-
-  // for activity indicator
-  const [isLoading, setIsLoading] = useState(true);
-
- 
-  function RA (){
-    setIsPressed(!isPressed);
-    setcanSelectLocation(!canSelectLocation);
-  }
+  const { location, errorMsg, isFetching, latitude, longitude, title } = useLocation();  // Get location data from useLocation
+  const { markerEmoji, markerImageSize } = useHandleClick();
 
   
-
-  const handleMapPress = (event: any) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate;
-  
-    if (canSelectLocation === true) {
-      setMarkers((prevMarkers) => [
-        ...prevMarkers,
-        { latitude, longitude, title: 'New Marker' }, // Add default title
-      ]);
-    } else {
-      console.log("Can't select location");
-    }
-  };
 
   const defaultRegion = {
     latitude: 15.4817, // Tarlac City latitude
@@ -75,14 +44,12 @@ export default function MainPage() {
     longitudeDelta: 0.05,
   };
 
-
-
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
         const response = await fetch('http://192.168.100.127:3000/marker/getMarker');
         const data = await response.json();
-  
+
         if (Array.isArray(data)) {
           setMarkers(data);  
         } else {
@@ -96,14 +63,18 @@ export default function MainPage() {
   
     fetchMarkers();
   }, []);
-  
 
+  useEffect(() => {
+    if (latitude && longitude && title) {
+      setMarkers((prevMarkers) => [
+        ...prevMarkers,
+        { latitude, longitude, title },  
+      ]);
+    }
+  }, [latitude, longitude, title]); 
 
   return (
     <View style={styles.container}>
-       
-      
-
       {isFetching && <Text>Fetching location...</Text>}
       {errorMsg && <Text>{errorMsg}</Text>}
       {!isFetching && location && (
@@ -116,67 +87,60 @@ export default function MainPage() {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}
-          onPress={handleMapPress} 
-
         >
           <Marker
             coordinate={{
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            title=""
-            description=""
+            title="You are here"
+            description="Your current location"
           >
-          <Image
-            source={markerEmoji}
-            style={{ width: markerImageSize.width, height: markerImageSize.height }} 
-          />
-
+            <Image
+              source={markerEmoji}
+              style={{ width: markerImageSize.width, height: markerImageSize.height }}
+            />
           </Marker>
+
+          {/* Render other markers */}
           {markers.map((marker, index) => (
             <Marker
-                key={index}
-                coordinate={{
+              key={index}
+              coordinate={{
                 latitude: marker.latitude,
                 longitude: marker.longitude,
-                }}
-                title={marker.title} // Title from database
-                description={`Latitude: ${marker.latitude}, Longitude: ${marker.longitude}`}
+              }}
+              title={marker.title} // Title from database
+              description={`Latitude: ${marker.latitude}, Longitude: ${marker.longitude}`}
             >
-                <Image
-                source={getMarkerImage(marker.title)} // Use title to determine marker image
+              <Image
+                source={getMarkerImage(marker.title)}  // Use title to determine marker image
                 style={{ width: 40, height: 40 }}  // Adjust size as needed
-                />
+              />
             </Marker>
-         ))}
-
-        {markers.map((marker, index) => (
-            <Marker
-            key={index}
-            coordinate={marker}
-            title={`Route Assistamce`}
-            description={``}
-            />
-        ))}
+          ))}
         </MapView>
       )}
 
-     
       <View style={styles.tabBarContainer}>
         <View style={styles.iconContainer}>
-          
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, isPressed ? styles.buttonPressed : null]} onPress={RA}>
+            <TouchableOpacity
+              style={[styles.button, isPressed ? styles.buttonPressed : null]}
+              onPress={() => {
+                setIsPressed(!isPressed);
+                setCanSelectLocation(!canSelectLocation);
+              }}
+            >
               <Text style={styles.buttonText}>Route Assistance</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      
-      
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
