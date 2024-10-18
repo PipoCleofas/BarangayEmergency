@@ -31,9 +31,7 @@ const getMarkerImage = (title: string) => {
 export default function Index() {
 
   const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers
-  const [isPressed, setIsPressed] = useState<boolean>(false);
-  const [canSelectLocation, setCanSelectLocation] = useState<any>(false);
-
+ 
   const { location, errorMsg, isFetching } = useLocation();
   const { 
     EmergencyAssistanceRequest,
