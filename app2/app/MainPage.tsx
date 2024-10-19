@@ -3,7 +3,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from 'expo-router';
 import useLocation from '../hooks/useLocation'
-import useHandleClick from '@/hooks/useHandleLogin';
+import useHandleLogin from '@/hooks/useHandleLogin';
 
 interface MarkerType {
   latitude: number;
@@ -33,7 +33,7 @@ export default function MainPage() {
   const [canSelectLocation, setCanSelectLocation] = useState<any>();
 
   const { location, errorMsg, isFetching, latitude, longitude, title } = useLocation();  // Get location data from useLocation
-  const { markerEmoji, markerImageSize } = useHandleClick();
+  const { markerUnameEmoji, markerEmoji, markerImageSize } = useHandleLogin();
 
   
 
@@ -97,7 +97,7 @@ export default function MainPage() {
             description="Your current location"
           >
             <Image
-              source={markerEmoji}
+              source={markerUnameEmoji}
               style={{ width: markerImageSize.width, height: markerImageSize.height }}
             />
           </Marker>

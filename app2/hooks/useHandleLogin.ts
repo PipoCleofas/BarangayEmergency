@@ -10,6 +10,8 @@ export default function useHandleClicks(){
     let [uname,setUname] = useState<null | string>(null);
     let [password,setPassword] = useState<null | string>(null);
     const [markerEmoji, setMarkerEmoji] = useState<any>();
+    const [markerUnameEmoji, setMarkerUnameEmoji] = useState<any>();
+
     const [markerImageSize, setMarkerImageSize] =useState<{width: any, height: any}> ({ width: 65, height: 70 });
 
     const navigation = useNavigation();
@@ -68,7 +70,31 @@ export default function useHandleClicks(){
         return null; 
     };
       
-   
+   async function imageChanger(){
+    const uname = await AsyncStorage.getItem('username')
+    if(uname === 'BFP'){
+        setMarkerUnameEmoji(changeMarkerImage('BFP'))
+    }else if(uname === 'PNP'){
+        setMarkerUnameEmoji(changeMarkerImage('PNP'))
+    }else if(uname === 'Medical'){
+        setMarkerUnameEmoji(changeMarkerImage('Medical'))
+    }else if(uname === 'NDRRMC'){
+        setMarkerUnameEmoji(changeMarkerImage('NDRRMC'))
+    }
+   }
+
+    function changeMarkerImage(uname: string){
+        switch (uname) {
+            case 'BFP':
+              return require('../assets/images/fire.png');
+            case 'PNP':
+              return require('../assets/images/police.webp');
+            case 'Medical':
+              return require('../assets/images/medic.png');
+            case 'NDRRMC':
+              return require('../assets/images/ndrrmc.png');
+          }
+    }
 
     
     function handleAxiosError (error: any): void  {
@@ -92,5 +118,7 @@ export default function useHandleClicks(){
         markerEmoji,
         markerImageSize,
         loginError,
+        markerUnameEmoji,
+        imageChanger,
     }
 }
