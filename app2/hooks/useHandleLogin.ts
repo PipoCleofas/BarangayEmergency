@@ -5,7 +5,6 @@ import useLocation from './useLocation';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 export default function useHandleClicks(){
-    const {fetchLocation} = useLocation();
     const [loginError, setLoginError] = useState<string | null>(null)
     let [uname,setUname] = useState<null | string>(null);
     let [password,setPassword] = useState<null | string>(null);
@@ -70,18 +69,31 @@ export default function useHandleClicks(){
         return null; 
     };
       
-   async function imageChanger(){
-    const uname = await AsyncStorage.getItem('username')
-    if(uname === 'BFP'){
-        setMarkerUnameEmoji(changeMarkerImage('BFP'))
-    }else if(uname === 'PNP'){
-        setMarkerUnameEmoji(changeMarkerImage('PNP'))
-    }else if(uname === 'Medical'){
-        setMarkerUnameEmoji(changeMarkerImage('Medical'))
-    }else if(uname === 'NDRRMC'){
-        setMarkerUnameEmoji(changeMarkerImage('NDRRMC'))
-    }
-   }
+    async function imageChanger() {
+        try {
+          const uname = await AsyncStorage.getItem('username');
+          if (uname) {
+            switch (uname) {
+              case 'BFP':
+                setMarkerUnameEmoji(require('../assets/images/fire.png'));
+                break;
+              case 'PNP':
+                setMarkerUnameEmoji(require('../assets/images/police.webp'));
+                break;
+              case 'Medical':
+                setMarkerUnameEmoji(require('../assets/images/medic.png'));
+                break;
+              case 'NDRRMC':
+                setMarkerUnameEmoji(require('../assets/images/ndrrmc.png'));
+                break;
+            }
+          } else {
+            console.log('No username found in AsyncStorage');
+          }
+        } catch (error) {
+          console.error('Error fetching username from AsyncStorage:', error);
+        }
+      }
 
     function changeMarkerImage(uname: string){
         switch (uname) {

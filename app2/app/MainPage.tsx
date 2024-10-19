@@ -33,7 +33,7 @@ export default function MainPage() {
   const [canSelectLocation, setCanSelectLocation] = useState<any>();
 
   const { location, errorMsg, isFetching, latitude, longitude, title } = useLocation();  // Get location data from useLocation
-  const { markerUnameEmoji, markerEmoji, markerImageSize } = useHandleLogin();
+  const { markerUnameEmoji, markerEmoji, markerImageSize, imageChanger } = useHandleLogin();
 
   
 
@@ -62,6 +62,14 @@ export default function MainPage() {
     };
   
     fetchMarkers();
+  }, []);
+
+  useEffect(() => {
+    const updateMarkerEmoji = async () => {
+      await imageChanger();  // Call imageChanger to update the marker emoji
+    };
+  
+    updateMarkerEmoji();  // Trigger the update when the component mounts
   }, []);
 
   useEffect(() => {
