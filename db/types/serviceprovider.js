@@ -27,7 +27,7 @@ function validateUserData(req, res, next) {
 router.get('/getServiceProvider', (req, res) => {
   const { username, password } = req.query;
 
-  const verify = `SELECT * FROM serviceproviderrrr WHERE username = ? AND password = ?`;
+  const verify = `SELECT id FROM serviceproviderrrr WHERE username = ? AND password = ?`;
 
   connection.query(verify, [username, password], (error, results) => {
     if (error) {
@@ -35,12 +35,14 @@ router.get('/getServiceProvider', (req, res) => {
     }
 
     if (results.length > 0) {
-      return res.status(200).json({ success: true, message: 'Login successful' });
+      const userId = results[0].id; 
+      return res.status(200).json({ success: true, message: 'Login successful', userId });  
     } else {
       return res.status(200).json({ success: false, message: 'Username or password is incorrect' });
     }
   });
 });
+
 
 
 module.exports = { router, setConnectionServiceProvider };

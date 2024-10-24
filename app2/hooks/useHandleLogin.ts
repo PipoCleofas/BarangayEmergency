@@ -28,25 +28,27 @@ export default function useHandleClicks(){
           const loginErr = validateLogin(uname, password);
           setLoginError(loginErr);
           console.log(uname, password);
-
+  
           if (loginErr) {
               console.log(loginErr);
               return;
           }
-
+  
           const response = await axios.get('http://192.168.100.127:3000/serviceprovider/getServiceProvider', {
               params: {
                   username: uname,
                   password: password,
               },
           });
-
+  
           if (response.data.success) {
               console.log('Login successful');
-
+  
+              const userId = response.data.userId; 
               await AsyncStorage.setItem('username', uname as string);
-              console.log('Username stored in AsyncStorage:', uname);
-
+              await AsyncStorage.setItem('userId', userId.toString());  
+              console.log('Username and User ID stored in AsyncStorage:', uname, userId);
+  
               navigation.navigate('MainPage' as never);
           } else {
               console.log('Login failed:', response.data.message);
@@ -56,6 +58,7 @@ export default function useHandleClicks(){
           handleAxiosError(err);
       }
   };
+  
      
     const validateLogin = (username: string | null, password: string | null) => {
         if (!username || username.trim() === "") {

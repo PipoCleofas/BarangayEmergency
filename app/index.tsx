@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity, Image, Acti
 import useLocation from '@/hooks/useLocation';
 import useHandleClicks from '@/hooks/useHandleClicks';
 import { useNavigation } from 'expo-router';
-
+import Notification from '@/components/notification-holder/Notification';
 
 // Define the type for the marker object
 interface MarkerType {
@@ -32,13 +32,15 @@ export default function Index() {
 
   const [markers, setMarkers] = useState<MarkerType[]>([]); // State to store markers
  
-  const { location, errorMsg, isFetching } = useLocation();
+  const { location, errorMsg, isFetching, arrivalTime, handleArrivalTime } = useLocation();
   const { 
     EmergencyAssistanceRequest,
     RouteAssistance,
     markerEmoji,
     markerImageSize
   } = useHandleClicks();
+
+  const [triggerNotification, setTriggerNotification] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -120,8 +122,32 @@ export default function Index() {
                 marker.latitude,
                 marker.longitude
               );
-              if (distance <= 50000) { // 50 km in meters
-                console.log(`Marker at (${marker.latitude}, ${marker.longitude}) is within 50 km`);
+              if (distance >= 14000) { 
+                handleArrivalTime(14000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              } else if (distance == 13000){
+                handleArrivalTime(13000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance == 12000){
+                handleArrivalTime(12000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance == 10000){
+                handleArrivalTime(10000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance == 8000){
+                handleArrivalTime(8000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance == 5000){
+                handleArrivalTime(5000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance == 3000){
+                handleArrivalTime(3000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else if (distance <= 1000){
+                handleArrivalTime(1000, true)
+                console.log(`Coming in ${arrivalTime} minute/s`)
+              }else {
+                console.log('Not calculated')
               }
             });
           }
@@ -151,6 +177,10 @@ export default function Index() {
         </View>
       ) : (
         <>
+      <Notification
+        message={`Coming in ${arrivalTime} minute/s`}
+        trigger={triggerNotification}
+      />
        {/* MODAL 1*/}
       <Modal
         animationType="fade"
@@ -303,6 +333,7 @@ export default function Index() {
               <Text style={styles.buttonText}>Request</Text>
             </TouchableOpacity>
           </View>
+
         </View>
       </View>
       </>
